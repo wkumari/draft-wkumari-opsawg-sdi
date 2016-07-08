@@ -48,17 +48,18 @@
       physically travel to a datacenter to perform the initial install and
       configuration, even in shared datacenters with "smart-hands" type
       support. In many cases, this could be avoided if there was a standard,
-      secure way to initially provision the devices. </t>
+      secure way to initially provision the devices.</t>
 
-      <t>This document extended existing auto-install / Zero-Touch Provisioning
-      to make the process more secure.</t>
+      <t>This document extended existing auto-install / Zero-Touch
+      Provisioning to make the process more secure.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
-      information, answers to frequently asked questions, general musings, etc.
-      They will be removed before publication. This document is being
-      collaborated on in Github at: https://github.com/__URL__. The most
-      recent version of the document, open issues, etc should all be available
-      here. The authors (gratefully) accept pull requests. ]</t>
+      information, answers to frequently asked questions, general musings,
+      etc. They will be removed before publication. This document is being
+      collaborated on in Github at:
+      https://github.com/wkumari/draft-wkumari-opsawg-sdi. The most recent
+      version of the document, open issues, etc should all be available here.
+      The authors (gratefully) accept pull requests. ]</t>
 
       <t>[ Ed note: This document introduces concepts and serves as the basic
       for discussion - because of this it is conversational, and would need to
@@ -80,22 +81,22 @@
       DHCP to get an IP address and configuration server, and then fetch and
       install a configuration when they are first powered on.</t>
 
-      <t>Network device configurations contain a significant amount of security
-      related and / or proprietary information (for example, RADIUS or
-      TACACS secrets). Exposing these to a third party to load onto a new
-      device (or using an auto-install techniques which fetch an
-      (unencrypted) config file via something like TFTP) is simply not
-      acceptable to many operators, and so they have to send employees to
-      remote locations to perform the initial configuration work. As well as
-      having a significant monetary cost, it also takes significantly longer
-      to install devices, and is inefficient. </t>
+      <t>Network device configurations contain a significant amount of
+      security related and / or proprietary information (for example, RADIUS
+      or TACACS secrets). Exposing these to a third party to load onto a new
+      device (or using an auto-install techniques which fetch an (unencrypted)
+      config file via something like TFTP) is simply not acceptable to many
+      operators, and so they have to send employees to remote locations to
+      perform the initial configuration work. As well as having a significant
+      monetary cost, it also takes significantly longer to install devices,
+      and is inefficient.</t>
 
       <t>There are some workarounds to this, such as asking the vendor to
       pre-configure the devices before shipping it; asking the smart-hands to
       install a terminal server; providing a minimal, unsecured configuration
-      and using that to bootstrap to a complete configuraiotn, etc but these
+      and using that to bootstrap to a complete configuration, etc; but these
       are often clumsy and have security issues - for example, in the terminal
-      server case, the console port connection could be easily snooped. </t>
+      server case, the console port connection could be easily snooped.</t>
 
       <t>This document layers security onto existing auto-install solutions to
       provide a secure method to initially configure new devices.</t>
@@ -139,16 +140,16 @@
       address. They would also be able to retrieve (encrypted) config files by
       guessing serial numbers (or perhaps the server would allow directory
       listing), but without the private keys they will not be able to decrypt
-      the files. </t>
+      the files.</t>
 
       <t>[ Ed note: This example uses TFTP because that is what many vendors
-      use in their auto-install / ZTP feature. It could easily instead be HTTP,
-      FTP, etc. ]</t>
+      use in their auto-install / ZTP feature. It could easily instead be
+      HTTP, FTP, etc. ]</t>
     </section>
 
     <section title="Vendor Role / Requirements ">
-      <t>This section describes the vendors roles and responsibilities
-      and provides an overview of what the device needs to do. </t>
+      <t>This section describes the vendors roles and responsibilities and
+      provides an overview of what the device needs to do.</t>
 
       <section title="CA Infrastructure">
         <t>The vendor needs to run some (simple) CA infrastructure to sign and
@@ -158,7 +159,7 @@
         the device [TODO(WK): Define Serial Number (RE, chassis, ?)]. The
         device sends this CSR to the CA, which signs the CSR, returns the
         certificate to the device and also sends it to a certificate
-        publication server. </t>
+        publication server.</t>
       </section>
 
       <section title="Certificate Publication Server">
@@ -169,34 +170,34 @@
         numbers of newly purchased devices when they purchase them, and that
         some automated system will download and store / cache the certificate.
         This means that there is not a hard requirement on the uptime /
-        reachability of the certificate publication server. </t>
+        reachability of the certificate publication server.</t>
 
         <t>[ Ed: The vendor may not want to expose (for commercial reasons)
         how many devices it has made. This can be mitigated by using
-        non-contiguous serial numbers, and simply creating "fake
-        devices", etc. ]</t>
+        non-contiguous serial numbers, and simply creating "fake devices",
+        etc. ]</t>
       </section>
 
       <section title="Initial Device Boot">
         <t>When the device is very first powered on, it will generate its
-        keypair. It generate a CSR (including the device serial number) and
-        send it to the vendor's CA, receives the certificate andstores
-        it. </t>
+        keypair. It then generates a CSR (including the device serial number)
+        and sends it to the vendor's CA, which signs the certificate. The
+        device receives the signed certificate and stores it.</t>
       </section>
 
       <section title="Subsequent Boots">
         <t>After the initial boot, it the device has no (valid) configuration
-        file, it will perform standard a auto-install type functionality. For
-        example, it will perform DHCP Discovers until it gets a DHCP offer
+        file, it will perform standard an auto-install type functionality. For
+        example, it will perform DHCP Discovery until it gets a DHCP offer
         including DHCP option 66 or 150. It will contact the server listed in
         these DHCP options and download a configuration file named
         config_&lt;serial_number&gt;.cfg. This is all existing (often vendor
-        proprietary) functionality. </t>
+        proprietary) functionality.</t>
 
-        <t> After retrieving the config file, Secure Device Install devices
+        <t>After retrieving the config file, Secure Device Install devices
         will attempt to decrypt the configuration file using its private key.
         If it is able to decrypt and validate the file it will install the
-        configuration, and start using it. </t>
+        configuration, and start using it.</t>
 
         <t>[ Ed note: SDI will also allows additional functionality, like
         always storing the configs encrypted, having the device store its
@@ -216,14 +217,14 @@
       <t/>
 
       <section title="Administrative ">
-        <t>When purchasing a new device, the customer / operator will only
-        need a method to associated the delivered device to the serial number
-        such that collection of public key material can be accomplished.</t>
+        <t>When purchasing a new device, the accounting department will need
+        to get the serial number of the new device and communicate it to the
+        operations group.</t>
       </section>
 
       <section title="Technical">
-        <t>The operator will contact the vendor's publication server,
-        and download the certificate (by providing the serial number of the
+        <t>The operator will contact the vendor's publication server, and
+        download the certificate (by providing the serial number of the
         device). They will then encrypt the initial configuration to that key,
         and place it on the TFTP server, named config_&lt;SN&gt;.enc. See
         Appendix B for examples.</t>
@@ -266,7 +267,7 @@
         specific) that vendors will allow the operator to e.g scp a new,
         encrypted config (or part of a config) onto a device and then request
         that the device decrypt and install it (e.g: &lsquo;load replace
-        &lt;filename&gt; encrypted)) </t>
+        &lt;filename&gt; encrypted)).</t>
       </section>
     </section>
 
@@ -332,15 +333,15 @@
       <t>This section contains a rough demo / proof of concept of the system.
       It is only intended for illustration; presumably things like algorithms,
       key lengths, format / containers will provide much fodder for
-      discussion. </t>
+      discussion.</t>
 
       <t>It uses OpenSSL from the command line, in production something more
       automated would be used. In this example, the serial number of the
-      router is SN19842256. </t>
+      router is SN19842256.</t>
 
       <section title="Step 1: Generating the certificate. ">
         <t>This step is performed by the router. It generates a key, then a
-        csr, and then a self signed certificate. </t>
+        csr, and then a self signed certificate.</t>
 
         <section title="Step 1.1: Generate the private key. ">
           <t><figure>
@@ -380,7 +381,7 @@ An optional company name []:.
           -out SN19842256.crt</t>
 
           <t>The router then sends the key to the vendor&rsquo;s keyserver for
-          publication (not shown). </t>
+          publication (not shown).</t>
         </section>
       </section>
 
@@ -392,8 +393,7 @@ An optional company name []:.
         encrypt the config file to that key. This is done by the operator.</t>
 
         <section title="Step 2.1: Fetch the certificate.">
-          <t>$ wget http://keyserv.example.net/certificates/SN19842256.crt
-          </t>
+          <t>$ wget http://keyserv.example.net/certificates/SN19842256.crt</t>
         </section>
 
         <section title="Step 2.2: Encrypt the config file. ">
@@ -446,7 +446,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 ]]></artwork>
             </figure></t>
 
-          <t> If an attacker does not have the correct key, they will not be
+          <t>If an attacker does not have the correct key, they will not be
           able to decrypt the config: <figure>
               <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\ 
   -out config.cfg -inkey wrongkey.pem

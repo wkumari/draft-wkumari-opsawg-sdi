@@ -27,9 +27,10 @@ Abstract
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
    etc.  They will be removed before publication.  This document is
-   being collaborated on in Github at: https://github.com/__URL__. The
-   most recent version of the document, open issues, etc should all be
-   available here.  The authors (gratefully) accept pull requests. ]
+   being collaborated on in Github at: https://github.com/wkumari/draft-
+   wkumari-opsawg-sdi.  The most recent version of the document, open
+   issues, etc should all be available here.  The authors (gratefully)
+   accept pull requests. ]
 
    [ Ed note: This document introduces concepts and serves as the basic
    for discussion - because of this it is conversational, and would need
@@ -51,7 +52,6 @@ Status of This Memo
    material or to cite them other than as "work in progress."
 
    This Internet-Draft will expire on January 9, 2017.
-
 
 
 
@@ -151,7 +151,7 @@ Internet-Draft                  template                       July 2016
    configure the devices before shipping it; asking the smart-hands to
    install a terminal server; providing a minimal, unsecured
    configuration and using that to bootstrap to a complete
-   configuraiotn, etc but these are often clumsy and have security
+   configuration, etc; but these are often clumsy and have security
    issues - for example, in the terminal server case, the console port
    connection could be easily snooped.
 
@@ -252,14 +252,15 @@ Internet-Draft                  template                       July 2016
 3.3.  Initial Device Boot
 
    When the device is very first powered on, it will generate its
-   keypair.  It generate a CSR (including the device serial number) and
-   send it to the vendor's CA, receives the certificate andstores it.
+   keypair.  It then generates a CSR (including the device serial
+   number) and sends it to the vendor's CA, which signs the certificate.
+   The device receives the signed certificate and stores it.
 
 3.4.  Subsequent Boots
 
    After the initial boot, it the device has no (valid) configuration
-   file, it will perform standard a auto-install type functionality.
-   For example, it will perform DHCP Discovers until it gets a DHCP
+   file, it will perform standard an auto-install type functionality.
+   For example, it will perform DHCP Discovery until it gets a DHCP
    offer including DHCP option 66 or 150.  It will contact the server
    listed in these DHCP options and download a configuration file named
    config_<serial_number>.cfg.  This is all existing (often vendor
@@ -274,7 +275,6 @@ Internet-Draft                  template                       July 2016
    storing the configs encrypted, having the device store its config
    encrypted in flash (so that e.g RMAing a routing engine will not leak
    config, etc.  I'm not describing this in detail because:
-
 
 
 
@@ -294,9 +294,9 @@ Internet-Draft                  template                       July 2016
 
 4.1.  Administrative
 
-   When purchasing a new device, the customer / operator will only need
-   a method to associated the delivered device to the serial number such
-   that collection of public key material can be accomplished.
+   When purchasing a new device, the accounting department will need to
+   get the serial number of the new device and communicate it to the
+   operations group.
 
 4.2.  Technical
 
@@ -351,7 +351,7 @@ Internet-Draft                  template                       July 2016
    specific) that vendors will allow the operator to e.g scp a new,
    encrypted config (or part of a config) onto a device and then request
    that the device decrypt and install it (e.g: 'load replace <filename>
-   encrypted))
+   encrypted)).
 
 6.  IANA Considerations
 
