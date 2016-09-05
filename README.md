@@ -6,23 +6,23 @@
 
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                              July 8, 2016
-Expires: January 9, 2017
+Intended status: Informational                         September 5, 2016
+Expires: March 9, 2017
 
 
                          Secure Device Install
-                      draft-wkumari-opsawg-sdi-00
+                      draft-wkumari-opsawg-sdi-01
 
 Abstract
 
    Deploying a new network device often requires that an employee
    physically travel to a datacenter to perform the initial install and
    configuration, even in shared datacenters with "smart-hands" type
-   support.  In many cases, this could be avoided if there was a
+   support.  In many cases, this could be avoided if there were a
    standard, secure way to initially provision the devices.
 
-   This document extended existing auto-install / Zero-Touch
-   Provisioning to make the process more secure.
+   This document extends existing auto-install / Zero-Touch Provisioning
+   to make the process more secure.
 
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
@@ -33,8 +33,8 @@ Abstract
    accept pull requests. ]
 
    [ Ed note: This document introduces concepts and serves as the basic
-   for discussion - because of this it is conversational, and would need
-   to be firmed up before being published ]
+   for discussion - because of this, it is conversational, and would
+   need to be firmed up before being published ]
 
 Status of This Memo
 
@@ -51,13 +51,13 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 9, 2017.
+   This Internet-Draft will expire on March 9, 2017.
 
 
 
-Kumari                   Expires January 9, 2017                [Page 1]
+Kumari                    Expires March 9, 2017                 [Page 1]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
 Copyright Notice
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari                   Expires January 9, 2017                [Page 2]
+Kumari                    Expires March 9, 2017                 [Page 2]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  10
@@ -127,15 +127,16 @@ Internet-Draft                  template                       July 2016
 
    In a growing, global network, significant amounts of time and money
    are spent simply deploying new devices and "forklift" upgrading
-   existing devices.  In many cases these devices are in shared
+   existing devices.  In many cases, these devices are in shared
    datacenters (for example, Internet Exchange Points (IXP) or "carrier
-   neutral datacenters"), which have staff on hand which can be
-   contracted to perform things like physical installs, reboot devices,
-   load initial configurations, etc.  There are also a number of (often
-   vendor proprietary) protocols to perform initial device installs and
-   configurations - for example, many network devices will attempt to
-   use DHCP to get an IP address and configuration server, and then
-   fetch and install a configuration when they are first powered on.
+   neutral datacenters"), which have staff on hand that can be
+   contracted to perform tasks including physical installs, device
+   reboots, loading initial configurations, etc.  There are also a
+   number of (often vendor proprietary) protocols to perform initial
+   device installs and configurations - for example, many network
+   devices will attempt to use DHCP to get an IP address and
+   configuration server, and then fetch and install a configuration when
+   they are first powered on.
 
    Network device configurations contain a significant amount of
    security related and / or proprietary information (for example,
@@ -145,7 +146,7 @@ Internet-Draft                  template                       July 2016
    acceptable to many operators, and so they have to send employees to
    remote locations to perform the initial configuration work.  As well
    as having a significant monetary cost, it also takes significantly
-   longer to install devices, and is inefficient.
+   longer to install devices and is generally inefficient.
 
    There are some workarounds to this, such as asking the vendor to pre-
    configure the devices before shipping it; asking the smart-hands to
@@ -166,19 +167,18 @@ Internet-Draft                  template                       July 2016
 
 
 
-
-Kumari                   Expires January 9, 2017                [Page 3]
+Kumari                    Expires March 9, 2017                 [Page 3]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
 2.  Overview / Example Scenario
 
    Sirius Cybernetics Corp needs another peering router, and so they
-   order another router from Acme Network Widgets, to be dropped-shipped
-   to a POP.  Acme begins assembling the new device, and tells Sirius
-   what the new device's serial number will be (SN:17894321).  During
-   the initial boot / testing, the router generates a public-private
+   order another router from Acme Network Widgets, to be drop-shipped to
+   a POP.  Acme begins assembling the new device, and tells Sirius what
+   the new device's serial number will be (SN:17894321).  During the
+   initial boot / testing, the router generates a public-private
    keypair, and publishes the public part to Acme's keyserver (in a
    certificate, for ease of use).
 
@@ -196,7 +196,7 @@ Internet-Draft                  template                       July 2016
    with an IP address and the address of the configuration server.  The
    router uses TFTP to fetch a file named according to its serial number
    (acme_17894321.cfg).  It then uses its private key to decrypt this
-   file, and, assuming it validates, install the new configuration.
+   file, and, assuming it validates, installs the new configuration.
 
    Only the "correct" device will have the required private key and be
    able to decrypt and use the config file (See Security
@@ -204,7 +204,7 @@ Internet-Draft                  template                       July 2016
    and get an IP address.  They would also be able to retrieve
    (encrypted) config files by guessing serial numbers (or perhaps the
    server would allow directory listing), but without the private keys
-   they will not be able to decrypt the files.
+   an attacker will not be able to decrypt the files.
 
    [ Ed note: This example uses TFTP because that is what many vendors
    use in their auto-install / ZTP feature.  It could easily instead be
@@ -223,16 +223,15 @@ Internet-Draft                  template                       July 2016
 
 
 
-Kumari                   Expires January 9, 2017                [Page 4]
+Kumari                    Expires March 9, 2017                 [Page 4]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
    Certificate Signing Request (CSR), with the commonName being the
-   Serial Number of the device [TODO(WK): Define Serial Number (RE,
-   chassis, ?)].  The device sends this CSR to the CA, which signs the
-   CSR, returns the certificate to the device and also sends it to a
-   certificate publication server.
+   Serial Number of the device.  The device sends this CSR to the CA,
+   which signs the CSR, returns the certificate to the device and also
+   sends it to a certificate publication server.
 
 3.2.  Certificate Publication Server
 
@@ -251,10 +250,11 @@ Internet-Draft                  template                       July 2016
 
 3.3.  Initial Device Boot
 
-   When the device is very first powered on, it will generate its
-   keypair.  It then generates a CSR (including the device serial
-   number) and sends it to the vendor's CA, which signs the certificate.
-   The device receives the signed certificate and stores it.
+   When the device is powered on for the very first time, it will
+   generate its keypair.  It then generates a CSR (including the device
+   serial number) and sends it to the vendor's CA, which signs the
+   certificate.  The device receives the signed certificate and stores
+   it.
 
 3.4.  Subsequent Boots
 
@@ -279,9 +279,9 @@ Internet-Draft                  template                       July 2016
 
 
 
-Kumari                   Expires January 9, 2017                [Page 5]
+Kumari                    Expires March 9, 2017                 [Page 5]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
    1.  I want to keep this document simple and focused and, more
@@ -335,9 +335,9 @@ Internet-Draft                  template                       July 2016
 
 
 
-Kumari                   Expires January 9, 2017                [Page 6]
+Kumari                    Expires March 9, 2017                 [Page 6]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
 5.3.  Device reinstall
@@ -380,10 +380,6 @@ Internet-Draft                  template                       July 2016
 
 9.1.  Normative References
 
-   [IANA.AS_Numbers]
-              IANA, "Autonomous System (AS) Numbers",
-              <http://www.iana.org/assignments/as-numbers>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
               RFC2119, March 1997,
@@ -391,9 +387,13 @@ Internet-Draft                  template                       July 2016
 
 
 
-Kumari                   Expires January 9, 2017                [Page 7]
+
+
+
+
+Kumari                    Expires March 9, 2017                 [Page 7]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
 9.2.  Informative References
@@ -447,9 +447,9 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
 
 
 
-Kumari                   Expires January 9, 2017                [Page 8]
+Kumari                    Expires March 9, 2017                 [Page 8]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
    $ openssl req -new -key key.pem -out SN19842256.csr
@@ -503,9 +503,9 @@ B.2.2.  Step 2.2: Encrypt the config file.
 
 
 
-Kumari                   Expires January 9, 2017                [Page 9]
+Kumari                    Expires March 9, 2017                 [Page 9]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
@@ -559,9 +559,9 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
 
 
-Kumari                   Expires January 9, 2017               [Page 10]
+Kumari                    Expires March 9, 2017                [Page 10]
 
-Internet-Draft                  template                       July 2016
+Internet-Draft                  template                  September 2016
 
 
 Author's Address
@@ -615,5 +615,5 @@ Author's Address
 
 
 
-Kumari                   Expires January 9, 2017               [Page 11]
+Kumari                    Expires March 9, 2017                [Page 11]
 ```

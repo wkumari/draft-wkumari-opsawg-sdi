@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-opsawg-sdi-00" ipr="trust200902">
+<rfc category="info" docName="draft-wkumari-opsawg-sdi-01" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -41,17 +41,17 @@
       </address>
     </author>
 
-    <date day="8" month="July" year="2016"/>
+    <date day="5" month="September" year="2016"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
       physically travel to a datacenter to perform the initial install and
       configuration, even in shared datacenters with "smart-hands" type
-      support. In many cases, this could be avoided if there was a standard,
+      support. In many cases, this could be avoided if there were a standard,
       secure way to initially provision the devices.</t>
 
-      <t>This document extended existing auto-install / Zero-Touch
-      Provisioning to make the process more secure.</t>
+      <t>This document extends existing auto-install / Zero-Touch Provisioning
+      to make the process more secure.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to frequently asked questions, general musings,
@@ -62,8 +62,8 @@
       The authors (gratefully) accept pull requests. ]</t>
 
       <t>[ Ed note: This document introduces concepts and serves as the basic
-      for discussion - because of this it is conversational, and would need to
-      be firmed up before being published ]</t>
+      for discussion - because of this, it is conversational, and would need
+      to be firmed up before being published ]</t>
     </abstract>
   </front>
 
@@ -71,11 +71,11 @@
     <section title="Introduction">
       <t>In a growing, global network, significant amounts of time and money
       are spent simply deploying new devices and "forklift" upgrading existing
-      devices. In many cases these devices are in shared datacenters (for
+      devices. In many cases, these devices are in shared datacenters (for
       example, Internet Exchange Points (IXP) or "carrier neutral
-      datacenters"), which have staff on hand which can be contracted to
-      perform things like physical installs, reboot devices, load initial
-      configurations, etc. There are also a number of (often vendor
+      datacenters"), which have staff on hand that can be contracted to
+      perform tasks including physical installs, device reboots, loading
+      initial configurations, etc. There are also a number of (often vendor
       proprietary) protocols to perform initial device installs and
       configurations - for example, many network devices will attempt to use
       DHCP to get an IP address and configuration server, and then fetch and
@@ -88,8 +88,8 @@
       config file via something like TFTP) is simply not acceptable to many
       operators, and so they have to send employees to remote locations to
       perform the initial configuration work. As well as having a significant
-      monetary cost, it also takes significantly longer to install devices,
-      and is inefficient.</t>
+      monetary cost, it also takes significantly longer to install devices and
+      is generally inefficient.</t>
 
       <t>There are some workarounds to this, such as asking the vendor to
       pre-configure the devices before shipping it; asking the smart-hands to
@@ -111,8 +111,8 @@
 
     <section title="Overview / Example Scenario">
       <t>Sirius Cybernetics Corp needs another peering router, and so they
-      order another router from Acme Network Widgets, to be dropped-shipped to
-      a POP. Acme begins assembling the new device, and tells Sirius what the
+      order another router from Acme Network Widgets, to be drop-shipped to a
+      POP. Acme begins assembling the new device, and tells Sirius what the
       new device's serial number will be (SN:17894321). During the initial
       boot / testing, the router generates a public-private keypair, and
       publishes the public part to Acme's keyserver (in a certificate, for
@@ -132,15 +132,15 @@
       address and the address of the configuration server. The router uses
       TFTP to fetch a file named according to its serial number
       (acme_17894321.cfg). It then uses its private key to decrypt this file,
-      and, assuming it validates, install the new configuration.</t>
+      and, assuming it validates, installs the new configuration.</t>
 
       <t>Only the "correct" device will have the required private key and be
       able to decrypt and use the config file (See Security Considerations).
       An attacker would be able to connect to the network and get an IP
       address. They would also be able to retrieve (encrypted) config files by
       guessing serial numbers (or perhaps the server would allow directory
-      listing), but without the private keys they will not be able to decrypt
-      the files.</t>
+      listing), but without the private keys an attacker will not be able to
+      decrypt the files.</t>
 
       <t>[ Ed note: This example uses TFTP because that is what many vendors
       use in their auto-install / ZTP feature. It could easily instead be
@@ -156,10 +156,9 @@
         publish certificates. When a device is initially powered on (in the
         factory) it will generate a public / private keypair and a Certificate
         Signing Request (CSR), with the commonName being the Serial Number of
-        the device [TODO(WK): Define Serial Number (RE, chassis, ?)]. The
-        device sends this CSR to the CA, which signs the CSR, returns the
-        certificate to the device and also sends it to a certificate
-        publication server.</t>
+        the device. The device sends this CSR to the CA, which signs the CSR,
+        returns the certificate to the device and also sends it to a
+        certificate publication server.</t>
       </section>
 
       <section title="Certificate Publication Server">
@@ -179,10 +178,11 @@
       </section>
 
       <section title="Initial Device Boot">
-        <t>When the device is very first powered on, it will generate its
-        keypair. It then generates a CSR (including the device serial number)
-        and sends it to the vendor's CA, which signs the certificate. The
-        device receives the signed certificate and stores it.</t>
+        <t>When the device is powered on for the very first time, it will
+        generate its keypair. It then generates a CSR (including the device
+        serial number) and sends it to the vendor's CA, which signs the
+        certificate. The device receives the signed certificate and stores
+        it.</t>
       </section>
 
       <section title="Subsequent Boots">
@@ -299,20 +299,6 @@
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
-
-      <reference anchor="IANA.AS_Numbers"
-                 target="http://www.iana.org/assignments/as-numbers">
-        <front>
-          <title abbrev="Autonomous System (AS) Numbers">Autonomous System
-          (AS) Numbers</title>
-
-          <author>
-            <organization>IANA</organization>
-          </author>
-
-          <date/>
-        </front>
-      </reference>
     </references>
 
     <references title="Informative References">
