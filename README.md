@@ -6,12 +6,12 @@
 
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                         September 5, 2016
-Expires: March 9, 2017
+Intended status: Informational                             July 12, 2018
+Expires: January 13, 2019
 
 
                          Secure Device Install
-                      draft-wkumari-opsawg-sdi-01
+                      draft-wkumari-opsawg-sdi-02
 
 Abstract
 
@@ -44,30 +44,30 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 9, 2017.
+   This Internet-Draft will expire on January 13, 2019.
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 1]
+Kumari                  Expires January 13, 2019                [Page 1]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
 Copyright Notice
 
-   Copyright (c) 2016 IETF Trust and the persons identified as the
+   Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 2]
+Kumari                  Expires January 13, 2019                [Page 2]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  10
@@ -167,9 +167,9 @@ Internet-Draft                  template                  September 2016
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 3]
+Kumari                  Expires January 13, 2019                [Page 3]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
 2.  Overview / Example Scenario
@@ -223,9 +223,9 @@ Internet-Draft                  template                  September 2016
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 4]
+Kumari                  Expires January 13, 2019                [Page 4]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
    Certificate Signing Request (CSR), with the commonName being the
@@ -279,9 +279,9 @@ Internet-Draft                  template                  September 2016
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 5]
+Kumari                  Expires January 13, 2019                [Page 5]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
    1.  I want to keep this document simple and focused and, more
@@ -335,9 +335,9 @@ Internet-Draft                  template                  September 2016
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 6]
+Kumari                  Expires January 13, 2019                [Page 6]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
 5.3.  Device reinstall
@@ -381,9 +381,9 @@ Internet-Draft                  template                  September 2016
 9.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
 
 
@@ -391,9 +391,9 @@ Internet-Draft                  template                  September 2016
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 7]
+Kumari                  Expires January 13, 2019                [Page 7]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
 9.2.  Informative References
@@ -447,9 +447,9 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 8]
+Kumari                  Expires January 13, 2019                [Page 8]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
    $ openssl req -new -key key.pem -out SN19842256.csr
@@ -503,9 +503,9 @@ B.2.2.  Step 2.2: Encrypt the config file.
 
 
 
-Kumari                    Expires March 9, 2017                 [Page 9]
+Kumari                  Expires January 13, 2019                [Page 9]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
@@ -559,9 +559,9 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
 
 
-Kumari                    Expires March 9, 2017                [Page 10]
+Kumari                  Expires January 13, 2019               [Page 10]
 
-Internet-Draft                  template                  September 2016
+Internet-Draft                  template                       July 2018
 
 
 Author's Address
@@ -615,5 +615,5 @@ Author's Address
 
 
 
-Kumari                    Expires March 9, 2017                [Page 11]
+Kumari                  Expires January 13, 2019               [Page 11]
 ```
