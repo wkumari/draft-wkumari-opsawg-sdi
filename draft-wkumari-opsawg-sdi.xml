@@ -125,7 +125,7 @@
       configuration and puts this encrypted config on a (local) TFTP
       server.</t>
 
-      <t>When the POP recieves the new device, they install it in Sirius'
+      <t>When the POP receives the new device, they install it in Sirius'
       rack, and connect the cables as instructed. The new device powers up and
       discovers that it has not yet been configured. It enters its autoboot
       state, and begins DHCPing. Sirius' DHCP server provides it with an IP
@@ -384,7 +384,7 @@ An optional company name []:.
 
         <section title="Step 2.2: Encrypt the config file. ">
           <t>I'm using S/MIME because it is simple to demonstrate. This is
-          almost definetly not the best way to do this.<figure>
+          almost definitely not the best way to do this.<figure>
               <artwork><![CDATA[$ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
   -out SN19842256.enc -outform PEM SN19842256.crt
 $ more SN19842256.enc
@@ -427,14 +427,14 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 
         <section title="Step 3.2: Decrypt and use the config. ">
           <t><figure>
-              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\ 
+              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
   -out config.cfg -inkey key.pem
 ]]></artwork>
             </figure></t>
 
           <t>If an attacker does not have the correct key, they will not be
           able to decrypt the config: <figure>
-              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\ 
+              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
   -out config.cfg -inkey wrongkey.pem
 Error decrypting PKCS#7 structure
 140352450692760:error:06065064:digital envelope

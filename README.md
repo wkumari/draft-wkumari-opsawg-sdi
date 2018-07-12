@@ -189,7 +189,7 @@ Internet-Draft                  template                  September 2016
    device configuration and puts this encrypted config on a (local) TFTP
    server.
 
-   When the POP recieves the new device, they install it in Sirius'
+   When the POP receives the new device, they install it in Sirius'
    rack, and connect the cables as instructed.  The new device powers up
    and discovers that it has not yet been configured.  It enters its
    autoboot state, and begins DHCPing.  Sirius' DHCP server provides it
@@ -490,7 +490,7 @@ B.2.1.  Step 2.1: Fetch the certificate.
 B.2.2.  Step 2.2: Encrypt the config file.
 
    I'm using S/MIME because it is simple to demonstrate.  This is almost
-   definetly not the best way to do this.
+   definitely not the best way to do this.
 
 
 
