@@ -374,7 +374,8 @@ Internet-Draft                  template                       July 2018
 
 8.  Acknowledgements
 
-   The authors wish to thank some folk.
+   The authors wish to thank some folk, including Benoit Claise and Sam
+   Ribeiro.
 
 9.  References
 
@@ -384,7 +385,6 @@ Internet-Draft                  template                       July 2018
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
 
 
 
