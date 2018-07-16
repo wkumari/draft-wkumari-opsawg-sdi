@@ -6,8 +6,8 @@
 
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                             July 12, 2018
-Expires: January 13, 2019
+Intended status: Informational                             July 16, 2018
+Expires: January 17, 2019
 
 
                          Secure Device Install
@@ -51,11 +51,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 13, 2019.
+   This Internet-Draft will expire on January 17, 2019.
 
 
 
-Kumari                  Expires January 13, 2019                [Page 1]
+Kumari                  Expires January 17, 2019                [Page 1]
 
 Internet-Draft                  template                       July 2018
 
@@ -111,7 +111,7 @@ Table of Contents
 
 
 
-Kumari                  Expires January 13, 2019                [Page 2]
+Kumari                  Expires January 17, 2019                [Page 2]
 
 Internet-Draft                  template                       July 2018
 
@@ -167,7 +167,7 @@ Internet-Draft                  template                       July 2018
 
 
 
-Kumari                  Expires January 13, 2019                [Page 3]
+Kumari                  Expires January 17, 2019                [Page 3]
 
 Internet-Draft                  template                       July 2018
 
@@ -223,7 +223,7 @@ Internet-Draft                  template                       July 2018
 
 
 
-Kumari                  Expires January 13, 2019                [Page 4]
+Kumari                  Expires January 17, 2019                [Page 4]
 
 Internet-Draft                  template                       July 2018
 
@@ -279,7 +279,7 @@ Internet-Draft                  template                       July 2018
 
 
 
-Kumari                  Expires January 13, 2019                [Page 5]
+Kumari                  Expires January 17, 2019                [Page 5]
 
 Internet-Draft                  template                       July 2018
 
@@ -335,7 +335,7 @@ Internet-Draft                  template                       July 2018
 
 
 
-Kumari                  Expires January 13, 2019                [Page 6]
+Kumari                  Expires January 17, 2019                [Page 6]
 
 Internet-Draft                  template                       July 2018
 
@@ -391,7 +391,7 @@ Internet-Draft                  template                       July 2018
 
 
 
-Kumari                  Expires January 13, 2019                [Page 7]
+Kumari                  Expires January 17, 2019                [Page 7]
 
 Internet-Draft                  template                       July 2018
 
@@ -447,7 +447,7 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
 
 
 
-Kumari                  Expires January 13, 2019                [Page 8]
+Kumari                  Expires January 17, 2019                [Page 8]
 
 Internet-Draft                  template                       July 2018
 
@@ -503,7 +503,7 @@ B.2.2.  Step 2.2: Encrypt the config file.
 
 
 
-Kumari                  Expires January 13, 2019                [Page 9]
+Kumari                  Expires January 17, 2019                [Page 9]
 
 Internet-Draft                  template                       July 2018
 
@@ -559,7 +559,7 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
 
 
-Kumari                  Expires January 13, 2019               [Page 10]
+Kumari                  Expires January 17, 2019               [Page 10]
 
 Internet-Draft                  template                       July 2018
 
@@ -615,5 +615,5 @@ Author's Address
 
 
 
-Kumari                  Expires January 13, 2019               [Page 11]
+Kumari                  Expires January 17, 2019               [Page 11]
 ```
