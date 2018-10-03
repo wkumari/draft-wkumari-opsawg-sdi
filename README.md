@@ -287,8 +287,8 @@ Internet-Draft                  template                       July 2018
    1.  I want to keep this document simple and focused and, more
        importantly
 
-   2.  I left converting this into ID format until the draft cuff-off
-       and have run out of time :-) ]
+   2.  I left converting this into ID format until the draft cut-off and
+       have run out of time :-) ]
 
 4.  Operator Role / Responsibilities
 
@@ -369,8 +369,8 @@ Internet-Draft                  template                       July 2018
    2.  Devices should be storing their keying information in something
        like a TPM, to help mitigate the private key being extracted (e.g
        read off disk) in shipping, when the device is first unpacked by
-       smart-hands, etc).  A number of vendors are already discussing
-       including TPM for other security functions.
+       smart-hands, etc).  A number of vendors already include a TPM for
+       other security functions.
 
 8.  Acknowledgements
 

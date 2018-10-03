@@ -207,7 +207,7 @@
             <t>I want to keep this document simple and focused and, more
             importantly</t>
 
-            <t>I left converting this into ID format until the draft cuff-off
+            <t>I left converting this into ID format until the draft cut-off
             and have run out of time :-) ]</t>
           </list></t>
       </section>
@@ -286,8 +286,8 @@
           <t>Devices should be storing their keying information in something
           like a TPM, to help mitigate the private key being extracted (e.g
           read off disk) in shipping, when the device is first unpacked by
-          smart-hands, etc). A number of vendors are already discussing
-          including TPM for other security functions.</t>
+          smart-hands, etc). A number of vendors already include a TPM for
+          other security functions.</t>
         </list></t>
     </section>
 
