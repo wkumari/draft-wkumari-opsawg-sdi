@@ -179,8 +179,8 @@ Internet-Draft                  template                       July 2018
    a POP.  Acme begins assembling the new device, and tells Sirius what
    the new device's serial number will be (SN:17894321).  During the
    initial boot / testing, the router generates a public-private
-   keypair, and publishes the public part to Acme's keyserver (in a
-   certificate, for ease of use).
+   keypair, and Acme publishes it on their keyserver (in a certificate,
+   for ease of use).
 
    While Acme is shipping the new device, Sirius begins generating the
    initial device configuration.  Once the config is ready, Sirius
@@ -374,8 +374,8 @@ Internet-Draft                  template                       July 2018
 
 8.  Acknowledgements
 
-   The authors wish to thank some folk, including Benoit Claise and Sam
-   Ribeiro.
+   The authors wish to thank some folk, including Benoit Claise, Colin
+   Doyle, Sam Ribeiro, and Sean Turner.
 
 9.  References
 

@@ -114,9 +114,8 @@
       order another router from Acme Network Widgets, to be drop-shipped to a
       POP. Acme begins assembling the new device, and tells Sirius what the
       new device's serial number will be (SN:17894321). During the initial
-      boot / testing, the router generates a public-private keypair, and
-      publishes the public part to Acme's keyserver (in a certificate, for
-      ease of use).</t>
+      boot / testing, the router generates a public-private keypair, and Acme
+      publishes it on their keyserver (in a certificate, for ease of use).</t>
 
       <t>While Acme is shipping the new device, Sirius begins generating the
       initial device configuration. Once the config is ready, Sirius contacts
@@ -292,8 +291,8 @@
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank some folk, including Benoit Claise and Sam
-      Ribeiro.</t>
+      <t>The authors wish to thank some folk, including Benoit Claise, Colin
+      Doyle, Sam Ribeiro, and Sean Turner.</t>
     </section>
   </middle>
 
