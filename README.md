@@ -6,12 +6,13 @@
 
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                             July 16, 2018
-Expires: January 17, 2019
+Intended status: Informational                                  C. Doyle
+Expires: July 20, 2019                                  Juniper Networks
+                                                        January 16, 2019
 
 
                          Secure Device Install
-                      draft-wkumari-opsawg-sdi-02
+                      draft-wkumari-opsawg-sdi-03
 
 Abstract
 
@@ -51,18 +52,19 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 17, 2019.
 
 
 
-Kumari                  Expires January 17, 2019                [Page 1]
+Kumari & Doyle            Expires July 20, 2019                 [Page 1]
 
-Internet-Draft                  template                       July 2018
+Internet-Draft                  template                    January 2019
 
+
+   This Internet-Draft will expire on July 20, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2018 IETF Trust and the persons identified as the
+   Copyright (c) 2019 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -78,10 +80,10 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
+     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
    2.  Overview / Example Scenario . . . . . . . . . . . . . . . . .   4
-   3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   4
-     3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   4
+   3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   5
+     3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   5
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   5
      3.3.  Initial Device Boot . . . . . . . . . . . . . . . . . . .   5
      3.4.  Subsequent Boots  . . . . . . . . . . . . . . . . . . . .   5
@@ -90,38 +92,38 @@ Table of Contents
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
    5.  Future enhancements / Discussion  . . . . . . . . . . . . . .   6
      5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   6
-     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   6
+     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   7
      5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .   7
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
    Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .   8
      B.1.  Step 1: Generating the certificate. . . . . . . . . . . .   8
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .   8
-       B.1.2.  Step 1.2: Generate the certificate signing request. .   8
+       B.1.2.  Step 1.2: Generate the certificate signing request. .   9
        B.1.3.  Step 1.3: Generate the (self signed) certificate
                itself. . . . . . . . . . . . . . . . . . . . . . . .   9
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .   9
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .   9
-       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .   9
 
 
 
-Kumari                  Expires January 17, 2019                [Page 2]
+Kumari & Doyle            Expires July 20, 2019                 [Page 2]
 
-Internet-Draft                  template                       July 2018
+Internet-Draft                  template                    January 2019
 
 
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .   9
+       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  10
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  10
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  10
        B.3.1.  Step 3.1: Fetch encrypted config file from config
                server. . . . . . . . . . . . . . . . . . . . . . . .  10
        B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  10
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction
 
@@ -159,18 +161,22 @@ Internet-Draft                  template                       July 2018
    This document layers security onto existing auto-install solutions to
    provide a secure method to initially configure new devices.
 
+
+
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 3]
+
+Internet-Draft                  template                    January 2019
+
+
 1.1.  Requirements notation
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
-
-
-
-Kumari                  Expires January 17, 2019                [Page 3]
-
-Internet-Draft                  template                       July 2018
-
 
 2.  Overview / Example Scenario
 
@@ -210,6 +216,18 @@ Internet-Draft                  template                       July 2018
    use in their auto-install / ZTP feature.  It could easily instead be
    HTTP, FTP, etc. ]
 
+
+
+
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 4]
+
+Internet-Draft                  template                    January 2019
+
+
 3.  Vendor Role / Requirements
 
    This section describes the vendors roles and responsibilities and
@@ -220,14 +238,6 @@ Internet-Draft                  template                       July 2018
    The vendor needs to run some (simple) CA infrastructure to sign and
    publish certificates.  When a device is initially powered on (in the
    factory) it will generate a public / private keypair and a
-
-
-
-Kumari                  Expires January 17, 2019                [Page 4]
-
-Internet-Draft                  template                       July 2018
-
-
    Certificate Signing Request (CSR), with the commonName being the
    Serial Number of the device.  The device sends this CSR to the CA,
    which signs the CSR, returns the certificate to the device and also
@@ -266,6 +276,14 @@ Internet-Draft                  template                       July 2018
    config_<serial_number>.cfg.  This is all existing (often vendor
    proprietary) functionality.
 
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 5]
+
+Internet-Draft                  template                    January 2019
+
+
    After retrieving the config file, Secure Device Install devices will
    attempt to decrypt the configuration file using its private key.  If
    it is able to decrypt and validate the file it will install the
@@ -275,14 +293,6 @@ Internet-Draft                  template                       July 2018
    storing the configs encrypted, having the device store its config
    encrypted in flash (so that e.g RMAing a routing engine will not leak
    config, etc.  I'm not describing this in detail because:
-
-
-
-
-Kumari                  Expires January 17, 2019                [Page 5]
-
-Internet-Draft                  template                       July 2018
-
 
    1.  I want to keep this document simple and focused and, more
        importantly
@@ -321,6 +331,15 @@ Internet-Draft                  template                       July 2018
    keypair is bound to what humans think of as the "device", and not,
    for example, (redundant) routing engines.
 
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 6]
+
+Internet-Draft                  template                    January 2019
+
+
 5.2.  Key replacement
 
    It is anticipated that some operator may want to replace the (vendor
@@ -331,14 +350,6 @@ Internet-Draft                  template                       July 2018
    certificates signed by the operator's CA (e.g using RFC7030 -
    Enrollment over Secure Transport) this is a trivial operation, but is
    not described here (to avoid cluttering up the doc).
-
-
-
-
-Kumari                  Expires January 17, 2019                [Page 6]
-
-Internet-Draft                  template                       July 2018
-
 
 5.3.  Device reinstall
 
@@ -377,6 +388,14 @@ Internet-Draft                  template                       July 2018
    The authors wish to thank some folk, including Benoit Claise, Colin
    Doyle, Sam Ribeiro, and Sean Turner.
 
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 7]
+
+Internet-Draft                  template                    January 2019
+
+
 9.  References
 
 9.1.  Normative References
@@ -385,16 +404,6 @@ Internet-Draft                  template                       July 2018
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-
-
-
-
-
-Kumari                  Expires January 17, 2019                [Page 7]
-
-Internet-Draft                  template                       July 2018
-
 
 9.2.  Informative References
 
@@ -429,6 +438,20 @@ B.1.  Step 1: Generating the certificate.
 
 B.1.1.  Step 1.1: Generate the private key.
 
+
+
+
+
+
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 8]
+
+Internet-Draft                  template                    January 2019
+
+
    $ openssl genrsa -out key.pem 2048
    Generating RSA private key, 2048 bit long modulus
    .................................................
@@ -438,19 +461,6 @@ B.1.1.  Step 1.1: Generate the private key.
    e is 65537 (0x10001)
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
-
-
-
-
-
-
-
-
-
-Kumari                  Expires January 17, 2019                [Page 8]
-
-Internet-Draft                  template                       July 2018
-
 
    $ openssl req -new -key key.pem -out SN19842256.csr
    Country Name (2 letter code) [AU]:.
@@ -487,26 +497,21 @@ B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
 
+
+
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                 [Page 9]
+
+Internet-Draft                  template                    January 2019
+
+
 B.2.2.  Step 2.2: Encrypt the config file.
 
    I'm using S/MIME because it is simple to demonstrate.  This is almost
    definitely not the best way to do this.
-
-
-
-
-
-
-
-
-
-
-
-
-Kumari                  Expires January 17, 2019                [Page 9]
-
-Internet-Draft                  template                       July 2018
-
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
@@ -545,6 +550,20 @@ B.3.2.  Step 3.2: Decrypt and use the config.
    If an attacker does not have the correct key, they will not be able
    to decrypt the config:
 
+
+
+
+
+
+
+
+
+
+Kumari & Doyle            Expires July 20, 2019                [Page 10]
+
+Internet-Draft                  template                    January 2019
+
+
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
      -out config.cfg -inkey wrongkey.pem
    Error decrypting PKCS#7 structure
@@ -553,18 +572,7 @@ B.3.2.  Step 3.2: Decrypt and use the config.
    $ echo $?
    4
 
-
-
-
-
-
-
-Kumari                  Expires January 17, 2019               [Page 10]
-
-Internet-Draft                  template                       July 2018
-
-
-Author's Address
+Authors' Addresses
 
    Warren Kumari
    Google
@@ -575,6 +583,13 @@ Author's Address
    Email: warren@kumari.net
 
 
+   Colin Doyle
+   Juniper Networks
+   1133 Innovation Way
+   Sunnyvale, CA  94089
+   US
+
+   Email: cdoyle@juniper.net
 
 
 
@@ -600,20 +615,5 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kumari                  Expires January 17, 2019               [Page 11]
+Kumari & Doyle            Expires July 20, 2019                [Page 11]
 ```
