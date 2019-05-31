@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-opsawg-sdi-03" ipr="trust200902">
+<rfc category="info" docName="draft-wkumari-opsawg-sdi-04" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="16" month="January" year="2019"/>
+    <date day="31" month="May" year="2019"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -117,7 +117,15 @@
       server case, the console port connection could be easily snooped.</t>
 
       <t>This document layers security onto existing auto-install solutions to
-      provide a secure method to initially configure new devices.</t>
+      provide a secure method to initially configure new devices. It is
+      optimized for simplicity, both for the implementor and the operator; it
+      is explicitly not intended to be an "all singing, all dancng" fully
+      featured system for managing installed / deployed devices, nor is it
+      intended to solve all use-cases - rather it is a simple targeted
+      solution to solve a common operational issue. Solutions such as <xref
+      target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref> are much
+      more fully featured, but also more complex to imlement and / or are not
+      widely deployed yet. </t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -159,6 +167,16 @@
       listing), but without the private keys an attacker will not be able to
       decrypt the files.</t>
 
+      <t>This document uses the serial number of the device as a unique
+      identifier for simplicity; some vendors may not want to implement the
+      system using using the serial number as the identifier for business
+      reasons (a competitor or similar could enumumerate the serial numbers
+      and determine how many devices have been manufactured). Implementors are
+      free to choose some other way of generating identifiers (e.g UUID <xref
+      target="RFC4122"/>), but this will likely make it somewhat harder for
+      operators to use (the serial number is usually easy to find on a device,
+      a more complex system is likely harder to track).</t>
+
       <t>[ Ed note: This example uses TFTP because that is what many vendors
       use in their auto-install / ZTP feature. It could easily instead be
       HTTP, FTP, etc. ]</t>
@@ -172,32 +190,28 @@
         <t>The vendor needs to run some (simple) CA infrastructure to sign and
         publish certificates. When a device is initially powered on (in the
         factory) it will generate a public / private keypair and a Certificate
-        Signing Request (CSR), with the commonName being the Serial Number of
-        the device. The device sends this CSR to the CA, which signs the CSR,
-        returns the certificate to the device and also sends it to a
-        certificate publication server.</t>
+        Signing Request (CSR), with the commonName being the serial number (or
+        other unique token) of the device. The device sends this CSR to the
+        CA, which signs the CSR, returns the certificate to the device and
+        also sends it to a certificate publication server. </t>
       </section>
 
       <section title="Certificate Publication Server">
         <t>The certificate publication server contains a database of all
         signed certificates. Customers (e.g Sirius Cybernetics Corp) query
-        this server with a serial number, and retrieve the associated
-        certificate. It is expected that operators will receive the serial
-        numbers of newly purchased devices when they purchase them, and that
-        some automated system will download and store / cache the certificate.
-        This means that there is not a hard requirement on the uptime /
-        reachability of the certificate publication server.</t>
-
-        <t>[ Ed: The vendor may not want to expose (for commercial reasons)
-        how many devices it has made. This can be mitigated by using
-        non-contiguous serial numbers, and simply creating "fake devices",
-        etc. ]</t>
+        this server with the serial number (or other provided unique
+        identifier) of a device, and retrieve the associated certificate. It
+        is expected that operators will receive the usique identifier (serial
+        number) of devices when they purchase them, and that some automated
+        system will download and store / cache the certificate. This means
+        that there is not a hard requirement on the uptime / reachability of
+        the certificate publication server.</t>
       </section>
 
       <section title="Initial Device Boot">
         <t>When the device is powered on for the very first time, it will
-        generate its keypair. It then generates a CSR (including the device
-        serial number) and sends it to the vendor's CA, which signs the
+        generate its keypair. It then generates a CSR (including the unique
+        device identifier) and sends it to the vendor's CA, which signs the
         certificate. The device receives the signed certificate and stores
         it.</t>
       </section>
@@ -215,18 +229,6 @@
         will attempt to decrypt the configuration file using its private key.
         If it is able to decrypt and validate the file it will install the
         configuration, and start using it.</t>
-
-        <t>[ Ed note: SDI will also allows additional functionality, like
-        always storing the configs encrypted, having the device store its
-        config encrypted in flash (so that e.g RMAing a routing engine will
-        not leak config, etc. I'm not describing this in detail because:<list
-            style="numbers">
-            <t>I want to keep this document simple and focused and, more
-            importantly</t>
-
-            <t>I left converting this into ID format until the draft cut-off
-            and have run out of time :-) ]</t>
-          </list></t>
       </section>
     </section>
 
@@ -235,15 +237,15 @@
 
       <section title="Administrative ">
         <t>When purchasing a new device, the accounting department will need
-        to get the serial number of the new device and communicate it to the
-        operations group.</t>
+        to get the unique device identifier (likely serial number) of the new
+        device and communicate it to the operations group.</t>
       </section>
 
       <section title="Technical">
         <t>The operator will contact the vendor's publication server, and
-        download the certificate (by providing the serial number of the
-        device). They will then encrypt the initial configuration to that key,
-        and place it on the TFTP server, named config_&lt;SN&gt;.enc. See
+        download the certificate (by providing the unique device identifier of
+        the device). They will then encrypt the initial configuration to that
+        key, and place it on the TFTP server, named config_&lt;SN&gt;.enc. See
         Appendix B for examples.</t>
       </section>
     </section>
@@ -260,7 +262,8 @@
         &ldquo;router&rdquo; - for example, the chassis / backplane. This is
         so that a keypair is bound to what humans think of as the
         &ldquo;device&rdquo;, and not, for example, (redundant) routing
-        engines.</t>
+        engines. Devices which implement IEEE 802.1AR could choose to use the
+        IDevID for this purpose. </t>
       </section>
 
       <section title="Key replacement ">
@@ -289,28 +292,42 @@
     </section>
 
     <section title="IANA Considerations">
-      <t>This document contains no IANA considerations.Template: Fill this
-      in!</t>
+      <t>This document makes no requests of the IANA. </t>
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>This needs to be completed, including:<list style="numbers">
-          <t>We are trusting the vendor to have not kept a copy of the private
-          key when the device initially generated its keypair. Unfortunately
-          you are already trusting the vendor in many ways - it could have
-          included a backdoor in it's code, etc.</t>
+      <t>This mechanism is intended to replace either expensive (traveing
+      employees) or insecure mechanisms of installing newly deployed devices
+      such as: unencrypted config files which can be downloaded by connecting
+      to unprotected ports in datacenters, mailing initial config files on
+      flash drives, or emailing config files and asking a third-party to copy
+      and paste it over a serial termainal. It does not protect against
+      devices with malicious firmware, nor theft and reuse of devices.</t>
 
-          <t>Devices should be storing their keying information in something
-          like a TPM, to help mitigate the private key being extracted (e.g
-          read off disk) in shipping, when the device is first unpacked by
-          smart-hands, etc). A number of vendors already include a TPM for
-          other security functions.</t>
-        </list></t>
+      <t>An attacker (e.g a malicious datacenter employee) who has physical
+      access to the device before it is connected to the network the attacker
+      may be able to extract the device private key (especially if it isn't
+      stored in a TPM), pretend to be the device when connecting to the
+      network, and download and extract the (encrypted) config file. </t>
+
+      <t>This mechanism does not really protect against a malicious vendor -
+      while the keypair should be gnerated on the device, and the private key
+      should be securely stored, we cannot detect or protect against a vendor
+      who claims to do this, but instead generates the keypair off device and
+      keeps a copy of the private key. It is largely understood in the
+      operator commmunity that a malicious vendor or attacker with physical
+      access to the device is largely a "Game Over" situation. </t>
+
+      <t>Even when using a secure bootstrapping mechanism, security concious
+      operators may wish to bootstrapping devices with a minimal / less
+      sensative config, and then replace this with a more complete one after
+      install.</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank some folk, including Benoit Claise, Colin
-      Doyle, Sam Ribeiro, and Sean Turner.</t>
+      <t>The authors wish to thank eveyone who contributed, including Benoit
+      Claise, Sam Ribeiro, Michael Richardson, Sean Turner and Kent
+      Watsen.</t>
     </section>
   </middle>
 
@@ -321,6 +338,10 @@
 
     <references title="Informative References">
       <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'?>
+
+      <?rfc include='reference.RFC.8572'?>
+
+      <?rfc include='reference.RFC.4122'?>
     </references>
 
     <section title="Changes / Author Notes.">
@@ -330,6 +351,27 @@
 
       <t><list style="symbols">
           <t>Nothing changed in the template!</t>
+        </list>From -01 to -04:<list style="symbols">
+          <t>See github </t>
+        </list></t>
+
+      <t>From -04 to -05:<list style="symbols">
+          <t>Addressed a number of comments recieved before / at IETF104
+          (Prague). These include:</t>
+
+          <t>Pointer to
+          https://datatracker.ietf.org/doc/draft-ietf-netconf-zerotouch --
+          included reference to (now) RFC8572 (KW)</t>
+
+          <t>Suggested that 802.1AR IDevID (or simialr) could be used. Stress
+          that this is designed for simplicity (MR)</t>
+
+          <t>Added text to explain that any unique device identifier can be
+          used, not just serial number - serial number is simple and easy, but
+          anything which is unique (and can be communicated to the customer)
+          will work (BF).</t>
+
+          <t/>
         </list></t>
     </section>
 

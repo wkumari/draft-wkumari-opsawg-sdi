@@ -7,12 +7,12 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: July 20, 2019                                  Juniper Networks
-                                                        January 16, 2019
+Expires: December 2, 2019                               Juniper Networks
+                                                            May 31, 2019
 
 
                          Secure Device Install
-                      draft-wkumari-opsawg-sdi-03
+                      draft-wkumari-opsawg-sdi-04
 
 Abstract
 
@@ -55,12 +55,12 @@ Status of This Memo
 
 
 
-Kumari & Doyle            Expires July 20, 2019                 [Page 1]
+Kumari & Doyle          Expires December 2, 2019                [Page 1]
 
-Internet-Draft                  template                    January 2019
+Internet-Draft                  template                        May 2019
 
 
-   This Internet-Draft will expire on July 20, 2019.
+   This Internet-Draft will expire on December 2, 2019.
 
 Copyright Notice
 
@@ -86,7 +86,7 @@ Table of Contents
      3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   5
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   5
      3.3.  Initial Device Boot . . . . . . . . . . . . . . . . . . .   5
-     3.4.  Subsequent Boots  . . . . . . . . . . . . . . . . . . . .   5
+     3.4.  Subsequent Boots  . . . . . . . . . . . . . . . . . . . .   6
    4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   6
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
@@ -96,34 +96,34 @@ Table of Contents
      5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .   7
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .   8
-     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .   8
-       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .   8
-       B.1.2.  Step 1.2: Generate the certificate signing request. .   9
+   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .   9
+     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .   9
+       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .   9
+       B.1.2.  Step 1.2: Generate the certificate signing request. .  10
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .   9
-     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .   9
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  10
+     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  10
 
 
 
-Kumari & Doyle            Expires July 20, 2019                 [Page 2]
+Kumari & Doyle          Expires December 2, 2019                [Page 2]
 
-Internet-Draft                  template                    January 2019
+Internet-Draft                  template                        May 2019
 
 
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .   9
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  10
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  10
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  10
-     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  10
+       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  11
+     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  11
        B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  10
-       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+               server. . . . . . . . . . . . . . . . . . . . . . . .  11
+       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction
 
@@ -159,18 +159,23 @@ Internet-Draft                  template                    January 2019
    connection could be easily snooped.
 
    This document layers security onto existing auto-install solutions to
-   provide a secure method to initially configure new devices.
+   provide a secure method to initially configure new devices.  It is
+   optimized for simplicity, both for the implementor and the operator;
+   it is explicitly not intended to be an "all singing, all dancng"
+   fully featured system for managing installed / deployed devices, nor
+   is it intended to solve all use-cases - rather it is a simple
 
 
 
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 3]
+Kumari & Doyle          Expires December 2, 2019                [Page 3]
 
-Internet-Draft                  template                    January 2019
+Internet-Draft                  template                        May 2019
 
+
+   targeted solution to solve a common operational issue.  Solutions
+   such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
+   more fully featured, but also more complex to imlement and / or are
+   not widely deployed yet.
 
 1.1.  Requirements notation
 
@@ -212,21 +217,27 @@ Internet-Draft                  template                    January 2019
    server would allow directory listing), but without the private keys
    an attacker will not be able to decrypt the files.
 
+   This document uses the serial number of the device as a unique
+   identifier for simplicity; some vendors may not want to implement the
+   system using using the serial number as the identifier for business
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 4]
+
+Internet-Draft                  template                        May 2019
+
+
+   reasons (a competitor or similar could enumumerate the serial numbers
+   and determine how many devices have been manufactured).  Implementors
+   are free to choose some other way of generating identifiers (e.g UUID
+   [RFC4122]), but this will likely make it somewhat harder for
+   operators to use (the serial number is usually easy to find on a
+   device, a more complex system is likely harder to track).
+
    [ Ed note: This example uses TFTP because that is what many vendors
    use in their auto-install / ZTP feature.  It could easily instead be
    HTTP, FTP, etc. ]
-
-
-
-
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 4]
-
-Internet-Draft                  template                    January 2019
-
 
 3.  Vendor Role / Requirements
 
@@ -239,32 +250,39 @@ Internet-Draft                  template                    January 2019
    publish certificates.  When a device is initially powered on (in the
    factory) it will generate a public / private keypair and a
    Certificate Signing Request (CSR), with the commonName being the
-   Serial Number of the device.  The device sends this CSR to the CA,
-   which signs the CSR, returns the certificate to the device and also
-   sends it to a certificate publication server.
+   serial number (or other unique token) of the device.  The device
+   sends this CSR to the CA, which signs the CSR, returns the
+   certificate to the device and also sends it to a certificate
+   publication server.
 
 3.2.  Certificate Publication Server
 
    The certificate publication server contains a database of all signed
    certificates.  Customers (e.g Sirius Cybernetics Corp) query this
-   server with a serial number, and retrieve the associated certificate.
-   It is expected that operators will receive the serial numbers of
-   newly purchased devices when they purchase them, and that some
-   automated system will download and store / cache the certificate.
-   This means that there is not a hard requirement on the uptime /
-   reachability of the certificate publication server.
-
-   [ Ed: The vendor may not want to expose (for commercial reasons) how
-   many devices it has made.  This can be mitigated by using non-
-   contiguous serial numbers, and simply creating "fake devices", etc. ]
+   server with the serial number (or other provided unique identifier)
+   of a device, and retrieve the associated certificate.  It is expected
+   that operators will receive the usique identifier (serial number) of
+   devices when they purchase them, and that some automated system will
+   download and store / cache the certificate.  This means that there is
+   not a hard requirement on the uptime / reachability of the
+   certificate publication server.
 
 3.3.  Initial Device Boot
 
    When the device is powered on for the very first time, it will
-   generate its keypair.  It then generates a CSR (including the device
-   serial number) and sends it to the vendor's CA, which signs the
+   generate its keypair.  It then generates a CSR (including the unique
+   device identifier) and sends it to the vendor's CA, which signs the
    certificate.  The device receives the signed certificate and stores
    it.
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 5]
+
+Internet-Draft                  template                        May 2019
+
 
 3.4.  Subsequent Boots
 
@@ -276,45 +294,26 @@ Internet-Draft                  template                    January 2019
    config_<serial_number>.cfg.  This is all existing (often vendor
    proprietary) functionality.
 
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 5]
-
-Internet-Draft                  template                    January 2019
-
-
    After retrieving the config file, Secure Device Install devices will
    attempt to decrypt the configuration file using its private key.  If
    it is able to decrypt and validate the file it will install the
    configuration, and start using it.
-
-   [ Ed note: SDI will also allows additional functionality, like always
-   storing the configs encrypted, having the device store its config
-   encrypted in flash (so that e.g RMAing a routing engine will not leak
-   config, etc.  I'm not describing this in detail because:
-
-   1.  I want to keep this document simple and focused and, more
-       importantly
-
-   2.  I left converting this into ID format until the draft cut-off and
-       have run out of time :-) ]
 
 4.  Operator Role / Responsibilities
 
 4.1.  Administrative
 
    When purchasing a new device, the accounting department will need to
-   get the serial number of the new device and communicate it to the
-   operations group.
+   get the unique device identifier (likely serial number) of the new
+   device and communicate it to the operations group.
 
 4.2.  Technical
 
    The operator will contact the vendor's publication server, and
-   download the certificate (by providing the serial number of the
-   device).  They will then encrypt the initial configuration to that
-   key, and place it on the TFTP server, named config_<SN>.enc.  See
-   Appendix B for examples.
+   download the certificate (by providing the unique device identifier
+   of the device).  They will then encrypt the initial configuration to
+   that key, and place it on the TFTP server, named config_<SN>.enc.
+   See Appendix B for examples.
 
 5.  Future enhancements / Discussion
 
@@ -329,15 +328,16 @@ Internet-Draft                  template                    January 2019
    would be stored in a TPM on something which is identified as the
    "router" - for example, the chassis / backplane.  This is so that a
    keypair is bound to what humans think of as the "device", and not,
-   for example, (redundant) routing engines.
+   for example, (redundant) routing engines.  Devices which implement
+   IEEE 802.1AR could choose to use the IDevID for this purpose.
 
 
 
 
 
-Kumari & Doyle            Expires July 20, 2019                 [Page 6]
+Kumari & Doyle          Expires December 2, 2019                [Page 6]
 
-Internet-Draft                  template                    January 2019
+Internet-Draft                  template                        May 2019
 
 
 5.2.  Key replacement
@@ -366,35 +366,50 @@ Internet-Draft                  template                    January 2019
 
 6.  IANA Considerations
 
-   This document contains no IANA considerations.Template: Fill this in!
+   This document makes no requests of the IANA.
 
 7.  Security Considerations
 
-   This needs to be completed, including:
+   This mechanism is intended to replace either expensive (traveing
+   employees) or insecure mechanisms of installing newly deployed
+   devices such as: unencrypted config files which can be downloaded by
+   connecting to unprotected ports in datacenters, mailing initial
+   config files on flash drives, or emailing config files and asking a
+   third-party to copy and paste it over a serial termainal.  It does
+   not protect against devices with malicious firmware, nor theft and
+   reuse of devices.
 
-   1.  We are trusting the vendor to have not kept a copy of the private
-       key when the device initially generated its keypair.
-       Unfortunately you are already trusting the vendor in many ways -
-       it could have included a backdoor in it's code, etc.
+   An attacker (e.g a malicious datacenter employee) who has physical
+   access to the device before it is connected to the network the
+   attacker may be able to extract the device private key (especially if
+   it isn't stored in a TPM), pretend to be the device when connecting
+   to the network, and download and extract the (encrypted) config file.
 
-   2.  Devices should be storing their keying information in something
-       like a TPM, to help mitigate the private key being extracted (e.g
-       read off disk) in shipping, when the device is first unpacked by
-       smart-hands, etc).  A number of vendors already include a TPM for
-       other security functions.
+   This mechanism does not really protect against a malicious vendor -
+   while the keypair should be gnerated on the device, and the private
+   key should be securely stored, we cannot detect or protect against a
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 7]
+
+Internet-Draft                  template                        May 2019
+
+
+   vendor who claims to do this, but instead generates the keypair off
+   device and keeps a copy of the private key.  It is largely understood
+   in the operator commmunity that a malicious vendor or attacker with
+   physical access to the device is largely a "Game Over" situation.
+
+   Even when using a secure bootstrapping mechanism, security concious
+   operators may wish to bootstrapping devices with a minimal / less
+   sensative config, and then replace this with a more complete one
+   after install.
 
 8.  Acknowledgements
 
-   The authors wish to thank some folk, including Benoit Claise, Colin
-   Doyle, Sam Ribeiro, and Sean Turner.
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 7]
-
-Internet-Draft                  template                    January 2019
-
+   The authors wish to thank eveyone who contributed, including Benoit
+   Claise, Sam Ribeiro, Michael Richardson, Sean Turner and Kent Watsen.
 
 9.  References
 
@@ -412,6 +427,16 @@ Internet-Draft                  template                    January 2019
               issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
               progress), May 2011.
 
+   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
+              Unique IDentifier (UUID) URN Namespace", RFC 4122,
+              DOI 10.17487/RFC4122, July 2005,
+              <https://www.rfc-editor.org/info/rfc4122>.
+
+   [RFC8572]  Watsen, K., Farrer, I., and M. Abrahamsson, "Secure Zero
+              Touch Provisioning (SZTP)", RFC 8572,
+              DOI 10.17487/RFC8572, April 2019,
+              <https://www.rfc-editor.org/info/rfc8572>.
+
 Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
@@ -419,6 +444,35 @@ Appendix A.  Changes / Author Notes.
    From -00 to -01
 
    o  Nothing changed in the template!
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 8]
+
+Internet-Draft                  template                        May 2019
+
+
+   From -01 to -04:
+
+   o  See github
+
+   From -04 to -05:
+
+   o  Addressed a number of comments recieved before / at IETF104
+      (Prague).  These include:
+
+   o  Pointer to https://datatracker.ietf.org/doc/draft-ietf-netconf-
+      zerotouch -- included reference to (now) RFC8572 (KW)
+
+   o  Suggested that 802.1AR IDevID (or simialr) could be used.  Stress
+      that this is designed for simplicity (MR)
+
+   o  Added text to explain that any unique device identifier can be
+      used, not just serial number - serial number is simple and easy,
+      but anything which is unique (and can be communicated to the
+      customer) will work (BF).
+
+   o
 
 Appendix B.  Demo / proof of concept
 
@@ -438,20 +492,6 @@ B.1.  Step 1: Generating the certificate.
 
 B.1.1.  Step 1.1: Generate the private key.
 
-
-
-
-
-
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 8]
-
-Internet-Draft                  template                    January 2019
-
-
    $ openssl genrsa -out key.pem 2048
    Generating RSA private key, 2048 bit long modulus
    .................................................
@@ -459,6 +499,14 @@ Internet-Draft                  template                    January 2019
    ..........................+++
    ...................+++
    e is 65537 (0x10001)
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 9]
+
+Internet-Draft                  template                        May 2019
+
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
 
@@ -497,21 +545,24 @@ B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
 
-
-
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                 [Page 9]
-
-Internet-Draft                  template                    January 2019
-
-
 B.2.2.  Step 2.2: Encrypt the config file.
 
    I'm using S/MIME because it is simple to demonstrate.  This is almost
    definitely not the best way to do this.
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019               [Page 10]
+
+Internet-Draft                  template                        May 2019
+
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
@@ -550,20 +601,6 @@ B.3.2.  Step 3.2: Decrypt and use the config.
    If an attacker does not have the correct key, they will not be able
    to decrypt the config:
 
-
-
-
-
-
-
-
-
-
-Kumari & Doyle            Expires July 20, 2019                [Page 10]
-
-Internet-Draft                  template                    January 2019
-
-
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
      -out config.cfg -inkey wrongkey.pem
    Error decrypting PKCS#7 structure
@@ -571,6 +608,17 @@ Internet-Draft                  template                    January 2019
     routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
    $ echo $?
    4
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019               [Page 11]
+
+Internet-Draft                  template                        May 2019
+
 
 Authors' Addresses
 
@@ -615,5 +663,13 @@ Authors' Addresses
 
 
 
-Kumari & Doyle            Expires July 20, 2019                [Page 11]
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019               [Page 12]
 ```
