@@ -85,14 +85,13 @@ Table of Contents
    3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   5
      3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   5
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   5
-     3.3.  Initial Device Boot . . . . . . . . . . . . . . . . . . .   5
-     3.4.  Subsequent Boots  . . . . . . . . . . . . . . . . . . . .   6
+     3.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   5
    4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   6
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
-   5.  Future enhancements / Discussion  . . . . . . . . . . . . . .   6
+   5.  Additional Considerations . . . . . . . . . . . . . . . . . .   6
      5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   6
-     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   7
+     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   6
      5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .   7
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
@@ -108,6 +107,7 @@ Table of Contents
        B.1.3.  Step 1.3: Generate the (self signed) certificate
                itself. . . . . . . . . . . . . . . . . . . . . . . .  10
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  10
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  10
 
 
 
@@ -116,7 +116,6 @@ Kumari & Doyle          Expires December 2, 2019                [Page 2]
 Internet-Draft                  template                        May 2019
 
 
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  10
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  10
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  11
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  11
@@ -142,7 +141,7 @@ Internet-Draft                  template                        May 2019
 
    Network device configurations contain a significant amount of
    security related and / or proprietary information (for example,
-   RADIUS or TACACS secrets).  Exposing these to a third party to load
+   RADIUS or TACACS+ secrets).  Exposing these to a third party to load
    onto a new device (or using an auto-install techniques which fetch an
    (unencrypted) config file via something like TFTP) is simply not
    acceptable to many operators, and so they have to send employees to
@@ -161,9 +160,10 @@ Internet-Draft                  template                        May 2019
    This document layers security onto existing auto-install solutions to
    provide a secure method to initially configure new devices.  It is
    optimized for simplicity, both for the implementor and the operator;
-   it is explicitly not intended to be an "all singing, all dancng"
+   it is explicitly not intended to be an "all singing, all dancing"
    fully featured system for managing installed / deployed devices, nor
    is it intended to solve all use-cases - rather it is a simple
+   targeted solution to solve a common operational issue.  Solutions
 
 
 
@@ -172,9 +172,8 @@ Kumari & Doyle          Expires December 2, 2019                [Page 3]
 Internet-Draft                  template                        May 2019
 
 
-   targeted solution to solve a common operational issue.  Solutions
    such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
-   more fully featured, but also more complex to imlement and / or are
+   more fully featured, but also more complex to implement and / or are
    not widely deployed yet.
 
 1.1.  Requirements notation
@@ -188,10 +187,10 @@ Internet-Draft                  template                        May 2019
    Sirius Cybernetics Corp needs another peering router, and so they
    order another router from Acme Network Widgets, to be drop-shipped to
    a POP.  Acme begins assembling the new device, and tells Sirius what
-   the new device's serial number will be (SN:17894321).  During the
-   initial boot / testing, the router generates a public-private
-   keypair, and Acme publishes it on their keyserver (in a certificate,
-   for ease of use).
+   the new device's serial number will be (SN:17894321).  When Acme
+   first installs the firmware on the device and boots it, the device
+   generates a public-private keypair, and Acme publishes it on their
+   keyserver (in a certificate, for ease of use).
 
    While Acme is shipping the new device, Sirius begins generating the
    initial device configuration.  Once the config is ready, Sirius
@@ -219,7 +218,8 @@ Internet-Draft                  template                        May 2019
 
    This document uses the serial number of the device as a unique
    identifier for simplicity; some vendors may not want to implement the
-   system using using the serial number as the identifier for business
+   system using the serial number as the identifier for business reasons
+   (a competitor or similar could enumerate the serial numbers and
 
 
 
@@ -228,9 +228,8 @@ Kumari & Doyle          Expires December 2, 2019                [Page 4]
 Internet-Draft                  template                        May 2019
 
 
-   reasons (a competitor or similar could enumumerate the serial numbers
-   and determine how many devices have been manufactured).  Implementors
-   are free to choose some other way of generating identifiers (e.g UUID
+   determine how many devices have been manufactured).  Implementors are
+   free to choose some other way of generating identifiers (e.g UUID
    [RFC4122]), but this will likely make it somewhat harder for
    operators to use (the serial number is usually easy to find on a
    device, a more complex system is likely harder to track).
@@ -251,29 +250,30 @@ Internet-Draft                  template                        May 2019
    factory) it will generate a public / private keypair and a
    Certificate Signing Request (CSR), with the commonName being the
    serial number (or other unique token) of the device.  The device
-   sends this CSR to the CA, which signs the CSR, returns the
-   certificate to the device and also sends it to a certificate
-   publication server.
+   sends this CSR to the CA, which signs the CSR and publishes the
+   certificate on the certificate publication server.
 
 3.2.  Certificate Publication Server
 
-   The certificate publication server contains a database of all signed
+   The certificate publication server contains a database of
    certificates.  Customers (e.g Sirius Cybernetics Corp) query this
    server with the serial number (or other provided unique identifier)
    of a device, and retrieve the associated certificate.  It is expected
-   that operators will receive the usique identifier (serial number) of
-   devices when they purchase them, and that some automated system will
-   download and store / cache the certificate.  This means that there is
-   not a hard requirement on the uptime / reachability of the
-   certificate publication server.
+   that operators will receive the unique identifier (serial number) of
+   devices when they purchase them, and will download and store / cache
+   the certificate.  This means that there is not a hard requirement on
+   the uptime / reachability of the certificate publication server.
 
-3.3.  Initial Device Boot
+3.3.  Initial Customer Boot
 
-   When the device is powered on for the very first time, it will
-   generate its keypair.  It then generates a CSR (including the unique
-   device identifier) and sends it to the vendor's CA, which signs the
-   certificate.  The device receives the signed certificate and stores
-   it.
+   When the device is first booted by the customer (and on subsequent
+   boots), if the device has no (valid) configuration file, it will
+   perform standard an auto-install type functionality.  For example, it
+   will perform DHCP Discovery until it gets a DHCP offer including DHCP
+   option 66 or 150.  It will contact the server listed in these DHCP
+   options and download its config file - note that this is existing
+   functionality (for example, Cisco will fetch the config file named by
+   the Bootfile-Name (DHCP option 67).
 
 
 
@@ -284,20 +284,13 @@ Kumari & Doyle          Expires December 2, 2019                [Page 5]
 Internet-Draft                  template                        May 2019
 
 
-3.4.  Subsequent Boots
-
-   After the initial boot, it the device has no (valid) configuration
-   file, it will perform standard an auto-install type functionality.
-   For example, it will perform DHCP Discovery until it gets a DHCP
-   offer including DHCP option 66 or 150.  It will contact the server
-   listed in these DHCP options and download a configuration file named
-   config_<serial_number>.cfg.  This is all existing (often vendor
-   proprietary) functionality.
-
    After retrieving the config file, Secure Device Install devices will
    attempt to decrypt the configuration file using its private key.  If
    it is able to decrypt and validate the file it will install the
-   configuration, and start using it.
+   configuration, and start using it.  Note that the device only needs
+   to be able to reach get DHCP and download the config file - after the
+   initial power-on in the factory,it does NOT need Internet access, it
+   does not need to reach the CA or vendor, etc.
 
 4.  Operator Role / Responsibilities
 
@@ -312,26 +305,33 @@ Internet-Draft                  template                        May 2019
    The operator will contact the vendor's publication server, and
    download the certificate (by providing the unique device identifier
    of the device).  They will then encrypt the initial configuration to
-   that key, and place it on the TFTP server, named config_<SN>.enc.
-   See Appendix B for examples.
+   that key, and place it on the TFTP server.  See Appendix B for
+   examples.
 
-5.  Future enhancements / Discussion
-
-   [ Ed note: Ed / RFC Editor to remove this section before publication.
-   ]
+5.  Additional Considerations
 
 5.1.  Key storage
 
-   Currently most network devices will store the private key in NV
-   storage (NVRAM / Flash / Disk), but some vendors are already planning
-   on including a TPM module in their devices.  Ideally, the keypair
-   would be stored in a TPM on something which is identified as the
-   "router" - for example, the chassis / backplane.  This is so that a
-   keypair is bound to what humans think of as the "device", and not,
-   for example, (redundant) routing engines.  Devices which implement
-   IEEE 802.1AR could choose to use the IDevID for this purpose.
+   Ideally, the keypair would be stored in a TPM on something which is
+   identified as the "router" - for example, the chassis / backplane.
+   This is so that a keypair is bound to what humans think of as the
+   "device", and not, for example, (redundant) routing engines.  Devices
+   which implement IEEE 802.1AR could choose to use the IDevID for this
+   purpose.
 
+5.2.  Key replacement
 
+   It is anticipated that some operator may want to replace the (vendor
+   provided) keys after installing the device.  This would also allow
+   for the use of certificates signed by the operator's CA (e.g using
+   RFC7030 - Enrollment over Secure Transport) this is a trivial
+   operation, but is not described here (to avoid cluttering up the
+   doc).  There are two options when implementing this - a vendor could
+   allow the operator's key to completely replace the initial device
+   generated key (which means that, if the device is ever sold, the new
+   owner couldn't use this technique to install the device), or the
+   device could prefer the operators installed key.  This is an
+   implementation decision left to the vendor.
 
 
 
@@ -340,17 +340,6 @@ Kumari & Doyle          Expires December 2, 2019                [Page 6]
 Internet-Draft                  template                        May 2019
 
 
-5.2.  Key replacement
-
-   It is anticipated that some operator may want to replace the (vendor
-   provided) keys after installing the device.  This would remove (some)
-   concerns that the vendor may have kept a copy of the private key, or
-   that the device may have been intercepted during shipping and the
-   private key duplicated.  This would also allow for the use of
-   certificates signed by the operator's CA (e.g using RFC7030 -
-   Enrollment over Secure Transport) this is a trivial operation, but is
-   not described here (to avoid cluttering up the doc).
-
 5.3.  Device reinstall
 
    Increasingly, operations is moving towards an automated model of
@@ -358,11 +347,14 @@ Internet-Draft                  template                        May 2019
    programmatically generated.  This means that operators may want to
    generate an entire configuration after the device has been initially
    installed and ask the device to load and use this new configuration.
-   It is expected (but not defined in this document, as it is too vendor
-   specific) that vendors will allow the operator to e.g scp a new,
+   It is expected (but not defined in this document, as it is vendor
+   specific) that vendors will allow the operator to copy a new,
    encrypted config (or part of a config) onto a device and then request
    that the device decrypt and install it (e.g: 'load replace <filename>
-   encrypted)).
+   encrypted)).  If the operator has chosen to leave the original
+   (vendor) keys on the device, they could also choose to reset the
+   device to factory defaults, and allow the device to act as though it
+   were the initial boot (see Section 3.3).
 
 6.  IANA Considerations
 
@@ -370,14 +362,14 @@ Internet-Draft                  template                        May 2019
 
 7.  Security Considerations
 
-   This mechanism is intended to replace either expensive (traveing
+   This mechanism is intended to replace either expensive (traveling
    employees) or insecure mechanisms of installing newly deployed
    devices such as: unencrypted config files which can be downloaded by
    connecting to unprotected ports in datacenters, mailing initial
    config files on flash drives, or emailing config files and asking a
-   third-party to copy and paste it over a serial termainal.  It does
-   not protect against devices with malicious firmware, nor theft and
-   reuse of devices.
+   third-party to copy and paste it over a serial terminal.  It does not
+   protect against devices with malicious firmware, nor theft and reuse
+   of devices.
 
    An attacker (e.g a malicious datacenter employee) who has physical
    access to the device before it is connected to the network the
@@ -386,8 +378,16 @@ Internet-Draft                  template                        May 2019
    to the network, and download and extract the (encrypted) config file.
 
    This mechanism does not really protect against a malicious vendor -
-   while the keypair should be gnerated on the device, and the private
+   while the keypair should be generated on the device, and the private
    key should be securely stored, we cannot detect or protect against a
+   vendor who claims to do this, but instead generates the keypair off
+   device and keeps a copy of the private key.  It is largely understood
+   in the operator community that a malicious vendor or attacker with
+   physical access to the device is largely a "Game Over" situation.
+
+   Even when using a secure bootstrapping mechanism, security conscious
+   operators may wish to bootstrapping devices with a minimal / less
+
 
 
 
@@ -396,20 +396,14 @@ Kumari & Doyle          Expires December 2, 2019                [Page 7]
 Internet-Draft                  template                        May 2019
 
 
-   vendor who claims to do this, but instead generates the keypair off
-   device and keeps a copy of the private key.  It is largely understood
-   in the operator commmunity that a malicious vendor or attacker with
-   physical access to the device is largely a "Game Over" situation.
-
-   Even when using a secure bootstrapping mechanism, security concious
-   operators may wish to bootstrapping devices with a minimal / less
-   sensative config, and then replace this with a more complete one
+   sensitive config, and then replace this with a more complete one
    after install.
 
 8.  Acknowledgements
 
-   The authors wish to thank eveyone who contributed, including Benoit
+   The authors wish to thank everyone who contributed, including Benoit
    Claise, Sam Ribeiro, Michael Richardson, Sean Turner and Kent Watsen.
+   Joe Clarke provided significant comments and review.
 
 9.  References
 
@@ -445,6 +439,12 @@ Appendix A.  Changes / Author Notes.
 
    o  Nothing changed in the template!
 
+   From -01 to -04:
+
+   o  See github commit log (AKA, we forgot to update this!)
+
+   o  Added Colin Doyle.
+
 
 
 Kumari & Doyle          Expires December 2, 2019                [Page 8]
@@ -452,19 +452,15 @@ Kumari & Doyle          Expires December 2, 2019                [Page 8]
 Internet-Draft                  template                        May 2019
 
 
-   From -01 to -04:
-
-   o  See github
-
    From -04 to -05:
 
-   o  Addressed a number of comments recieved before / at IETF104
-      (Prague).  These include:
+   Addressed a number of comments received before / at IETF104 (Prague).
+   These include:
 
    o  Pointer to https://datatracker.ietf.org/doc/draft-ietf-netconf-
       zerotouch -- included reference to (now) RFC8572 (KW)
 
-   o  Suggested that 802.1AR IDevID (or simialr) could be used.  Stress
+   o  Suggested that 802.1AR IDevID (or similar) could be used.  Stress
       that this is designed for simplicity (MR)
 
    o  Added text to explain that any unique device identifier can be
@@ -472,7 +468,7 @@ Internet-Draft                  template                        May 2019
       but anything which is unique (and can be communicated to the
       customer) will work (BF).
 
-   o
+   o  Lots of clarifications from Joe Clarke.
 
 Appendix B.  Demo / proof of concept
 
@@ -499,6 +495,10 @@ B.1.1.  Step 1.1: Generate the private key.
    ..........................+++
    ...................+++
    e is 65537 (0x10001)
+
+
+
+
 
 
 
