@@ -209,25 +209,6 @@
         the certificate. This means that there is not a hard requirement on
         the uptime / reachability of the certificate publication server.</t>
       </section>
-
-      <section anchor="initial_cust_boot" title="Initial Customer Boot">
-        <t>When the device is first booted by the customer (and on subsequent
-        boots), if the device has no (valid) configuration file, it will
-        perform standard an auto-install type functionality. For example, it
-        will perform DHCP Discovery until it gets a DHCP offer including DHCP
-        option 66 or 150. It will contact the server listed in these DHCP
-        options and download its config file - note that this is existing
-        functionality (for example, Cisco will fetch the config file named by
-        the Bootfile-Name (DHCP option 67). </t>
-
-        <t>After retrieving the config file, Secure Device Install devices
-        will attempt to decrypt the configuration file using its private key.
-        If it is able to decrypt and validate the file it will install the
-        configuration, and start using it. Note that the device only needs to
-        be able to reach get DHCP and download the config file - after the
-        initial power-on in the factory,it does NOT need Internet access, it
-        does not need to reach the CA or vendor, etc. </t>
-      </section>
     </section>
 
     <section title="Operator Role / Responsibilities">
@@ -242,6 +223,25 @@
         download the certificate (by providing the unique device identifier of
         the device). They will then encrypt the initial configuration to that
         key, and place it on the TFTP server. See Appendix B for examples.</t>
+      </section>
+
+      <section anchor="initial_cust_boot" title="Initial Customer Boot">
+        <t>When the device is first booted by the customer (and on subsequent
+        boots), if the device has no (valid) configuration file, it will
+        perform standard an auto-install type functionality. For example, it
+        will perform DHCP Discovery until it gets a DHCP offer including DHCP
+        option 66 or 150. It will contact the server listed in these DHCP
+        options and download its config file - note that this is existing
+        functionality (for example, Cisco will fetch the config file named by
+        the Bootfile-Name (DHCP option 67).</t>
+
+        <t>After retrieving the config file, Secure Device Install devices
+        will attempt to decrypt the configuration file using its private key.
+        If it is able to decrypt and validate the file it will install the
+        configuration, and start using it. Note that the device only needs to
+        be able to reach get DHCP and download the config file - after the
+        initial power-on in the factory,it does NOT need Internet access, it
+        does not need to reach the CA or vendor, etc.</t>
       </section>
     </section>
 

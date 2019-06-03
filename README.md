@@ -85,10 +85,10 @@ Table of Contents
    3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   5
      3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   5
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   5
-     3.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   5
-   4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   6
-     4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   6
+   4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   5
+     4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   5
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
+     4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   6
    5.  Additional Considerations . . . . . . . . . . . . . . . . . .   6
      5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   6
      5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   6
@@ -264,16 +264,16 @@ Internet-Draft                  template                        May 2019
    the certificate.  This means that there is not a hard requirement on
    the uptime / reachability of the certificate publication server.
 
-3.3.  Initial Customer Boot
+4.  Operator Role / Responsibilities
 
-   When the device is first booted by the customer (and on subsequent
-   boots), if the device has no (valid) configuration file, it will
-   perform standard an auto-install type functionality.  For example, it
-   will perform DHCP Discovery until it gets a DHCP offer including DHCP
-   option 66 or 150.  It will contact the server listed in these DHCP
-   options and download its config file - note that this is existing
-   functionality (for example, Cisco will fetch the config file named by
-   the Bootfile-Name (DHCP option 67).
+4.1.  Administrative
+
+   When purchasing a new device, the accounting department will need to
+   get the unique device identifier (likely serial number) of the new
+   device and communicate it to the operations group.
+
+
+
 
 
 
@@ -284,22 +284,6 @@ Kumari & Doyle          Expires December 2, 2019                [Page 5]
 Internet-Draft                  template                        May 2019
 
 
-   After retrieving the config file, Secure Device Install devices will
-   attempt to decrypt the configuration file using its private key.  If
-   it is able to decrypt and validate the file it will install the
-   configuration, and start using it.  Note that the device only needs
-   to be able to reach get DHCP and download the config file - after the
-   initial power-on in the factory,it does NOT need Internet access, it
-   does not need to reach the CA or vendor, etc.
-
-4.  Operator Role / Responsibilities
-
-4.1.  Administrative
-
-   When purchasing a new device, the accounting department will need to
-   get the unique device identifier (likely serial number) of the new
-   device and communicate it to the operations group.
-
 4.2.  Technical
 
    The operator will contact the vendor's publication server, and
@@ -307,6 +291,25 @@ Internet-Draft                  template                        May 2019
    of the device).  They will then encrypt the initial configuration to
    that key, and place it on the TFTP server.  See Appendix B for
    examples.
+
+4.3.  Initial Customer Boot
+
+   When the device is first booted by the customer (and on subsequent
+   boots), if the device has no (valid) configuration file, it will
+   perform standard an auto-install type functionality.  For example, it
+   will perform DHCP Discovery until it gets a DHCP offer including DHCP
+   option 66 or 150.  It will contact the server listed in these DHCP
+   options and download its config file - note that this is existing
+   functionality (for example, Cisco will fetch the config file named by
+   the Bootfile-Name (DHCP option 67).
+
+   After retrieving the config file, Secure Device Install devices will
+   attempt to decrypt the configuration file using its private key.  If
+   it is able to decrypt and validate the file it will install the
+   configuration, and start using it.  Note that the device only needs
+   to be able to reach get DHCP and download the config file - after the
+   initial power-on in the factory,it does NOT need Internet access, it
+   does not need to reach the CA or vendor, etc.
 
 5.  Additional Considerations
 
@@ -329,9 +332,6 @@ Internet-Draft                  template                        May 2019
    doc).  There are two options when implementing this - a vendor could
    allow the operator's key to completely replace the initial device
    generated key (which means that, if the device is ever sold, the new
-   owner couldn't use this technique to install the device), or the
-   device could prefer the operators installed key.  This is an
-   implementation decision left to the vendor.
 
 
 
@@ -339,6 +339,10 @@ Kumari & Doyle          Expires December 2, 2019                [Page 6]
 
 Internet-Draft                  template                        May 2019
 
+
+   owner couldn't use this technique to install the device), or the
+   device could prefer the operators installed key.  This is an
+   implementation decision left to the vendor.
 
 5.3.  Device reinstall
 
@@ -354,7 +358,7 @@ Internet-Draft                  template                        May 2019
    encrypted)).  If the operator has chosen to leave the original
    (vendor) keys on the device, they could also choose to reset the
    device to factory defaults, and allow the device to act as though it
-   were the initial boot (see Section 3.3).
+   were the initial boot (see Section 4.3).
 
 6.  IANA Considerations
 
@@ -385,10 +389,6 @@ Internet-Draft                  template                        May 2019
    in the operator community that a malicious vendor or attacker with
    physical access to the device is largely a "Game Over" situation.
 
-   Even when using a secure bootstrapping mechanism, security conscious
-   operators may wish to bootstrapping devices with a minimal / less
-
-
 
 
 Kumari & Doyle          Expires December 2, 2019                [Page 7]
@@ -396,6 +396,8 @@ Kumari & Doyle          Expires December 2, 2019                [Page 7]
 Internet-Draft                  template                        May 2019
 
 
+   Even when using a secure bootstrapping mechanism, security conscious
+   operators may wish to bootstrapping devices with a minimal / less
    sensitive config, and then replace this with a more complete one
    after install.
 
@@ -443,14 +445,14 @@ Appendix A.  Changes / Author Notes.
 
    o  See github commit log (AKA, we forgot to update this!)
 
-   o  Added Colin Doyle.
-
 
 
 Kumari & Doyle          Expires December 2, 2019                [Page 8]
 
 Internet-Draft                  template                        May 2019
 
+
+   o  Added Colin Doyle.
 
    From -04 to -05:
 
@@ -495,8 +497,6 @@ B.1.1.  Step 1.1: Generate the private key.
    ..........................+++
    ...................+++
    e is 65537 (0x10001)
-
-
 
 
 
