@@ -91,7 +91,7 @@ Table of Contents
      4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   6
    5.  Additional Considerations . . . . . . . . . . . . . . . . . .   6
      5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   6
-     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   6
+     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   7
      5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .   7
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
@@ -99,15 +99,15 @@ Table of Contents
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   9
    Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .   9
-     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .   9
-       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .   9
+     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  10
+       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  10
        B.1.2.  Step 1.2: Generate the certificate signing request. .  10
        B.1.3.  Step 1.3: Generate the (self signed) certificate
                itself. . . . . . . . . . . . . . . . . . . . . . . .  10
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  10
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  10
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  11
 
 
 
@@ -116,7 +116,7 @@ Kumari & Doyle          Expires December 2, 2019                [Page 2]
 Internet-Draft                  template                        May 2019
 
 
-       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  10
+       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  11
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  11
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  11
        B.3.1.  Step 3.1: Fetch encrypted config file from config
@@ -204,8 +204,9 @@ Internet-Draft                  template                        May 2019
    and discovers that it has not yet been configured.  It enters its
    autoboot state, and begins DHCPing.  Sirius' DHCP server provides it
    with an IP address and the address of the configuration server.  The
-   router uses TFTP to fetch a file named according to its serial number
-   (acme_17894321.cfg).  It then uses its private key to decrypt this
+   router uses TFTP to fetch its config file (note that this is existing
+   functionality).  The device attempts to load the config file - if
+   this fails, it then tries to uses its private key to decrypt the
    file, and, assuming it validates, installs the new configuration.
 
    Only the "correct" device will have the required private key and be
@@ -219,7 +220,6 @@ Internet-Draft                  template                        May 2019
    This document uses the serial number of the device as a unique
    identifier for simplicity; some vendors may not want to implement the
    system using the serial number as the identifier for business reasons
-   (a competitor or similar could enumerate the serial numbers and
 
 
 
@@ -228,6 +228,7 @@ Kumari & Doyle          Expires December 2, 2019                [Page 4]
 Internet-Draft                  template                        May 2019
 
 
+   (a competitor or similar could enumerate the serial numbers and
    determine how many devices have been manufactured).  Implementors are
    free to choose some other way of generating identifiers (e.g UUID
    [RFC4122]), but this will likely make it somewhat harder for
@@ -278,7 +279,6 @@ Internet-Draft                  template                        May 2019
 
 
 
-
 Kumari & Doyle          Expires December 2, 2019                [Page 5]
 
 Internet-Draft                  template                        May 2019
@@ -303,13 +303,20 @@ Internet-Draft                  template                        May 2019
    functionality (for example, Cisco will fetch the config file named by
    the Bootfile-Name (DHCP option 67).
 
-   After retrieving the config file, Secure Device Install devices will
-   attempt to decrypt the configuration file using its private key.  If
-   it is able to decrypt and validate the file it will install the
-   configuration, and start using it.  Note that the device only needs
-   to be able to reach get DHCP and download the config file - after the
-   initial power-on in the factory,it does NOT need Internet access, it
-   does not need to reach the CA or vendor, etc.
+   After retrieving the config file, the device will examine the file
+   and determine if it seems to be a valid config, and if so, proceeds
+   as it normally would.  If the file appears the be "garbage", the
+   device will attempt to decrypt the configuration file using its
+   private key.  If it is able to decrypt and validate the file it will
+   install the configuration, and start using it.  The exact method that
+   the device uses to determine if a config file is "valid" is
+   implementation specific, but a normal config file looks significantly
+   different to an encrypted blob.
+
+   Note that the device only needs to be able to reach get DHCP and
+   download the config file - after the initial power-on in the
+   factory,it does NOT need Internet access, it does not need to reach
+   the CA or vendor, etc.
 
 5.  Additional Considerations
 
@@ -322,6 +329,17 @@ Internet-Draft                  template                        May 2019
    which implement IEEE 802.1AR could choose to use the IDevID for this
    purpose.
 
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 6]
+
+Internet-Draft                  template                        May 2019
+
+
 5.2.  Key replacement
 
    It is anticipated that some operator may want to replace the (vendor
@@ -332,14 +350,6 @@ Internet-Draft                  template                        May 2019
    doc).  There are two options when implementing this - a vendor could
    allow the operator's key to completely replace the initial device
    generated key (which means that, if the device is ever sold, the new
-
-
-
-Kumari & Doyle          Expires December 2, 2019                [Page 6]
-
-Internet-Draft                  template                        May 2019
-
-
    owner couldn't use this technique to install the device), or the
    device could prefer the operators installed key.  This is an
    implementation decision left to the vendor.
@@ -378,6 +388,14 @@ Internet-Draft                  template                        May 2019
    An attacker (e.g a malicious datacenter employee) who has physical
    access to the device before it is connected to the network the
    attacker may be able to extract the device private key (especially if
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 7]
+
+Internet-Draft                  template                        May 2019
+
+
    it isn't stored in a TPM), pretend to be the device when connecting
    to the network, and download and extract the (encrypted) config file.
 
@@ -388,13 +406,6 @@ Internet-Draft                  template                        May 2019
    device and keeps a copy of the private key.  It is largely understood
    in the operator community that a malicious vendor or attacker with
    physical access to the device is largely a "Game Over" situation.
-
-
-
-Kumari & Doyle          Expires December 2, 2019                [Page 7]
-
-Internet-Draft                  template                        May 2019
-
 
    Even when using a secure bootstrapping mechanism, security conscious
    operators may wish to bootstrapping devices with a minimal / less
@@ -433,6 +444,14 @@ Internet-Draft                  template                        May 2019
               DOI 10.17487/RFC8572, April 2019,
               <https://www.rfc-editor.org/info/rfc8572>.
 
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 8]
+
+Internet-Draft                  template                        May 2019
+
+
 Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
@@ -444,13 +463,6 @@ Appendix A.  Changes / Author Notes.
    From -01 to -04:
 
    o  See github commit log (AKA, we forgot to update this!)
-
-
-
-Kumari & Doyle          Expires December 2, 2019                [Page 8]
-
-Internet-Draft                  template                        May 2019
-
 
    o  Added Colin Doyle.
 
@@ -472,6 +484,9 @@ Internet-Draft                  template                        May 2019
 
    o  Lots of clarifications from Joe Clarke.
 
+   o  Make it clear it should first try use the config, and if it
+      doesn't work, then try decrypt and use it.
+
 Appendix B.  Demo / proof of concept
 
    This section contains a rough demo / proof of concept of the system.
@@ -482,6 +497,16 @@ Appendix B.  Demo / proof of concept
    It uses OpenSSL from the command line, in production something more
    automated would be used.  In this example, the serial number of the
    router is SN19842256.
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 9]
+
+Internet-Draft                  template                        May 2019
+
 
 B.1.  Step 1: Generating the certificate.
 
@@ -497,16 +522,6 @@ B.1.1.  Step 1.1: Generate the private key.
    ..........................+++
    ...................+++
    e is 65537 (0x10001)
-
-
-
-
-
-
-Kumari & Doyle          Expires December 2, 2019                [Page 9]
-
-Internet-Draft                  template                        May 2019
-
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
 
@@ -541,6 +556,14 @@ B.2.  Step 2: Generating the encrypted config.
    router configs!), fetch the router's certificate and encrypt the
    config file to that key.  This is done by the operator.
 
+
+
+
+Kumari & Doyle          Expires December 2, 2019               [Page 10]
+
+Internet-Draft                  template                        May 2019
+
+
 B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
@@ -549,20 +572,6 @@ B.2.2.  Step 2.2: Encrypt the config file.
 
    I'm using S/MIME because it is simple to demonstrate.  This is almost
    definitely not the best way to do this.
-
-
-
-
-
-
-
-
-
-
-Kumari & Doyle          Expires December 2, 2019               [Page 10]
-
-Internet-Draft                  template                        May 2019
-
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
@@ -601,15 +610,6 @@ B.3.2.  Step 3.2: Decrypt and use the config.
    If an attacker does not have the correct key, they will not be able
    to decrypt the config:
 
-   $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
-     -out config.cfg -inkey wrongkey.pem
-   Error decrypting PKCS#7 structure
-   140352450692760:error:06065064:digital envelope
-    routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
-   $ echo $?
-   4
-
-
 
 
 
@@ -619,6 +619,14 @@ Kumari & Doyle          Expires December 2, 2019               [Page 11]
 
 Internet-Draft                  template                        May 2019
 
+
+   $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
+     -out config.cfg -inkey wrongkey.pem
+   Error decrypting PKCS#7 structure
+   140352450692760:error:06065064:digital envelope
+    routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
+   $ echo $?
+   4
 
 Authors' Addresses
 
@@ -638,14 +646,6 @@ Authors' Addresses
    US
 
    Email: cdoyle@juniper.net
-
-
-
-
-
-
-
-
 
 
 

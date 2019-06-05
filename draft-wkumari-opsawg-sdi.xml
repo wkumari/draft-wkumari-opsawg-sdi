@@ -125,7 +125,7 @@
       solution to solve a common operational issue. Solutions such as <xref
       target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref> are much
       more fully featured, but also more complex to implement and / or are not
-      widely deployed yet. </t>
+      widely deployed yet.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -156,9 +156,10 @@
       discovers that it has not yet been configured. It enters its autoboot
       state, and begins DHCPing. Sirius' DHCP server provides it with an IP
       address and the address of the configuration server. The router uses
-      TFTP to fetch a file named according to its serial number
-      (acme_17894321.cfg). It then uses its private key to decrypt this file,
-      and, assuming it validates, installs the new configuration.</t>
+      TFTP to fetch its config file (note that this is existing
+      functionality). The device attempts to load the config file - if this
+      fails, it then tries to uses its private key to decrypt the file, and,
+      assuming it validates, installs the new configuration.</t>
 
       <t>Only the "correct" device will have the required private key and be
       able to decrypt and use the config file (See Security Considerations).
@@ -196,7 +197,7 @@
         Signing Request (CSR), with the commonName being the serial number (or
         other unique token) of the device. The device sends this CSR to the
         CA, which signs the CSR and publishes the certificate on the
-        certificate publication server. </t>
+        certificate publication server.</t>
       </section>
 
       <section title="Certificate Publication Server">
@@ -235,13 +236,20 @@
         functionality (for example, Cisco will fetch the config file named by
         the Bootfile-Name (DHCP option 67).</t>
 
-        <t>After retrieving the config file, Secure Device Install devices
+        <t>After retrieving the config file, the device will examine the file
+        and determine if it seems to be a valid config, and if so, proceeds as
+        it normally would. If the file appears the be "garbage", the device
         will attempt to decrypt the configuration file using its private key.
         If it is able to decrypt and validate the file it will install the
-        configuration, and start using it. Note that the device only needs to
-        be able to reach get DHCP and download the config file - after the
-        initial power-on in the factory,it does NOT need Internet access, it
-        does not need to reach the CA or vendor, etc.</t>
+        configuration, and start using it. The exact method that the device
+        uses to determine if a config file is "valid" is implementation
+        specific, but a normal config file looks significantly different to an
+        encrypted blob.</t>
+
+        <t>Note that the device only needs to be able to reach get DHCP and
+        download the config file - after the initial power-on in the
+        factory,it does NOT need Internet access, it does not need to reach
+        the CA or vendor, etc.</t>
       </section>
     </section>
 
@@ -252,7 +260,7 @@
         backplane. This is so that a keypair is bound to what humans think of
         as the &ldquo;device&rdquo;, and not, for example, (redundant) routing
         engines. Devices which implement IEEE 802.1AR could choose to use the
-        IDevID for this purpose. </t>
+        IDevID for this purpose.</t>
       </section>
 
       <section title="Key replacement ">
@@ -287,7 +295,7 @@
     </section>
 
     <section title="IANA Considerations">
-      <t>This document makes no requests of the IANA. </t>
+      <t>This document makes no requests of the IANA.</t>
     </section>
 
     <section anchor="security" title="Security Considerations">
@@ -303,7 +311,7 @@
       access to the device before it is connected to the network the attacker
       may be able to extract the device private key (especially if it isn't
       stored in a TPM), pretend to be the device when connecting to the
-      network, and download and extract the (encrypted) config file. </t>
+      network, and download and extract the (encrypted) config file.</t>
 
       <t>This mechanism does not really protect against a malicious vendor -
       while the keypair should be generated on the device, and the private key
@@ -311,7 +319,7 @@
       who claims to do this, but instead generates the keypair off device and
       keeps a copy of the private key. It is largely understood in the
       operator community that a malicious vendor or attacker with physical
-      access to the device is largely a "Game Over" situation. </t>
+      access to the device is largely a "Game Over" situation.</t>
 
       <t>Even when using a secure bootstrapping mechanism, security conscious
       operators may wish to bootstrapping devices with a minimal / less
@@ -369,6 +377,9 @@
           will work (BF).</t>
 
           <t>Lots of clarifications from Joe Clarke.</t>
+
+          <t>Make it clear it should first try use the config, and if it
+          doesn't work, then try decrypt and use it. </t>
         </list></t>
     </section>
 
