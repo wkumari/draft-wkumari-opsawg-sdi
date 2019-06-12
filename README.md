@@ -23,7 +23,7 @@ Abstract
    standard, secure way to initially provision the devices.
 
    This document extends existing auto-install / Zero-Touch Provisioning
-   to make the process more secure.
+   mechanisms to make the process more secure.
 
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
@@ -83,31 +83,31 @@ Table of Contents
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
    2.  Overview / Example Scenario . . . . . . . . . . . . . . . . .   4
    3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   5
-     3.1.  CA Infrastructure . . . . . . . . . . . . . . . . . . . .   5
+     3.1.  Device key generation . . . . . . . . . . . . . . . . . .   5
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   5
-   4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   5
-     4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   5
+   4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   6
+     4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
-     4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   6
-   5.  Additional Considerations . . . . . . . . . . . . . . . . . .   6
-     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   6
-     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .   7
-     5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .   7
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   9
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .   9
-     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  10
-       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  10
-       B.1.2.  Step 1.2: Generate the certificate signing request. .  10
+     4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   7
+   5.  Additional Considerations . . . . . . . . . . . . . . . . . .   9
+     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   9
+     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .  10
+     5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .  10
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .  11
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  12
+   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  12
+     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  13
+       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  13
+       B.1.2.  Step 1.2: Generate the certificate signing request. .  13
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .  10
-     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  10
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  11
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  13
+     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  13
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  14
 
 
 
@@ -116,13 +116,13 @@ Kumari & Doyle          Expires December 2, 2019                [Page 2]
 Internet-Draft                  template                        May 2019
 
 
-       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  11
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  11
-     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  11
+       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  14
+       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  14
+     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  14
        B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  11
-       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  11
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
+               server. . . . . . . . . . . . . . . . . . . . . . . .  14
+       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  14
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
 
@@ -186,28 +186,29 @@ Internet-Draft                  template                        May 2019
 
    Sirius Cybernetics Corp needs another peering router, and so they
    order another router from Acme Network Widgets, to be drop-shipped to
-   a POP.  Acme begins assembling the new device, and tells Sirius what
-   the new device's serial number will be (SN:17894321).  When Acme
-   first installs the firmware on the device and boots it, the device
-   generates a public-private keypair, and Acme publishes it on their
-   keyserver (in a certificate, for ease of use).
+   the Point of Presence (POP) / datacenter.  Acme begins assembling the
+   new device, and tells Sirius what the new device's serial number will
+   be (SN:17894321).  When Acme first installs the firmware on the
+   device and boots it, the device generates a public-private keypair,
+   and Acme publishes it on their keyserver (in a certificate, for ease
+   of use).
 
-   While Acme is shipping the new device, Sirius begins generating the
-   initial device configuration.  Once the config is ready, Sirius
-   contacts the Acme keyserver, provides the serial number of the new
-   device and fetches the device's public key.  Sirius then encrypts the
-   device configuration and puts this encrypted config on a (local) TFTP
-   server.
+   While the device is being shipped, Sirius generates the initial
+   device configuration, fetches the certificate from Acme keyservers by
+   providing the serial number of the new device.  Sirius then encrypts
+   the device configuration and puts this encrypted config on a (local)
+   TFTP server.
 
-   When the POP receives the new device, they install it in Sirius'
-   rack, and connect the cables as instructed.  The new device powers up
-   and discovers that it has not yet been configured.  It enters its
-   autoboot state, and begins DHCPing.  Sirius' DHCP server provides it
-   with an IP address and the address of the configuration server.  The
-   router uses TFTP to fetch its config file (note that this is existing
-   functionality).  The device attempts to load the config file - if
-   this fails, it then tries to uses its private key to decrypt the
-   file, and, assuming it validates, installs the new configuration.
+   When the device arrives at the POP, it gets installed in Sirius'
+   rack, and cabled as instructed.  The new device powers up and
+   discovers that it has not yet been configured.  It enters its
+   autoboot state, and begins the DHCP process.  Sirius' DHCP server
+   provides it with an IP address and the address of the configuration
+   server.  The router uses TFTP to fetch its config file (note that all
+   this is existing functionality).  The device attempts to load the
+   config file - if the config file is unparsable, (new functionality)
+   the devies tries to uses its private key to decrypt the file, and,
+   assuming it validates, installs the new configuration.
 
    Only the "correct" device will have the required private key and be
    able to decrypt and use the config file (See Security
@@ -219,7 +220,6 @@ Internet-Draft                  template                        May 2019
 
    This document uses the serial number of the device as a unique
    identifier for simplicity; some vendors may not want to implement the
-   system using the serial number as the identifier for business reasons
 
 
 
@@ -228,6 +228,7 @@ Kumari & Doyle          Expires December 2, 2019                [Page 4]
 Internet-Draft                  template                        May 2019
 
 
+   system using the serial number as the identifier for business reasons
    (a competitor or similar could enumerate the serial numbers and
    determine how many devices have been manufactured).  Implementors are
    free to choose some other way of generating identifiers (e.g UUID
@@ -244,35 +245,34 @@ Internet-Draft                  template                        May 2019
    This section describes the vendors roles and responsibilities and
    provides an overview of what the device needs to do.
 
-3.1.  CA Infrastructure
+3.1.  Device key generation
 
-   The vendor needs to run some (simple) CA infrastructure to sign and
-   publish certificates.  When a device is initially powered on (in the
-   factory) it will generate a public / private keypair and a
-   Certificate Signing Request (CSR), with the commonName being the
-   serial number (or other unique token) of the device.  The device
-   sends this CSR to the CA, which signs the CSR and publishes the
-   certificate on the certificate publication server.
+   During the manufacturing stage, when the device is intially powered
+   on, it will generate a public-private keypair.  It will send its
+   unique identifier and the public key to the vendor's Certificate
+   Publication Server to be published.  The mechanism used to do this is
+   left undefined.  Note that some devices may be contrained, and so may
+   send the raw public key and unique identifier to the certificate
+   publication server, while mode capable devices may generate and send
+   self-signed certifcates.
 
 3.2.  Certificate Publication Server
 
    The certificate publication server contains a database of
-   certificates.  Customers (e.g Sirius Cybernetics Corp) query this
-   server with the serial number (or other provided unique identifier)
-   of a device, and retrieve the associated certificate.  It is expected
-   that operators will receive the unique identifier (serial number) of
+   certificates.  If newly manufactured devices upload certificates the
+   certificate publication server can simply publish these, if the
+   devices provide raw public keys and unique identfiers the certificate
+   publication server will need to wrap these in a certificate.  Note
+   that the certificat publication server MUST only accept certifcates
+   or keys from the vendor's manufacturing facilities.
+
+   The customers (e.g Sirius Cybernetics Corp) query this server with
+   the serial number (or other provided unique identifier) of a device,
+   and retrieve the associated certificate.  It is expected that
+   operators will receive the unique identifier (serial number) of
    devices when they purchase them, and will download and store / cache
    the certificate.  This means that there is not a hard requirement on
    the uptime / reachability of the certificate publication server.
-
-4.  Operator Role / Responsibilities
-
-4.1.  Administrative
-
-   When purchasing a new device, the accounting department will need to
-   get the unique device identifier (likely serial number) of the new
-   device and communicate it to the operations group.
-
 
 
 
@@ -284,50 +284,50 @@ Kumari & Doyle          Expires December 2, 2019                [Page 5]
 Internet-Draft                  template                        May 2019
 
 
+                         +------------+
+        +------+         |Certificate |
+        |Device|         |Publication |
+        +------+         |   Server   |
+                         +------------+
+   +----------------+   +--------------+
+   |   +---------+  |   |              |
+   |   | Initial |  |   |              |
+   |   |  boot?  |  |   |              |
+   |   +----+----+  |   |              |
+   |        |       |   |              |
+   | +------v-----+ |   |              |
+   | |  Generate  | |   |              |
+   | |Self-signed | |   |              |
+   | |Certificate | |   |              |
+   | +------------+ |   |              |
+   |        |       |   |   +-------+  |
+   |        +-------|---|-->|Receive|  |
+   |                |   |   +---+---+  |
+   |                |   |       |      |
+   |                |   |   +---v---+  |
+   |                |   |   |Publish|  |
+   |                |   |   +-------+  |
+   |                |   |              |
+   +----------------+   +--------------+
+
+   Initial certificate generation and publication.
+
+4.  Operator Role / Responsibilities
+
+4.1.  Administrative
+
+   When purchasing a new device, the accounting department will need to
+   get the unique device identifier (likely serial number) of the new
+   device and communicate it to the operations group.
+
 4.2.  Technical
 
    The operator will contact the vendor's publication server, and
    download the certificate (by providing the unique device identifier
-   of the device).  They will then encrypt the initial configuration to
-   that key, and place it on the TFTP server.  See Appendix B for
-   examples.
-
-4.3.  Initial Customer Boot
-
-   When the device is first booted by the customer (and on subsequent
-   boots), if the device has no (valid) configuration file, it will
-   perform standard an auto-install type functionality.  For example, it
-   will perform DHCP Discovery until it gets a DHCP offer including DHCP
-   option 66 or 150.  It will contact the server listed in these DHCP
-   options and download its config file - note that this is existing
-   functionality (for example, Cisco will fetch the config file named by
-   the Bootfile-Name (DHCP option 67).
-
-   After retrieving the config file, the device will examine the file
-   and determine if it seems to be a valid config, and if so, proceeds
-   as it normally would.  If the file appears the be "garbage", the
-   device will attempt to decrypt the configuration file using its
-   private key.  If it is able to decrypt and validate the file it will
-   install the configuration, and start using it.  The exact method that
-   the device uses to determine if a config file is "valid" is
-   implementation specific, but a normal config file looks significantly
-   different to an encrypted blob.
-
-   Note that the device only needs to be able to reach get DHCP and
-   download the config file - after the initial power-on in the
-   factory,it does NOT need Internet access, it does not need to reach
-   the CA or vendor, etc.
-
-5.  Additional Considerations
-
-5.1.  Key storage
-
-   Ideally, the keypair would be stored in a TPM on something which is
-   identified as the "router" - for example, the chassis / backplane.
-   This is so that a keypair is bound to what humans think of as the
-   "device", and not, for example, (redundant) routing engines.  Devices
-   which implement IEEE 802.1AR could choose to use the IDevID for this
-   purpose.
+   of the device).  The operator SHOULD fetch the certificate using a
+   secure transport (e.g HTTPS).  The operator will then encrypt the
+   initial configuration to the key in the certifcate, and place it on
+   their TFTP server.  See Appendix B for examples.
 
 
 
@@ -340,19 +340,188 @@ Kumari & Doyle          Expires December 2, 2019                [Page 6]
 Internet-Draft                  template                        May 2019
 
 
+                         +------------+
+      +--------+         |Certificate |
+      |Operator|         |Publication |
+      +--------+         |   Server   |
+                         +------------+
+   +----------------+  +----------------+
+   | +-----------+  |  |  +-----------+ |
+   | |   Fetch   |  |  |  |           | |
+   | |  Device   |<------>|Certificate| |
+   | |Certificate|  |  |  |           | |
+   | +-----+-----+  |  |  +-----------+ |
+   |       |        |  |                |
+   | +-----v------+ |  |                |
+   | |  Encrypt   | |  |                |
+   | |   Device   | |  |                |
+   | |   Config   | |  |                |
+   | +-----+------+ |  |                |
+   |       |        |  |                |
+   | +-----v------+ |  |                |
+   | |  Publish   | |  |                |
+   | |    TFTP    | |  |                |
+   | |   Server   | |  |                |
+   | +------------+ |  |                |
+   |                |  |                |
+   +----------------+  +----------------+
+
+   Fetching the certificate, encrypting the configuration, publishing
+   the encrypted configuration.
+
+4.3.  Initial Customer Boot
+
+   When the device is first booted by the customer (and on subsequent
+   boots), if the device has no valid configuration, it will use
+   existing auto-install type functionality - it performs DHCP Discovery
+   until it gets a DHCP offer including DHCP option 66 or 150, contact
+   the server listed in these DHCP options and download its config file.
+
+   After retrieving the config file, the device will examine the file
+   and determine if it seems to be a valid config, and if so, proceeds
+   as it normally would.  Note that this is existing functionality (for
+   example, Cisco devices fetch the config file named by the Bootfile-
+   Name DHCP option (67)).
+
+   If the file appears be "garbage", the device will attempt to decrypt
+   the configuration file using its private key.  If it is able to
+   decrypt and validate the file it will install the configuration, and
+   start using it.  The exact method that the device uses to determine
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 7]
+
+Internet-Draft                  template                        May 2019
+
+
+   if a config file is "valid" is implementation specific, but a normal
+   config file looks significantly different to an encrypted blob.
+
+   Note that the device only needs DHCP and to be able to download the
+   config file; after the initial power-on in the factory it never need
+   to access the Internet or vendor or certifcate publication server -
+   it (and only it) has the private key and so has the ability to
+   decrypt the config file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 8]
+
+Internet-Draft                  template                        May 2019
+
+
+             +--------+                +--------------+
+             | Device |                |Config server |
+             +--------+                | (e.g  TFTP)  |
+                                       +--------------+
+   +---------------------------+    +------------------+
+   | +-----------+             |    |                  |
+   | |           |             |    |                  |
+   | |   DHCP    |             |    |                  |
+   | |           |             |    |                  |
+   | +-----+-----+             |    |                  |
+   |       |                   |    |                  |
+   | +-----v------+            |    |  +-----------+   |
+   | |            |            |    |  | Encrypted |   |
+   | |Fetch config|<------------------>|  config   |   |
+   | |            |            |    |  |   file    |   |
+   | +-----+------+            |    |  +-----------+   |
+   |       |                   |    |                  |
+   |       X                   |    |                  |
+   |      / \                  |    |                  |
+   |     /   \ Y    +--------+ |    |                  |
+   |    |Sane?|---->|Install,| |    |                  |
+   |     \   /      |  Boot  | |    |                  |
+   |      \ /       +--------+ |    |                  |
+   |       V                   |    |                  |
+   |       |N                  |    |                  |
+   |       |                   |    |                  |
+   | +-----v------+            |    |                  |
+   | |Decrypt with|            |    |                  |
+   | |private key |            |    |                  |
+   | +-----+------+            |    |                  |
+   |       |                   |    |                  |
+   |       |        +--------+ |    |                  |
+   |       |        |Install,| |    |                  |
+   |       +------->|  Boot  | |    |                  |
+   |                +--------+ |    |                  |
+   |                           |    |                  |
+   |                           |    |                  |
+   +---------------------------+    +------------------+
+
+   Device boot, fetch and install config file
+
+5.  Additional Considerations
+
+5.1.  Key storage
+
+   Ideally, the keypair would be stored in a TPM on something which is
+   identified as the "router" - for example, the chassis / backplane.
+   This is so that a keypair is bound to what humans think of as the
+
+
+
+Kumari & Doyle          Expires December 2, 2019                [Page 9]
+
+Internet-Draft                  template                        May 2019
+
+
+   "device", and not, for example (redundant) routing engines.  Devices
+   which implement IEEE 802.1AR could choose to use the IDevID for this
+   purpose.
+
 5.2.  Key replacement
 
    It is anticipated that some operator may want to replace the (vendor
-   provided) keys after installing the device.  This would also allow
-   for the use of certificates signed by the operator's CA (e.g using
-   RFC7030 - Enrollment over Secure Transport) this is a trivial
-   operation, but is not described here (to avoid cluttering up the
-   doc).  There are two options when implementing this - a vendor could
-   allow the operator's key to completely replace the initial device
-   generated key (which means that, if the device is ever sold, the new
-   owner couldn't use this technique to install the device), or the
-   device could prefer the operators installed key.  This is an
-   implementation decision left to the vendor.
+   provided) keys after installing the device.  There are two options
+   when implementing this - a vendor could allow the operator's key to
+   completely replace the initial device generated key (which means
+   that, if the device is ever sold, the new owner couldn't use this
+   technique to install the device), or the device could prefer the
+   operators installed key.  This is an implementation decision left to
+   the vendor.
 
 5.3.  Device reinstall
 
@@ -365,10 +534,9 @@ Internet-Draft                  template                        May 2019
    specific) that vendors will allow the operator to copy a new,
    encrypted config (or part of a config) onto a device and then request
    that the device decrypt and install it (e.g: 'load replace <filename>
-   encrypted)).  If the operator has chosen to leave the original
-   (vendor) keys on the device, they could also choose to reset the
-   device to factory defaults, and allow the device to act as though it
-   were the initial boot (see Section 4.3).
+   encrypted)).  The operator could also choose to reset the device to
+   factory defaults, and allow the device to act as though it were the
+   initial boot (see Section 4.3).
 
 6.  IANA Considerations
 
@@ -391,7 +559,7 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 7]
+Kumari & Doyle          Expires December 2, 2019               [Page 10]
 
 Internet-Draft                  template                        May 2019
 
@@ -399,13 +567,14 @@ Internet-Draft                  template                        May 2019
    it isn't stored in a TPM), pretend to be the device when connecting
    to the network, and download and extract the (encrypted) config file.
 
-   This mechanism does not really protect against a malicious vendor -
-   while the keypair should be generated on the device, and the private
-   key should be securely stored, we cannot detect or protect against a
-   vendor who claims to do this, but instead generates the keypair off
-   device and keeps a copy of the private key.  It is largely understood
-   in the operator community that a malicious vendor or attacker with
-   physical access to the device is largely a "Game Over" situation.
+   This mechanism does not protect against a malicious vendor - while
+   the keypair should be generated on the device, and the private key
+   should be securely stored, the mechanism cannot detect or protect
+   against a vendor who claims to do this, but instead generates the
+   keypair off device and keeps a copy of the private key.  It is
+   largely understood in the operator community that a malicious vendor
+   or attacker with physical access to the device is largely a "Game
+   Over" situation.
 
    Even when using a secure bootstrapping mechanism, security conscious
    operators may wish to bootstrapping devices with a minimal / less
@@ -446,8 +615,7 @@ Internet-Draft                  template                        May 2019
 
 
 
-
-Kumari & Doyle          Expires December 2, 2019                [Page 8]
+Kumari & Doyle          Expires December 2, 2019               [Page 11]
 
 Internet-Draft                  template                        May 2019
 
@@ -503,7 +671,7 @@ Appendix B.  Demo / proof of concept
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 9]
+Kumari & Doyle          Expires December 2, 2019               [Page 12]
 
 Internet-Draft                  template                        May 2019
 
@@ -559,7 +727,7 @@ B.2.  Step 2: Generating the encrypted config.
 
 
 
-Kumari & Doyle          Expires December 2, 2019               [Page 10]
+Kumari & Doyle          Expires December 2, 2019               [Page 13]
 
 Internet-Draft                  template                        May 2019
 
@@ -615,7 +783,7 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
 
 
-Kumari & Doyle          Expires December 2, 2019               [Page 11]
+Kumari & Doyle          Expires December 2, 2019               [Page 14]
 
 Internet-Draft                  template                        May 2019
 
@@ -671,5 +839,5 @@ Authors' Addresses
 
 
 
-Kumari & Doyle          Expires December 2, 2019               [Page 12]
+Kumari & Doyle          Expires December 2, 2019               [Page 15]
 ```
