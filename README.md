@@ -7,8 +7,8 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: December 2, 2019                               Juniper Networks
-                                                            May 31, 2019
+Expires: December 14, 2019                              Juniper Networks
+                                                           June 12, 2019
 
 
                          Secure Device Install
@@ -55,12 +55,12 @@ Status of This Memo
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 1]
+Kumari & Doyle          Expires December 14, 2019               [Page 1]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
-   This Internet-Draft will expire on December 2, 2019.
+   This Internet-Draft will expire on December 14, 2019.
 
 Copyright Notice
 
@@ -106,14 +106,14 @@ Table of Contents
        B.1.2.  Step 1.2: Generate the certificate signing request. .  13
        B.1.3.  Step 1.3: Generate the (self signed) certificate
                itself. . . . . . . . . . . . . . . . . . . . . . . .  13
-     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  13
+     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  14
        B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  14
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 2]
+Kumari & Doyle          Expires December 14, 2019               [Page 2]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  14
@@ -121,7 +121,7 @@ Internet-Draft                  template                        May 2019
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  14
        B.3.1.  Step 3.1: Fetch encrypted config file from config
                server. . . . . . . . . . . . . . . . . . . . . . . .  14
-       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  14
+       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  15
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
@@ -167,9 +167,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 3]
+Kumari & Doyle          Expires December 14, 2019               [Page 3]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
    such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
@@ -223,9 +223,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 4]
+Kumari & Doyle          Expires December 14, 2019               [Page 4]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
    system using the serial number as the identifier for business reasons
@@ -279,9 +279,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 5]
+Kumari & Doyle          Expires December 14, 2019               [Page 5]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
                          +------------+
@@ -335,9 +335,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 6]
+Kumari & Doyle          Expires December 14, 2019               [Page 6]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
                          +------------+
@@ -391,9 +391,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 7]
+Kumari & Doyle          Expires December 14, 2019               [Page 7]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
    if a config file is "valid" is implementation specific, but a normal
@@ -447,9 +447,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 8]
+Kumari & Doyle          Expires December 14, 2019               [Page 8]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
              +--------+                +--------------+
@@ -503,9 +503,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019                [Page 9]
+Kumari & Doyle          Expires December 14, 2019               [Page 9]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
    "device", and not, for example (redundant) routing engines.  Devices
@@ -559,9 +559,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019               [Page 10]
+Kumari & Doyle          Expires December 14, 2019              [Page 10]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
    it isn't stored in a TPM), pretend to be the device when connecting
@@ -615,9 +615,9 @@ Internet-Draft                  template                        May 2019
 
 
 
-Kumari & Doyle          Expires December 2, 2019               [Page 11]
+Kumari & Doyle          Expires December 14, 2019              [Page 11]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
 
 Appendix A.  Changes / Author Notes.
@@ -628,13 +628,13 @@ Appendix A.  Changes / Author Notes.
 
    o  Nothing changed in the template!
 
-   From -01 to -04:
+   From -01 to -03:
 
    o  See github commit log (AKA, we forgot to update this!)
 
    o  Added Colin Doyle.
 
-   From -04 to -05:
+   From -03 to -04:
 
    Addressed a number of comments received before / at IETF104 (Prague).
    These include:
@@ -655,6 +655,12 @@ Appendix A.  Changes / Author Notes.
    o  Make it clear it should first try use the config, and if it
       doesn't work, then try decrypt and use it.
 
+   o  The CA part was confusing people - the certificate is simply a
+      wrapper for the key, and the Subject just an index, and so removed
+      that.
+
+   o  Added a bunch of ASCII diagrams
+
 Appendix B.  Demo / proof of concept
 
    This section contains a rough demo / proof of concept of the system.
@@ -662,19 +668,17 @@ Appendix B.  Demo / proof of concept
    algorithms, key lengths, format / containers will provide much fodder
    for discussion.
 
-   It uses OpenSSL from the command line, in production something more
-   automated would be used.  In this example, the serial number of the
-   router is SN19842256.
 
 
 
-
-
-
-Kumari & Doyle          Expires December 2, 2019               [Page 12]
+Kumari & Doyle          Expires December 14, 2019              [Page 12]
 
-Internet-Draft                  template                        May 2019
+Internet-Draft                  template                       June 2019
 
+
+   It uses OpenSSL from the command line, in production something more
+   automated would be used.  In this example, the unique identifier is
+   the serial number of the router, SN19842256.
 
 B.1.  Step 1: Generating the certificate.
 
@@ -716,6 +720,18 @@ B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
    The router then sends the key to the vendor's keyserver for
    publication (not shown).
 
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 14, 2019              [Page 13]
+
+Internet-Draft                  template                       June 2019
+
+
 B.2.  Step 2: Generating the encrypted config.
 
    The operator now wants to deploy the new router.
@@ -723,14 +739,6 @@ B.2.  Step 2: Generating the encrypted config.
    They generate the initial config (using whatever magic tool generates
    router configs!), fetch the router's certificate and encrypt the
    config file to that key.  This is done by the operator.
-
-
-
-
-Kumari & Doyle          Expires December 2, 2019               [Page 13]
-
-Internet-Draft                  template                        May 2019
-
 
 B.2.1.  Step 2.1: Fetch the certificate.
 
@@ -770,6 +778,16 @@ B.3.1.  Step 3.1: Fetch encrypted config file from config server.
 
    $ tftp 192.0.2.1 -c get SN19842256.enc
 
+
+
+
+
+
+Kumari & Doyle          Expires December 14, 2019              [Page 14]
+
+Internet-Draft                  template                       June 2019
+
+
 B.3.2.  Step 3.2: Decrypt and use the config.
 
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
@@ -777,16 +795,6 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
    If an attacker does not have the correct key, they will not be able
    to decrypt the config:
-
-
-
-
-
-
-Kumari & Doyle          Expires December 2, 2019               [Page 14]
-
-Internet-Draft                  template                        May 2019
-
 
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
      -out config.cfg -inkey wrongkey.pem
@@ -831,13 +839,5 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-Kumari & Doyle          Expires December 2, 2019               [Page 15]
+Kumari & Doyle          Expires December 14, 2019              [Page 15]
 ```

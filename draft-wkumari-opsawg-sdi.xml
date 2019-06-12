@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="31" month="May" year="2019"/>
+    <date day="12" month="June" year="2019"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -208,7 +208,7 @@
         devices provide raw public keys and unique identfiers the certificate
         publication server will need to wrap these in a certificate. Note that
         the certificat publication server MUST only accept certifcates or keys
-        from the vendor's manufacturing facilities. </t>
+        from the vendor's manufacturing facilities.</t>
 
         <t>The customers (e.g Sirius Cybernetics Corp) query this server with
         the serial number (or other provided unique identifier) of a device,
@@ -219,7 +219,7 @@
         uptime / reachability of the certificate publication server.</t>
 
         <figure>
-            <artwork><![CDATA[                      +------------+ 
+          <artwork><![CDATA[                      +------------+ 
      +------+         |Certificate | 
      |Device|         |Publication | 
      +------+         |   Server   | 
@@ -245,9 +245,9 @@
 |                |   |              |
 +----------------+   +--------------+]]></artwork>
 
-            <postamble>Initial certificate generation and
-            publication.</postamble>
-          </figure>
+          <postamble>Initial certificate generation and
+          publication.</postamble>
+        </figure>
       </section>
     </section>
 
@@ -267,7 +267,7 @@
         server. See Appendix B for examples.</t>
 
         <figure>
-            <artwork><![CDATA[                      +------------+  
+          <artwork><![CDATA[                      +------------+  
    +--------+         |Certificate |  
    |Operator|         |Publication |  
    +--------+         |   Server   |  
@@ -293,9 +293,9 @@
 |                |  |                |
 +----------------+  +----------------+]]></artwork>
 
-            <postamble>Fetching the certificate, encrypting the configuration,
-            publishing the encrypted configuration.</postamble>
-          </figure>
+          <postamble>Fetching the certificate, encrypting the configuration,
+          publishing the encrypted configuration.</postamble>
+        </figure>
       </section>
 
       <section anchor="initial_cust_boot" title="Initial Customer Boot">
@@ -303,7 +303,7 @@
         boots), if the device has no valid configuration, it will use existing
         auto-install type functionality - it performs DHCP Discovery until it
         gets a DHCP offer including DHCP option 66 or 150, contact the server
-        listed in these DHCP options and download its config file. </t>
+        listed in these DHCP options and download its config file.</t>
 
         <t>After retrieving the config file, the device will examine the file
         and determine if it seems to be a valid config, and if so, proceeds as
@@ -325,7 +325,7 @@
         the config file.</t>
 
         <figure>
-            <artwork><![CDATA[          +--------+                +--------------+ 
+          <artwork><![CDATA[          +--------+                +--------------+ 
           | Device |                |Config server | 
           +--------+                | (e.g  TFTP)  | 
                                     +--------------+ 
@@ -364,8 +364,8 @@
 |                           |    |                  |
 +---------------------------+    +------------------+]]></artwork>
 
-            <postamble>Device boot, fetch and install config file</postamble>
-          </figure>
+          <postamble>Device boot, fetch and install config file</postamble>
+        </figure>
       </section>
     </section>
 
@@ -467,13 +467,13 @@
 
       <t><list style="symbols">
           <t>Nothing changed in the template!</t>
-        </list>From -01 to -04:<list style="symbols">
+        </list>From -01 to -03:<list style="symbols">
           <t>See github commit log (AKA, we forgot to update this!)</t>
 
           <t>Added Colin Doyle.</t>
         </list></t>
 
-      <t>From -04 to -05:</t>
+      <t>From -03 to -04:</t>
 
       <t>Addressed a number of comments received before / at IETF104 (Prague).
       These include:<list style="symbols">
@@ -493,6 +493,12 @@
 
           <t>Make it clear it should first try use the config, and if it
           doesn't work, then try decrypt and use it.</t>
+
+          <t>The CA part was confusing people - the certificate is simply a
+          wrapper for the key, and the Subject just an index, and so removed
+          that.</t>
+
+          <t>Added a bunch of ASCII diagrams</t>
         </list></t>
     </section>
 
@@ -503,8 +509,8 @@
       discussion.</t>
 
       <t>It uses OpenSSL from the command line, in production something more
-      automated would be used. In this example, the serial number of the
-      router is SN19842256.</t>
+      automated would be used. In this example, the unique identifier is the
+      serial number of the router, SN19842256.</t>
 
       <section title="Step 1: Generating the certificate. ">
         <t>This step is performed by the router. It generates a key, then a
@@ -512,7 +518,7 @@
 
         <section title="Step 1.1: Generate the private key. ">
           <figure>
-              <artwork><![CDATA[$ openssl genrsa -out key.pem 2048
+            <artwork><![CDATA[$ openssl genrsa -out key.pem 2048
 Generating RSA private key, 2048 bit long modulus
 .................................................
 .................................................
@@ -520,12 +526,12 @@ Generating RSA private key, 2048 bit long modulus
 ...................+++
 e is 65537 (0x10001)
 ]]></artwork>
-            </figure>
+          </figure>
         </section>
 
         <section title="Step 1.2: Generate the certificate signing request.">
           <figure>
-              <artwork><![CDATA[$ openssl req -new -key key.pem -out SN19842256.csr
+            <artwork><![CDATA[$ openssl req -new -key key.pem -out SN19842256.csr
 Country Name (2 letter code) [AU]:.
 State or Province Name (full name) [Some-State]:.
 Locality Name (eg, city) []:.
@@ -540,7 +546,7 @@ A challenge password []:
 An optional company name []:.
 
 ]]></artwork>
-            </figure>
+          </figure>
         </section>
 
         <section title="Step 1.3: Generate the (self signed) certificate itself. ">
@@ -566,8 +572,9 @@ An optional company name []:.
         <section title="Step 2.2: Encrypt the config file. ">
           <t>I'm using S/MIME because it is simple to demonstrate. This is
           almost definitely not the best way to do this.</t>
+
           <figure>
-              <artwork><![CDATA[$ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
+            <artwork><![CDATA[$ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
   -out SN19842256.enc -outform PEM SN19842256.crt
 $ more SN19842256.enc
 -----BEGIN PKCS7-----
@@ -577,14 +584,14 @@ BAMMClNOMTk4NDIyNTYCCQDJVuBlaTOb1DANBgkqhkiG9w0BAQEFAASCAQBABvM3
 LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 -----END PKCS7-----
 ]]></artwork>
-            </figure>
+          </figure>
         </section>
 
         <section title="Step 2.3: Copy config to the config server.">
           <figure>
-              <artwork><![CDATA[$ scp SN19842256.enc config.example.com:/tftpboot
+            <artwork><![CDATA[$ scp SN19842256.enc config.example.com:/tftpboot
 ]]></artwork>
-            </figure>
+          </figure>
         </section>
       </section>
 
@@ -602,29 +609,30 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 
         <section title="Step 3.1: Fetch encrypted config file from config server.">
           <figure>
-              <artwork><![CDATA[$ tftp 192.0.2.1 -c get SN19842256.enc
+            <artwork><![CDATA[$ tftp 192.0.2.1 -c get SN19842256.enc
 ]]></artwork>
-            </figure>
+          </figure>
         </section>
 
         <section title="Step 3.2: Decrypt and use the config. ">
           <figure>
-              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
+            <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
   -out config.cfg -inkey key.pem
 ]]></artwork>
-            </figure>
+          </figure>
 
           <t>If an attacker does not have the correct key, they will not be
           able to decrypt the config:</t>
-           <figure>
-              <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
+
+          <figure>
+            <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
   -out config.cfg -inkey wrongkey.pem
 Error decrypting PKCS#7 structure
 140352450692760:error:06065064:digital envelope
  routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
 $ echo $?
 4]]></artwork>
-            </figure>
+          </figure>
         </section>
       </section>
     </section>
