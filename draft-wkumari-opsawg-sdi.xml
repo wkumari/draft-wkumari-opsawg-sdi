@@ -356,11 +356,19 @@
 | |private key |            |    |                  |
 | +-----+------+            |    |                  |
 |       |                   |    |                  |
-|       |        +--------+ |    |                  |
-|       |        |Install,| |    |                  |
-|       +------->|  Boot  | |    |                  |
-|                +--------+ |    |                  |
-|                           |    |                  |
+|       v                   |    |                  |
+|      / \                  |    |                  |
+|     /   \ Y    +--------+ |    |                  |
+|    |Sane?|---->|Install,| |    |                  |
+|     \   /      |  Boot  | |    |                  |
+|      \ /       +--------+ |    |                  |
+|       V                   |    |                  |
+|       |N                  |    |                  |
+|       |                   |    |                  |
+|  +----v---+               |    |                  |
+|  |Give up |               |    |                  |
+|  |go home |               |    |                  |
+|  +--------+               |    |                  |
 |                           |    |                  |
 +---------------------------+    +------------------+]]></artwork>
 
@@ -453,8 +461,6 @@
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'?>
-
       <?rfc include='reference.RFC.8572'?>
 
       <?rfc include='reference.RFC.4122'?>

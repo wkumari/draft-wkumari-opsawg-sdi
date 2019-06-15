@@ -89,8 +89,8 @@ Table of Contents
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   6
      4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   7
-   5.  Additional Considerations . . . . . . . . . . . . . . . . . .   9
-     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .   9
+   5.  Additional Considerations . . . . . . . . . . . . . . . . . .  10
+     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .  10
      5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .  10
      5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .  10
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
@@ -100,7 +100,7 @@ Table of Contents
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
      9.2.  Informative References  . . . . . . . . . . . . . . . . .  11
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  12
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  12
+   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  13
      B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  13
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  13
        B.1.2.  Step 1.2: Generate the certificate signing request. .  13
@@ -120,7 +120,7 @@ Internet-Draft                  template                       June 2019
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  14
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  14
        B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  14
+               server. . . . . . . . . . . . . . . . . . . . . . . .  15
        B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  15
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
@@ -483,23 +483,23 @@ Internet-Draft                  template                       June 2019
    | |private key |            |    |                  |
    | +-----+------+            |    |                  |
    |       |                   |    |                  |
-   |       |        +--------+ |    |                  |
-   |       |        |Install,| |    |                  |
-   |       +------->|  Boot  | |    |                  |
-   |                +--------+ |    |                  |
-   |                           |    |                  |
+   |       v                   |    |                  |
+   |      / \                  |    |                  |
+   |     /   \ Y    +--------+ |    |                  |
+   |    |Sane?|---->|Install,| |    |                  |
+   |     \   /      |  Boot  | |    |                  |
+   |      \ /       +--------+ |    |                  |
+   |       V                   |    |                  |
+   |       |N                  |    |                  |
+   |       |                   |    |                  |
+   |  +----v---+               |    |                  |
+   |  |Give up |               |    |                  |
+   |  |go home |               |    |                  |
+   |  +--------+               |    |                  |
    |                           |    |                  |
    +---------------------------+    +------------------+
 
    Device boot, fetch and install config file
-
-5.  Additional Considerations
-
-5.1.  Key storage
-
-   Ideally, the keypair would be stored in a TPM on something which is
-   identified as the "router" - for example, the chassis / backplane.
-   This is so that a keypair is bound to what humans think of as the
 
 
 
@@ -508,6 +508,13 @@ Kumari & Doyle          Expires December 14, 2019               [Page 9]
 Internet-Draft                  template                       June 2019
 
 
+5.  Additional Considerations
+
+5.1.  Key storage
+
+   Ideally, the keypair would be stored in a TPM on something which is
+   identified as the "router" - for example, the chassis / backplane.
+   This is so that a keypair is bound to what humans think of as the
    "device", and not, for example (redundant) routing engines.  Devices
    which implement IEEE 802.1AR could choose to use the IDevID for this
    purpose.
@@ -549,13 +556,6 @@ Internet-Draft                  template                       June 2019
    devices such as: unencrypted config files which can be downloaded by
    connecting to unprotected ports in datacenters, mailing initial
    config files on flash drives, or emailing config files and asking a
-   third-party to copy and paste it over a serial terminal.  It does not
-   protect against devices with malicious firmware, nor theft and reuse
-   of devices.
-
-   An attacker (e.g a malicious datacenter employee) who has physical
-   access to the device before it is connected to the network the
-   attacker may be able to extract the device private key (especially if
 
 
 
@@ -564,6 +564,13 @@ Kumari & Doyle          Expires December 14, 2019              [Page 10]
 Internet-Draft                  template                       June 2019
 
 
+   third-party to copy and paste it over a serial terminal.  It does not
+   protect against devices with malicious firmware, nor theft and reuse
+   of devices.
+
+   An attacker (e.g a malicious datacenter employee) who has physical
+   access to the device before it is connected to the network the
+   attacker may be able to extract the device private key (especially if
    it isn't stored in a TPM), pretend to be the device when connecting
    to the network, and download and extract the (encrypted) config file.
 
@@ -598,20 +605,13 @@ Internet-Draft                  template                       June 2019
 
 9.2.  Informative References
 
-   [I-D.ietf-sidr-iana-objects]
-              Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
-              issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
-              progress), May 2011.
-
    [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
               Unique IDentifier (UUID) URN Namespace", RFC 4122,
               DOI 10.17487/RFC4122, July 2005,
               <https://www.rfc-editor.org/info/rfc4122>.
 
-   [RFC8572]  Watsen, K., Farrer, I., and M. Abrahamsson, "Secure Zero
-              Touch Provisioning (SZTP)", RFC 8572,
-              DOI 10.17487/RFC8572, April 2019,
-              <https://www.rfc-editor.org/info/rfc8572>.
+
+
 
 
 
@@ -619,6 +619,11 @@ Kumari & Doyle          Expires December 14, 2019              [Page 11]
 
 Internet-Draft                  template                       June 2019
 
+
+   [RFC8572]  Watsen, K., Farrer, I., and M. Abrahamsson, "Secure Zero
+              Touch Provisioning (SZTP)", RFC 8572,
+              DOI 10.17487/RFC8572, April 2019,
+              <https://www.rfc-editor.org/info/rfc8572>.
 
 Appendix A.  Changes / Author Notes.
 
@@ -661,12 +666,7 @@ Appendix A.  Changes / Author Notes.
 
    o  Added a bunch of ASCII diagrams
 
-Appendix B.  Demo / proof of concept
 
-   This section contains a rough demo / proof of concept of the system.
-   It is only intended for illustration; presumably things like
-   algorithms, key lengths, format / containers will provide much fodder
-   for discussion.
 
 
 
@@ -675,6 +675,13 @@ Kumari & Doyle          Expires December 14, 2019              [Page 12]
 
 Internet-Draft                  template                       June 2019
 
+
+Appendix B.  Demo / proof of concept
+
+   This section contains a rough demo / proof of concept of the system.
+   It is only intended for illustration; presumably things like
+   algorithms, key lengths, format / containers will provide much fodder
+   for discussion.
 
    It uses OpenSSL from the command line, in production something more
    automated would be used.  In this example, the unique identifier is
@@ -717,13 +724,6 @@ B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
    $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
    SN19842256.crt
 
-   The router then sends the key to the vendor's keyserver for
-   publication (not shown).
-
-
-
-
-
 
 
 
@@ -731,6 +731,9 @@ Kumari & Doyle          Expires December 14, 2019              [Page 13]
 
 Internet-Draft                  template                       June 2019
 
+
+   The router then sends the key to the vendor's keyserver for
+   publication (not shown).
 
 B.2.  Step 2: Generating the encrypted config.
 
@@ -774,9 +777,6 @@ B.3.  Step 3: Decrypting and using the config.
    solution to fetch an encrypted config file (ending in .enc)).  It
    will then then decrypt the config file, and install it.
 
-B.3.1.  Step 3.1: Fetch encrypted config file from config server.
-
-   $ tftp 192.0.2.1 -c get SN19842256.enc
 
 
 
@@ -787,6 +787,10 @@ Kumari & Doyle          Expires December 14, 2019              [Page 14]
 
 Internet-Draft                  template                       June 2019
 
+
+B.3.1.  Step 3.1: Fetch encrypted config file from config server.
+
+   $ tftp 192.0.2.1 -c get SN19842256.enc
 
 B.3.2.  Step 3.2: Decrypt and use the config.
 
@@ -822,10 +826,6 @@ Authors' Addresses
    US
 
    Email: cdoyle@juniper.net
-
-
-
-
 
 
 
