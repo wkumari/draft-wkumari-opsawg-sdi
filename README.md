@@ -57,7 +57,7 @@ Status of This Memo
 
 Kumari & Doyle          Expires December 14, 2019               [Page 1]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
    This Internet-Draft will expire on December 14, 2019.
@@ -105,7 +105,7 @@ Table of Contents
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  13
        B.1.2.  Step 1.2: Generate the certificate signing request. .  13
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .  13
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  14
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  14
        B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  14
 
@@ -113,7 +113,7 @@ Table of Contents
 
 Kumari & Doyle          Expires December 14, 2019               [Page 2]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  14
@@ -169,7 +169,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019               [Page 3]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
    such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
@@ -179,8 +179,10 @@ Internet-Draft                  template                       June 2019
 1.1.  Requirements notation
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in [RFC2119].
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
 
 2.  Overview / Example Scenario
 
@@ -218,16 +220,16 @@ Internet-Draft                  template                       June 2019
    server would allow directory listing), but without the private keys
    an attacker will not be able to decrypt the files.
 
-   This document uses the serial number of the device as a unique
-   identifier for simplicity; some vendors may not want to implement the
 
 
 
 Kumari & Doyle          Expires December 14, 2019               [Page 4]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
+   This document uses the serial number of the device as a unique
+   identifier for simplicity; some vendors may not want to implement the
    system using the serial number as the identifier for business reasons
    (a competitor or similar could enumerate the serial numbers and
    determine how many devices have been manufactured).  Implementors are
@@ -277,11 +279,9 @@ Internet-Draft                  template                       June 2019
 
 
 
-
-
 Kumari & Doyle          Expires December 14, 2019               [Page 5]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
                          +------------+
@@ -337,7 +337,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019               [Page 6]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
                          +------------+
@@ -393,7 +393,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019               [Page 7]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
    if a config file is "valid" is implementation specific, but a normal
@@ -449,7 +449,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019               [Page 8]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
              +--------+                +--------------+
@@ -505,7 +505,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019               [Page 9]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
 5.  Additional Considerations
@@ -561,7 +561,7 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019              [Page 10]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
 
    third-party to copy and paste it over a serial terminal.  It does not
@@ -603,12 +603,12 @@ Internet-Draft                  template                       June 2019
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+
 9.2.  Informative References
 
-   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
-              Unique IDentifier (UUID) URN Namespace", RFC 4122,
-              DOI 10.17487/RFC4122, July 2005,
-              <https://www.rfc-editor.org/info/rfc4122>.
 
 
 
@@ -617,8 +617,13 @@ Internet-Draft                  template                       June 2019
 
 Kumari & Doyle          Expires December 14, 2019              [Page 11]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
+
+   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
+              Unique IDentifier (UUID) URN Namespace", RFC 4122,
+              DOI 10.17487/RFC4122, July 2005,
+              <https://www.rfc-editor.org/info/rfc4122>.
 
    [RFC8572]  Watsen, K., Farrer, I., and M. Abrahamsson, "Secure Zero
               Touch Provisioning (SZTP)", RFC 8572,
@@ -664,17 +669,14 @@ Appendix A.  Changes / Author Notes.
       wrapper for the key, and the Subject just an index, and so removed
       that.
 
-   o  Added a bunch of ASCII diagrams
-
-
-
-
 
 
 Kumari & Doyle          Expires December 14, 2019              [Page 12]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
+
+   o  Added a bunch of ASCII diagrams
 
 Appendix B.  Demo / proof of concept
 
@@ -719,18 +721,21 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
    An optional company name []:.
 
 
-B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
 
-   $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
-   SN19842256.crt
+
 
 
 
 
 Kumari & Doyle          Expires December 14, 2019              [Page 13]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
+
+B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
+
+   $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
+   SN19842256.crt
 
    The router then sends the key to the vendor's keyserver for
    publication (not shown).
@@ -774,19 +779,17 @@ B.3.  Step 3: Decrypting and using the config.
    level overview is that it will use DHCP to obtain an IP address and
    config server.  It will then use TFTP to download a configuration
    file, based upon its serial number (this document modifies the
-   solution to fetch an encrypted config file (ending in .enc)).  It
-   will then then decrypt the config file, and install it.
-
-
-
 
 
 
 
 Kumari & Doyle          Expires December 14, 2019              [Page 14]
 
-Internet-Draft                  template                       June 2019
+Internet-Draft            Secure Device Install                June 2019
 
+
+   solution to fetch an encrypted config file (ending in .enc)).  It
+   will then then decrypt the config file, and install it.
 
 B.3.1.  Step 3.1: Fetch encrypted config file from config server.
 
@@ -826,9 +829,6 @@ Authors' Addresses
    US
 
    Email: cdoyle@juniper.net
-
-
-
 
 
 

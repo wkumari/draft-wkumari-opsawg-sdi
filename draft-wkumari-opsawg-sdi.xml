@@ -21,7 +21,7 @@
   <front>
     <!-- WK: Set long title. -->
 
-    <title abbrev="template">Secure Device Install</title>
+    <title abbrev="Secure Device Install">Secure Device Install</title>
 
     <author fullname="Warren Kumari" initials="W." surname="Kumari">
       <organization>Google</organization>
@@ -128,10 +128,11 @@
       widely deployed yet.</t>
 
       <section title="Requirements notation">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-        document are to be interpreted as described in <xref
-        target="RFC2119"/>.</t>
+        <t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+        NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY",
+        and "OPTIONAL" in this document are to be interpreted as described in
+        BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and
+        only when, they appear in all capitals, as shown here.</t>
       </section>
     </section>
 
@@ -458,6 +459,8 @@
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
+
+      <?rfc include='reference.RFC.8174'?>
     </references>
 
     <references title="Informative References">
