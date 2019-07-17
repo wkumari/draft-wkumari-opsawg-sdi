@@ -12,7 +12,7 @@ Expires: December 14, 2019                              Juniper Networks
 
 
                          Secure Device Install
-                      draft-wkumari-opsawg-sdi-04
+                        draft-ietf-opsawg-sdi-00
 
 Abstract
 
