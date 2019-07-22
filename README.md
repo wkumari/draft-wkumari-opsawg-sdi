@@ -7,8 +7,8 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: December 14, 2019                              Juniper Networks
-                                                           June 12, 2019
+Expires: January 23, 2020                               Juniper Networks
+                                                           July 22, 2019
 
 
                          Secure Device Install
@@ -55,12 +55,12 @@ Status of This Memo
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 1]
+Kumari & Doyle          Expires January 23, 2020                [Page 1]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
-   This Internet-Draft will expire on December 14, 2019.
+   This Internet-Draft will expire on January 23, 2020.
 
 Copyright Notice
 
@@ -111,18 +111,18 @@ Table of Contents
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 2]
+Kumari & Doyle          Expires January 23, 2020                [Page 2]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  14
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  14
-     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  14
+       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  15
+     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  15
        B.3.1.  Step 3.1: Fetch encrypted config file from config
                server. . . . . . . . . . . . . . . . . . . . . . . .  15
        B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  15
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  16
 
 1.  Introduction
 
@@ -167,9 +167,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 3]
+Kumari & Doyle          Expires January 23, 2020                [Page 3]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
    such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
@@ -223,9 +223,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 4]
+Kumari & Doyle          Expires January 23, 2020                [Page 4]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
    This document uses the serial number of the device as a unique
@@ -279,9 +279,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 5]
+Kumari & Doyle          Expires January 23, 2020                [Page 5]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
                          +------------+
@@ -335,9 +335,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 6]
+Kumari & Doyle          Expires January 23, 2020                [Page 6]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
                          +------------+
@@ -391,9 +391,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 7]
+Kumari & Doyle          Expires January 23, 2020                [Page 7]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
    if a config file is "valid" is implementation specific, but a normal
@@ -447,9 +447,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 8]
+Kumari & Doyle          Expires January 23, 2020                [Page 8]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
              +--------+                +--------------+
@@ -503,9 +503,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019               [Page 9]
+Kumari & Doyle          Expires January 23, 2020                [Page 9]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
 5.  Additional Considerations
@@ -559,9 +559,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019              [Page 10]
+Kumari & Doyle          Expires January 23, 2020               [Page 10]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
    third-party to copy and paste it over a serial terminal.  It does not
@@ -615,9 +615,9 @@ Internet-Draft            Secure Device Install                June 2019
 
 
 
-Kumari & Doyle          Expires December 14, 2019              [Page 11]
+Kumari & Doyle          Expires January 23, 2020               [Page 11]
 
-Internet-Draft            Secure Device Install                June 2019
+Internet-Draft            Secure Device Install                July 2019
 
 
    [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
@@ -633,6 +633,11 @@ Internet-Draft            Secure Device Install                June 2019
 Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
+
+   From individual -04 to WG-01:
+
+   o  Renamed from draft-wkumari-opsawg-sdi-04 -> draft-ietf-opsawg-
+      sdi-00
 
    From -00 to -01
 
@@ -662,19 +667,21 @@ Appendix A.  Changes / Author Notes.
 
    o  Lots of clarifications from Joe Clarke.
 
+
+
+
+
+Kumari & Doyle          Expires January 23, 2020               [Page 12]
+
+Internet-Draft            Secure Device Install                July 2019
+
+
    o  Make it clear it should first try use the config, and if it
       doesn't work, then try decrypt and use it.
 
    o  The CA part was confusing people - the certificate is simply a
       wrapper for the key, and the Subject just an index, and so removed
       that.
-
-
-
-Kumari & Doyle          Expires December 14, 2019              [Page 12]
-
-Internet-Draft            Secure Device Install                June 2019
-
 
    o  Added a bunch of ASCII diagrams
 
@@ -706,6 +713,25 @@ B.1.1.  Step 1.1: Generate the private key.
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires January 23, 2020               [Page 13]
+
+Internet-Draft            Secure Device Install                July 2019
+
+
    $ openssl req -new -key key.pem -out SN19842256.csr
    Country Name (2 letter code) [AU]:.
    State or Province Name (full name) [Some-State]:.
@@ -719,17 +745,6 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
    to be sent with your certificate request
    A challenge password []:
    An optional company name []:.
-
-
-
-
-
-
-
-
-Kumari & Doyle          Expires December 14, 2019              [Page 13]
-
-Internet-Draft            Secure Device Install                June 2019
 
 
 B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
@@ -757,6 +772,22 @@ B.2.2.  Step 2.2: Encrypt the config file.
    I'm using S/MIME because it is simple to demonstrate.  This is almost
    definitely not the best way to do this.
 
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires January 23, 2020               [Page 14]
+
+Internet-Draft            Secure Device Install                July 2019
+
+
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
    $ more SN19842256.enc
@@ -779,15 +810,6 @@ B.3.  Step 3: Decrypting and using the config.
    level overview is that it will use DHCP to obtain an IP address and
    config server.  It will then use TFTP to download a configuration
    file, based upon its serial number (this document modifies the
-
-
-
-
-Kumari & Doyle          Expires December 14, 2019              [Page 14]
-
-Internet-Draft            Secure Device Install                June 2019
-
-
    solution to fetch an encrypted config file (ending in .enc)).  It
    will then then decrypt the config file, and install it.
 
@@ -810,6 +832,17 @@ B.3.2.  Step 3.2: Decrypt and use the config.
     routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
    $ echo $?
    4
+
+
+
+
+
+
+
+Kumari & Doyle          Expires January 23, 2020               [Page 15]
+
+Internet-Draft            Secure Device Install                July 2019
+
 
 Authors' Addresses
 
@@ -839,5 +872,28 @@ Authors' Addresses
 
 
 
-Kumari & Doyle          Expires December 14, 2019              [Page 15]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires January 23, 2020               [Page 16]
 ```
