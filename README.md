@@ -209,7 +209,7 @@ Internet-Draft            Secure Device Install                July 2019
    server.  The router uses TFTP to fetch its config file (note that all
    this is existing functionality).  The device attempts to load the
    config file - if the config file is unparsable, (new functionality)
-   the devies tries to uses its private key to decrypt the file, and,
+   the device tries to use its private key to decrypt the file, and,
    assuming it validates, installs the new configuration.
 
    Only the "correct" device will have the required private key and be
