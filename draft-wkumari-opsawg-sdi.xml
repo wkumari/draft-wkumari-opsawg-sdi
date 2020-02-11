@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-02" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-03" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="01" month="February" year="2020"/>
+    <date day="11" month="February" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -136,7 +136,32 @@
       </section>
     </section>
 
-    <section title="Overview / Example Scenario">
+    <section title="Overview">
+      <t>Most network devices already include some sort of initial bootstrapping
+      logic (sometimes called 'autoboot', or 'autoinstall'). This generally works
+      by having a newly installed / unconfigured device obtain an IP address and
+      address of a config server
+      (often called 'next-server', 'siaddr' or 'tftp-server-name') using DHCP. The
+      device then contacts this configuration server to download its initial configuration,
+      which is often identified using the devices serial number, MAC address or similar.
+      This document extends this (vendor specific) paradigm by allowing the configuration
+      file to be encrypted.</t>
+      
+      <t>This document uses the serial number of the device as a unique
+      identifier for simplicity; some vendors may not want to implement the
+      system using the serial number as the identifier for business reasons (a
+      competitor or similar could enumerate the serial numbers and determine
+      how many devices have been manufactured). Implementors are free to
+      choose some other way of generating identifiers (e.g UUID <xref
+      target="RFC4122"/>), but this will likely make it somewhat harder for
+      operators to use (the serial number is usually easy to find on a device,
+      a more complex system is likely harder to track).</t>
+
+      <t>[ Ed note: This example also uses TFTP because that is what many vendors
+      use in their auto-install / ZTP feature. It could easily instead be
+      HTTP, FTP, etc. ]</t>
+
+    <section title="Example Scenario">
       <t>Sirius Cybernetics Corp needs another peering router, and so they
       order another router from Acme Network Widgets, to be drop-shipped to
       the Point of Presence (POP) / datacenter. Acme begins assembling the new
@@ -169,22 +194,7 @@
       guessing serial numbers (or perhaps the server would allow directory
       listing), but without the private keys an attacker will not be able to
       decrypt the files.</t>
-
-      <t>This document uses the serial number of the device as a unique
-      identifier for simplicity; some vendors may not want to implement the
-      system using the serial number as the identifier for business reasons (a
-      competitor or similar could enumerate the serial numbers and determine
-      how many devices have been manufactured). Implementors are free to
-      choose some other way of generating identifiers (e.g UUID <xref
-      target="RFC4122"/>), but this will likely make it somewhat harder for
-      operators to use (the serial number is usually easy to find on a device,
-      a more complex system is likely harder to track).</t>
-
-      <t>[ Ed note: This example uses TFTP because that is what many vendors
-      use in their auto-install / ZTP feature. It could easily instead be
-      HTTP, FTP, etc. ]</t>
-
-      <t/>
+      </section>
     </section>
 
     <section title="Vendor Role / Requirements ">
@@ -192,23 +202,23 @@
       provides an overview of what the device needs to do.</t>
 
       <section title="Device key generation">
-        <t>During the manufacturing stage, when the device is intially powered
+        <t>During the manufacturing stage, when the device is initially powered
         on, it will generate a public-private keypair. It will send its unique
         identifier and the public key to the vendor's Certificate Publication
         Server to be published. The mechanism used to do this is left
-        undefined. Note that some devices may be contrained, and so may send
+        undefined. Note that some devices may be constrained, and so may send
         the raw public key and unique identifier to the certificate
         publication server, while mode capable devices may generate and send
-        self-signed certifcates.</t>
+        self-signed certificates.</t>
       </section>
 
       <section title="Certificate Publication Server">
         <t>The certificate publication server contains a database of
         certificates. If newly manufactured devices upload certificates the
         certificate publication server can simply publish these, if the
-        devices provide raw public keys and unique identfiers the certificate
+        devices provide raw public keys and unique identifiers the certificate
         publication server will need to wrap these in a certificate. Note that
-        the certificat publication server MUST only accept certifcates or keys
+        the certificate publication server MUST only accept certificates or keys
         from the vendor's manufacturing facilities.</t>
 
         <t>The customers (e.g Sirius Cybernetics Corp) query this server with
@@ -264,7 +274,7 @@
         download the certificate (by providing the unique device identifier of
         the device). The operator SHOULD fetch the certificate using a secure
         transport (e.g HTTPS). The operator will then encrypt the initial
-        configuration to the key in the certifcate, and place it on their TFTP
+        configuration to the key in the certificate, and place it on their TFTP
         server. See Appendix B for examples.</t>
 
         <figure>
@@ -320,8 +330,8 @@
         config file looks significantly different to an encrypted blob.</t>
 
         <t>Note that the device only needs DHCP and to be able to download the
-        config file; after the initial power-on in the factory it never need
-        to access the Internet or vendor or certifcate publication server - it
+        config file; after the initial power-on in the factory it never needs
+        to access the Internet or vendor or certificate publication server - it
         (and only it) has the private key and so has the ability to decrypt
         the config file.</t>
 
@@ -472,6 +482,15 @@
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
 
+
+      <t>From individual WG-01 to -03:</t>
+
+      <t><list style="symbols">
+          <t>Addressed Joe Clarke's comments - https://mailarchive.ietf.org/arch/msg/opsawg/JTzsdVXw-XtWXZIIFhH7aW_-0YY</t>
+          <t>Many typos / nits</t>
+          <t>Broke Overview and Example Scenario into 2 sections.</t>
+          <t>Reordered text for above.</t>
+        </list></t>
       <t>From individual -04 to WG-01:</t>
 
       <t><list style="symbols">
