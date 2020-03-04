@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-03" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-04" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="11" month="February" year="2020"/>
+    <date day="04" month="March" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -127,6 +127,19 @@
       more fully featured, but also more complex to implement and / or are not
       widely deployed yet.</t>
 
+      <t>This solution is specifically designed to be a simple method on top
+      of exiting device functionality. If devices do not support this new
+      method, they can continue to use the existing functionality. In addition,
+      operators can choose to use this to protect their configuration information,
+      or can continue to use the existing functionality.</t>
+
+      <t>The issue of securely installing devices is in no way a new issue, nor
+      is it limited to network devices; it occurs when deploying servers, PCs,
+      IoT devices, and in many other situations. While the solution described
+      in this document is obvious (encrypt the config, then decrypt it
+      with a device key), this document only discusses the use for network
+      devices, such as routers and switches.</t>
+
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -140,13 +153,13 @@
       <t>Most network devices already include some sort of initial bootstrapping
       logic (sometimes called 'autoboot', or 'autoinstall'). This generally works
       by having a newly installed / unconfigured device obtain an IP address and
-      address of a config server
-      (often called 'next-server', 'siaddr' or 'tftp-server-name') using DHCP. The
-      device then contacts this configuration server to download its initial configuration,
-      which is often identified using the devices serial number, MAC address or similar.
-      This document extends this (vendor specific) paradigm by allowing the configuration
+      address of a config server (often called 'next-server', 'siaddr' or
+      'tftp-server-name') using DHCP. The device then contacts this configuration
+      server to download its initial configuration, which is often identified
+      using the devices serial number, MAC address or similar. This document
+      extends this (vendor specific) paradigm by allowing the configuration
       file to be encrypted.</t>
-      
+
       <t>This document uses the serial number of the device as a unique
       identifier for simplicity; some vendors may not want to implement the
       system using the serial number as the identifier for business reasons (a
@@ -230,11 +243,11 @@
         uptime / reachability of the certificate publication server.</t>
 
         <figure>
-          <artwork><![CDATA[                      +------------+ 
-     +------+         |Certificate | 
-     |Device|         |Publication | 
-     +------+         |   Server   | 
-                      +------------+ 
+          <artwork><![CDATA[                      +------------+
+     +------+         |Certificate |
+     |Device|         |Publication |
+     +------+         |   Server   |
+                      +------------+
 +----------------+   +--------------+
 |   +---------+  |   |              |
 |   | Initial |  |   |              |
@@ -278,11 +291,11 @@
         server. See Appendix B for examples.</t>
 
         <figure>
-          <artwork><![CDATA[                      +------------+  
-   +--------+         |Certificate |  
-   |Operator|         |Publication |  
-   +--------+         |   Server   |  
-                      +------------+  
+          <artwork><![CDATA[                      +------------+
+   +--------+         |Certificate |
+   |Operator|         |Publication |
+   +--------+         |   Server   |
+                      +------------+
 +----------------+  +----------------+
 | +-----------+  |  |  +-----------+ |
 | |   Fetch   |  |  |  |           | |
@@ -311,23 +324,25 @@
 
       <section anchor="initial_cust_boot" title="Initial Customer Boot">
         <t>When the device is first booted by the customer (and on subsequent
-        boots), if the device has no valid configuration, it will use existing
-        auto-install type functionality - it performs DHCP Discovery until it
-        gets a DHCP offer including DHCP option 66 or 150, contact the server
-        listed in these DHCP options and download its config file.</t>
+        boots), if the device does not have a valid configuration, it will use existing
+        auto-install functionality. As an example, it performs DHCP Discovery
+        until it gets a DHCP offer including DHCP option 66 or 150, contact the server
+        listed in these DHCP options and downloads its config file. Note that this
+        is existing functionality (for example, Cisco devices fetch the config
+        file named by the Bootfile-Name DHCP option (67)).</t>
 
-        <t>After retrieving the config file, the device will examine the file
-        and determine if it seems to be a valid config, and if so, proceeds as
-        it normally would. Note that this is existing functionality (for
-        example, Cisco devices fetch the config file named by the
-        Bootfile-Name DHCP option (67)).</t>
+        <t>After retrieving the config file, the device needs to determine if it is
+        encrypted or not. If it is not encrypted, the existing behavior is used.
+        If the configuration is encrypted, the process continues as described in this
+        document. The method used to determine if the config is encrypted or not is
+        implementation dependant; there are a number of (obvious) options, including
+        having a magic string in the file header, using a file name extension
+        (e.g config.enc), or using specific DHCP options.</t>
 
-        <t>If the file appears be "garbage", the device will attempt to
-        decrypt the configuration file using its private key. If it is able to
-        decrypt and validate the file it will install the configuration, and
-        start using it. The exact method that the device uses to determine if
-        a config file is "valid" is implementation specific, but a normal
-        config file looks significantly different to an encrypted blob.</t>
+        <t>If the file is encrypted, the device will attempt to
+        decrypt and parse the file. It able, it will install the configuration, and
+        start using it. If this fails, the device with either abort the auto-install
+        process, or will repeat this process until it succeeds.</t>
 
         <t>Note that the device only needs DHCP and to be able to download the
         config file; after the initial power-on in the factory it never needs
@@ -336,10 +351,10 @@
         the config file.</t>
 
         <figure>
-          <artwork><![CDATA[          +--------+                +--------------+ 
-          | Device |                |Config server | 
-          +--------+                | (e.g  TFTP)  | 
-                                    +--------------+ 
+          <artwork><![CDATA[          +--------+                +--------------+
+          | Device |                |Config server |
+          +--------+                | (e.g  TFTP)  |
+                                    +--------------+
 +---------------------------+    +------------------+
 | +-----------+             |    |                  |
 | |           |             |    |                  |
@@ -355,12 +370,12 @@
 |       |                   |    |                  |
 |       X                   |    |                  |
 |      / \                  |    |                  |
-|     /   \ Y    +--------+ |    |                  |
-|    |Sane?|---->|Install,| |    |                  |
+|     /   \ N    +--------+ |    |                  |
+|    | Enc?|---->|Install,| |    |                  |
 |     \   /      |  Boot  | |    |                  |
 |      \ /       +--------+ |    |                  |
 |       V                   |    |                  |
-|       |N                  |    |                  |
+|       |Y                  |    |                  |
 |       |                   |    |                  |
 | +-----v------+            |    |                  |
 | |Decrypt with|            |    |                  |
@@ -461,7 +476,7 @@
 
     <section title="Acknowledgements">
       <t>The authors wish to thank everyone who contributed, including Benoit
-      Claise, Sam Ribeiro, Michael Richardson, Sean Turner and Kent Watsen.
+      Claise, Tom Petch, Sam Ribeiro, Michael Richardson, Sean Turner and Kent Watsen.
       Joe Clarke provided significant comments and review.</t>
     </section>
   </middle>
@@ -482,15 +497,20 @@
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
 
+      <t>From -03 to -04</t>
+      <t><list style="symbols">
+          <t>Addressed Joe's WGLC comments. This involved changing the "just try decrypt and pray" to vendor specific, like a file extension, magic header sting, etc.</t>
+          <t>Addressed tom's comments.</t>
+      </list></t>
 
       <t>From individual WG-01 to -03:</t>
-
       <t><list style="symbols">
           <t>Addressed Joe Clarke's comments - https://mailarchive.ietf.org/arch/msg/opsawg/JTzsdVXw-XtWXZIIFhH7aW_-0YY</t>
           <t>Many typos / nits</t>
           <t>Broke Overview and Example Scenario into 2 sections.</t>
           <t>Reordered text for above.</t>
         </list></t>
+
       <t>From individual -04 to WG-01:</t>
 
       <t><list style="symbols">
@@ -539,9 +559,8 @@
 
     <section title="Demo / proof of concept">
       <t>This section contains a rough demo / proof of concept of the system.
-      It is only intended for illustration; presumably things like algorithms,
-      key lengths, format / containers will provide much fodder for
-      discussion.</t>
+      It is only intended for illustration, and is not intended to be used
+      in production.</t>
 
       <t>It uses OpenSSL from the command line, in production something more
       automated would be used. In this example, the unique identifier is the
