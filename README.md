@@ -83,7 +83,7 @@ Table of Contents
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
    2.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.1.  Example Scenario  . . . . . . . . . . . . . . . . . . . .   5
-   3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   5
+   3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   6
      3.1.  Device key generation . . . . . . . . . . . . . . . . . .   6
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   6
    4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   7
@@ -144,7 +144,7 @@ Internet-Draft            Secure Device Install               March 2020
    security related and / or proprietary information (for example,
    RADIUS or TACACS+ secrets).  Exposing these to a third party to load
    onto a new device (or using an auto-install techniques which fetch an
-   (unencrypted) config file via something like TFTP) is simply not
+   unencrypted config file via something like TFTP) is simply not
    acceptable to many operators, and so they have to send employees to
    remote locations to perform the initial configuration work.  As well
    as having a significant monetary cost, it also takes significantly
@@ -212,14 +212,14 @@ Internet-Draft            Secure Device Install               March 2020
    (vendor specific) paradigm by allowing the configuration file to be
    encrypted.
 
+   This document describes a concept, and some example ways of
+   implementing this concept.  As devices have different capabilities,
+   and use different configuration paradigms, one method will not suit
+   all, and so it is expected that vendors will differ in exactly how
+   they implement this.
+
    This document uses the serial number of the device as a unique
    identifier for simplicity; some vendors may not want to implement the
-   system using the serial number as the identifier for business reasons
-   (a competitor or similar could enumerate the serial numbers and
-   determine how many devices have been manufactured).  Implementors are
-   free to choose some other way of generating identifiers (e.g UUID
-   [RFC4122]), but this will likely make it somewhat harder for
-
 
 
 
@@ -228,6 +228,11 @@ Kumari & Doyle          Expires September 5, 2020               [Page 4]
 Internet-Draft            Secure Device Install               March 2020
 
 
+   system using the serial number as the identifier for business reasons
+   (a competitor or similar could enumerate the serial numbers and
+   determine how many devices have been manufactured).  Implementors are
+   free to choose some other way of generating identifiers (e.g UUID
+   [RFC4122]), but this will likely make it somewhat harder for
    operators to use (the serial number is usually easy to find on a
    device, a more complex system is likely harder to track).
 
@@ -271,11 +276,6 @@ Internet-Draft            Secure Device Install               March 2020
    server would allow directory listing), but without the private keys
    an attacker will not be able to decrypt the files.
 
-3.  Vendor Role / Requirements
-
-   This section describes the vendors roles and responsibilities and
-   provides an overview of what the device needs to do.
-
 
 
 
@@ -283,6 +283,11 @@ Kumari & Doyle          Expires September 5, 2020               [Page 5]
 
 Internet-Draft            Secure Device Install               March 2020
 
+
+3.  Vendor Role / Requirements
+
+   This section describes the vendors roles and responsibilities and
+   provides an overview of what the device needs to do.
 
 3.1.  Device key generation
 
@@ -313,11 +318,6 @@ Internet-Draft            Secure Device Install               March 2020
    devices when they purchase them, and will download and store / cache
    the certificate.  This means that there is not a hard requirement on
    the uptime / reachability of the certificate publication server.
-
-
-
-
-
 
 
 

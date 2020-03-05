@@ -102,7 +102,7 @@
       <t>Network device configurations contain a significant amount of
       security related and / or proprietary information (for example, RADIUS
       or TACACS+ secrets). Exposing these to a third party to load onto a new
-      device (or using an auto-install techniques which fetch an (unencrypted)
+      device (or using an auto-install techniques which fetch an unencrypted
       config file via something like TFTP) is simply not acceptable to many
       operators, and so they have to send employees to remote locations to
       perform the initial configuration work. As well as having a significant
@@ -159,6 +159,11 @@
       using the devices serial number, MAC address or similar. This document
       extends this (vendor specific) paradigm by allowing the configuration
       file to be encrypted.</t>
+
+      <t>This document describes a concept, and some example ways of implementing
+      this concept. As devices have different capabilities, and use different
+      configuration paradigms, one method will not suit all, and so it is
+      expected that vendors will differ in exactly how they implement this.</t>
 
       <t>This document uses the serial number of the device as a unique
       identifier for simplicity; some vendors may not want to implement the
