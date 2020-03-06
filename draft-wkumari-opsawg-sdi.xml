@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-04" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-05" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="04" month="March" year="2020"/>
+    <date day="06" month="March" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -170,7 +170,7 @@
       system using the serial number as the identifier for business reasons (a
       competitor or similar could enumerate the serial numbers and determine
       how many devices have been manufactured). Implementors are free to
-      choose some other way of generating identifiers (e.g UUID <xref
+      choose some other way of generating identifiers (e.g., UUID <xref
       target="RFC4122"/>), but this will likely make it somewhat harder for
       operators to use (the serial number is usually easy to find on a device,
       a more complex system is likely harder to track).</t>
@@ -186,7 +186,8 @@
       device, and tells Sirius what the new device's serial number will be
       (SN:17894321). When Acme first installs the firmware on the device and
       boots it, the device generates a public-private keypair, and Acme
-      publishes it on their keyserver (in a certificate, for ease of use).</t>
+      publishes it on their keyserver (in a public key certificate, for
+      ease of use).</t>
 
       <t>While the device is being shipped, Sirius generates the initial
       device configuration, fetches the certificate from Acme keyservers by
@@ -220,13 +221,22 @@
       provides an overview of what the device needs to do.</t>
 
       <section title="Device key generation">
+        <t>Each devices requires a public-private key keypair, and for the
+        public part to be published and retrievable by the operator. This
+        section illustrates one method, but, as with much of this document
+        the exact mechanism may will vary by vendor.
+        <xref target="I-D.gutmann-scep"/> is one method which vendors may
+        want to strongly consider.</t>
+
         <t>During the manufacturing stage, when the device is initially powered
         on, it will generate a public-private keypair. It will send its unique
         identifier and the public key to the vendor's Certificate Publication
-        Server to be published. The mechanism used to do this is left
-        undefined. Note that some devices may be constrained, and so may send
+        Server to be published. The vendor's Certificate Publication
+        Server should only accept certificates from the manufacturing facility,
+        and which match vendor defined policies (for example, extended key usage,
+        extensions, etc.) Note that some devices may be constrained, and so may send
         the raw public key and unique identifier to the certificate
-        publication server, while mode capable devices may generate and send
+        publication server, while more capable devices may generate and send
         self-signed certificates.</t>
       </section>
 
@@ -239,7 +249,7 @@
         the certificate publication server MUST only accept certificates or keys
         from the vendor's manufacturing facilities.</t>
 
-        <t>The customers (e.g Sirius Cybernetics Corp) query this server with
+        <t>The customers (e.g., Sirius Cybernetics Corp) query this server with
         the serial number (or other provided unique identifier) of a device,
         and retrieve the associated certificate. It is expected that operators
         will receive the unique identifier (serial number) of devices when
@@ -291,9 +301,9 @@
         <t>The operator will contact the vendor's publication server, and
         download the certificate (by providing the unique device identifier of
         the device). The operator SHOULD fetch the certificate using a secure
-        transport (e.g HTTPS). The operator will then encrypt the initial
-        configuration to the key in the certificate, and place it on their TFTP
-        server. See Appendix B for examples.</t>
+        transport (e.g., HTTPS). The operator will then encrypt the initial
+        configuration (for example, using SMIME) using the key in the certificate,
+        and place it on their TFTP server. See Appendix B for examples.</t>
 
         <figure>
           <artwork><![CDATA[                      +------------+
@@ -329,9 +339,10 @@
 
       <section anchor="initial_cust_boot" title="Initial Customer Boot">
         <t>When the device is first booted by the customer (and on subsequent
-        boots), if the device does not have a valid configuration, it will use existing
-        auto-install functionality. As an example, it performs DHCP Discovery
-        until it gets a DHCP offer including DHCP option 66 or 150, contact the server
+        boots), if the device does not have a valid configuration, it will use
+        existing auto-install functionality. As an example, it performs DHCP
+        Discovery until it gets a DHCP offer including DHCP option 66
+        (Server-Name) or 150 (TFTP server address), contact the server
         listed in these DHCP options and downloads its config file. Note that this
         is existing functionality (for example, Cisco devices fetch the config
         file named by the Bootfile-Name DHCP option (67)).</t>
@@ -342,7 +353,7 @@
         document. The method used to determine if the config is encrypted or not is
         implementation dependant; there are a number of (obvious) options, including
         having a magic string in the file header, using a file name extension
-        (e.g config.enc), or using specific DHCP options.</t>
+        (e.g., config.enc), or using specific DHCP options.</t>
 
         <t>If the file is encrypted, the device will attempt to
         decrypt and parse the file. It able, it will install the configuration, and
@@ -358,7 +369,7 @@
         <figure>
           <artwork><![CDATA[          +--------+                +--------------+
           | Device |                |Config server |
-          +--------+                | (e.g  TFTP)  |
+          +--------+                | (e.g. TFTP)  |
                                     +--------------+
 +---------------------------+    +------------------+
 | +-----------+             |    |                  |
@@ -410,12 +421,13 @@
 
     <section title="Additional Considerations">
       <section title="Key storage">
-        <t>Ideally, the keypair would be stored in a TPM on something which is
-        identified as the &ldquo;router&rdquo; - for example, the chassis /
-        backplane. This is so that a keypair is bound to what humans think of
-        as the &ldquo;device&rdquo;, and not, for example (redundant) routing
-        engines. Devices which implement IEEE 802.1AR could choose to use the
-        IDevID for this purpose.</t>
+        <t>Ideally, the keypair would be stored in a Trusted Platform Module
+        (TPM) on something which is identified as the &ldquo;router&rdquo;
+        - for example, the chassis / backplane. This is so that a keypair
+        is bound to what humans think of as the &ldquo;device&rdquo;, and
+        not, for example (redundant) routing engines. Devices which
+        implement IEEE 802.1AR could choose to use the IDevID for this
+        purpose.</t>
       </section>
 
       <section title="Key replacement ">
@@ -438,7 +450,7 @@
         It is expected (but not defined in this document, as it is vendor
         specific) that vendors will allow the operator to copy a new,
         encrypted config (or part of a config) onto a device and then request
-        that the device decrypt and install it (e.g: &lsquo;load replace
+        that the device decrypt and install it (e.g.: &lsquo;load replace
         &lt;filename&gt; encrypted)). The operator could also choose to reset
         the device to factory defaults, and allow the device to act as though
         it were the initial boot (see <xref target="initial_cust_boot"/>).</t>
@@ -458,7 +470,7 @@
       and paste it over a serial terminal. It does not protect against devices
       with malicious firmware, nor theft and reuse of devices.</t>
 
-      <t>An attacker (e.g a malicious datacenter employee) who has physical
+      <t>An attacker (e.g., a malicious datacenter employee) who has physical
       access to the device before it is connected to the network the attacker
       may be able to extract the device private key (especially if it isn't
       stored in a TPM), pretend to be the device when connecting to the
@@ -479,10 +491,11 @@
       install.</t>
     </section>
 
-    <section title="Acknowledgements">
+    <section title="Acknowledgments">
       <t>The authors wish to thank everyone who contributed, including Benoit
-      Claise, Tom Petch, Sam Ribeiro, Michael Richardson, Sean Turner and Kent Watsen.
-      Joe Clarke provided significant comments and review.</t>
+      Claise, Francis Dupont, Tom Petch, Sam Ribeiro, Michael Richardson,
+      Sean Turner and Kent Watsen. Joe Clarke also provided significant
+      comments and review.</t>
     </section>
   </middle>
 
@@ -497,6 +510,8 @@
       <?rfc include='reference.RFC.8572'?>
 
       <?rfc include='reference.RFC.4122'?>
+
+      <?rfc include="reference.I-D.gutmann-scep.xml"?>
     </references>
 
     <section title="Changes / Author Notes.">
@@ -662,7 +677,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
         address and config server. It will then use TFTP to download a
         configuration file, based upon its serial number (this document
         modifies the solution to fetch an encrypted config file (ending in
-        .enc)). It will then then decrypt the config file, and install it.</t>
+        .enc)). It will then decrypt the config file, and install it.</t>
 
         <t/>
 
