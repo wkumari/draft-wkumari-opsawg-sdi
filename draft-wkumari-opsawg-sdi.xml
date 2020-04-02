@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="06" month="March" year="2020"/>
+    <date day="02" month="April" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -96,7 +96,7 @@
       initial configurations, etc. There are also a number of (often vendor
       proprietary) protocols to perform initial device installs and
       configurations - for example, many network devices will attempt to use
-      DHCP to get an IP address and configuration server, and then fetch and
+      DHCP <xref target="RFC2131"></xref>to get an IP address and configuration server, and then fetch and
       install a configuration when they are first powered on.</t>
 
       <t>Network device configurations contain a significant amount of
@@ -154,11 +154,11 @@
       logic (sometimes called 'autoboot', or 'autoinstall'). This generally works
       by having a newly installed / unconfigured device obtain an IP address and
       address of a config server (often called 'next-server', 'siaddr' or
-      'tftp-server-name') using DHCP. The device then contacts this configuration
-      server to download its initial configuration, which is often identified
-      using the devices serial number, MAC address or similar. This document
-      extends this (vendor specific) paradigm by allowing the configuration
-      file to be encrypted.</t>
+      'tftp-server-name') using DHCP (see <xref target="RFC2131"></xref>). The device
+      then contacts this configuration server to download its initial configuration,
+      which is often identified using the devices serial number, MAC address or
+      similar. This document extends this (vendor specific) paradigm by allowing
+      the configuration file to be encrypted.</t>
 
       <t>This document describes a concept, and some example ways of implementing
       this concept. As devices have different capabilities, and use different
@@ -337,7 +337,7 @@
         </figure>
       </section>
 
-      <section anchor="initial_cust_boot" title="Initial Customer Boot">
+      <section anchor="initial_cust_boot" title="Example Initial Customer Boot">
         <t>When the device is first booted by the customer (and on subsequent
         boots), if the device does not have a valid configuration, it will use
         existing auto-install functionality. As an example, it performs DHCP
@@ -360,11 +360,14 @@
         start using it. If this fails, the device with either abort the auto-install
         process, or will repeat this process until it succeeds.</t>
 
-        <t>Note that the device only needs DHCP and to be able to download the
+        <t>Note that the device only needs to be able to download the
         config file; after the initial power-on in the factory it never needs
         to access the Internet or vendor or certificate publication server - it
         (and only it) has the private key and so has the ability to decrypt
         the config file.</t>
+
+        <t>Note that, as with much of the rest of this document, the method used to
+        </t>
 
         <figure>
           <artwork><![CDATA[          +--------+                +--------------+
@@ -510,6 +513,8 @@
       <?rfc include='reference.RFC.8572'?>
 
       <?rfc include='reference.RFC.4122'?>
+
+      <?rfc include='reference.RFC.2131'?>
 
       <?rfc include="reference.I-D.gutmann-scep.xml"?>
     </references>
@@ -683,7 +688,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 
         <section title="Step 3.1: Fetch encrypted config file from config server.">
           <figure>
-            <artwork><![CDATA[$ tftp 192.0.2.1 -c get SN19842256.enc
+            <artwork><![CDATA[$ tftp 2001:0db8::23 -c get SN19842256.enc
 ]]></artwork>
           </figure>
         </section>

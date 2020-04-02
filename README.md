@@ -7,8 +7,8 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: September 7, 2020                              Juniper Networks
-                                                          March 06, 2020
+Expires: October 4, 2020                                Juniper Networks
+                                                          April 02, 2020
 
 
                          Secure Device Install
@@ -55,12 +55,12 @@ Status of This Memo
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 1]
+Kumari & Doyle           Expires October 4, 2020                [Page 1]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
-   This Internet-Draft will expire on September 7, 2020.
+   This Internet-Draft will expire on October 4, 2020.
 
 Copyright Notice
 
@@ -89,7 +89,7 @@ Table of Contents
    4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   7
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   7
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.3.  Initial Customer Boot . . . . . . . . . . . . . . . . . .   8
+     4.3.  Example Initial Customer Boot . . . . . . . . . . . . . .   8
    5.  Additional Considerations . . . . . . . . . . . . . . . . . .  11
      5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .  11
      5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .  11
@@ -102,7 +102,7 @@ Table of Contents
      9.2.  Informative References  . . . . . . . . . . . . . . . . .  13
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  13
    Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  14
-     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  14
+     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  15
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  15
        B.1.2.  Step 1.2: Generate the certificate signing request. .  15
        B.1.3.  Step 1.3: Generate the (self signed) certificate
@@ -111,12 +111,12 @@ Table of Contents
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 2]
+Kumari & Doyle           Expires October 4, 2020                [Page 2]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  15
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  16
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  16
        B.2.3.  Step 2.3: Copy config to the config server. . . . . .  16
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  16
@@ -136,7 +136,7 @@ Internet-Draft            Secure Device Install               March 2020
    reboots, loading initial configurations, etc.  There are also a
    number of (often vendor proprietary) protocols to perform initial
    device installs and configurations - for example, many network
-   devices will attempt to use DHCP to get an IP address and
+   devices will attempt to use DHCP [RFC2131]to get an IP address and
    configuration server, and then fetch and install a configuration when
    they are first powered on.
 
@@ -167,9 +167,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 3]
+Kumari & Doyle           Expires October 4, 2020                [Page 3]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
    targeted solution to solve a common operational issue.  Solutions
@@ -205,12 +205,12 @@ Internet-Draft            Secure Device Install               March 2020
    bootstrapping logic (sometimes called 'autoboot', or 'autoinstall').
    This generally works by having a newly installed / unconfigured
    device obtain an IP address and address of a config server (often
-   called 'next-server', 'siaddr' or 'tftp-server-name') using DHCP.
-   The device then contacts this configuration server to download its
-   initial configuration, which is often identified using the devices
-   serial number, MAC address or similar.  This document extends this
-   (vendor specific) paradigm by allowing the configuration file to be
-   encrypted.
+   called 'next-server', 'siaddr' or 'tftp-server-name') using DHCP (see
+   [RFC2131]).  The device then contacts this configuration server to
+   download its initial configuration, which is often identified using
+   the devices serial number, MAC address or similar.  This document
+   extends this (vendor specific) paradigm by allowing the configuration
+   file to be encrypted.
 
    This document describes a concept, and some example ways of
    implementing this concept.  As devices have different capabilities,
@@ -223,9 +223,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 4]
+Kumari & Doyle           Expires October 4, 2020                [Page 4]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
    system using the serial number as the identifier for business reasons
@@ -279,9 +279,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 5]
+Kumari & Doyle           Expires October 4, 2020                [Page 5]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
 3.  Vendor Role / Requirements
@@ -335,9 +335,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 6]
+Kumari & Doyle           Expires October 4, 2020                [Page 6]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
                          +------------+
@@ -391,9 +391,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 7]
+Kumari & Doyle           Expires October 4, 2020                [Page 7]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
                          +------------+
@@ -425,7 +425,7 @@ Internet-Draft            Secure Device Install               March 2020
    Fetching the certificate, encrypting the configuration, publishing
    the encrypted configuration.
 
-4.3.  Initial Customer Boot
+4.3.  Example Initial Customer Boot
 
    When the device is first booted by the customer (and on subsequent
    boots), if the device does not have a valid configuration, it will
@@ -447,9 +447,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020               [Page 8]
+Kumari & Doyle           Expires October 4, 2020                [Page 8]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
    If the file is encrypted, the device will attempt to decrypt and
@@ -457,11 +457,14 @@ Internet-Draft            Secure Device Install               March 2020
    start using it.  If this fails, the device with either abort the
    auto-install process, or will repeat this process until it succeeds.
 
-   Note that the device only needs DHCP and to be able to download the
-   config file; after the initial power-on in the factory it never needs
-   to access the Internet or vendor or certificate publication server -
-   it (and only it) has the private key and so has the ability to
-   decrypt the config file.
+   Note that the device only needs to be able to download the config
+   file; after the initial power-on in the factory it never needs to
+   access the Internet or vendor or certificate publication server - it
+   (and only it) has the private key and so has the ability to decrypt
+   the config file.
+
+   Note that, as with much of the rest of this document, the method used
+   to
 
 
 
@@ -500,12 +503,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-
-
-
-Kumari & Doyle          Expires September 7, 2020               [Page 9]
+Kumari & Doyle           Expires October 4, 2020                [Page 9]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
              +--------+                +--------------+
@@ -559,9 +559,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020              [Page 10]
+Kumari & Doyle           Expires October 4, 2020               [Page 10]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
 5.  Additional Considerations
@@ -615,9 +615,9 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020              [Page 11]
+Kumari & Doyle           Expires October 4, 2020               [Page 11]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
    third-party to copy and paste it over a serial terminal.  It does not
@@ -671,16 +671,20 @@ Internet-Draft            Secure Device Install               March 2020
 
 
 
-Kumari & Doyle          Expires September 7, 2020              [Page 12]
+Kumari & Doyle           Expires October 4, 2020               [Page 12]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
 9.2.  Informative References
 
    [I-D.gutmann-scep]
               Gutmann, P., "Simple Certificate Enrolment Protocol",
-              draft-gutmann-scep-15 (work in progress), February 2020.
+              draft-gutmann-scep-16 (work in progress), March 2020.
+
+   [RFC2131]  Droms, R., "Dynamic Host Configuration Protocol",
+              RFC 2131, DOI 10.17487/RFC2131, March 1997,
+              <https://www.rfc-editor.org/info/rfc2131>.
 
    [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
               Unique IDentifier (UUID) URN Namespace", RFC 4122,
@@ -721,16 +725,16 @@ Appendix A.  Changes / Author Notes.
    o  Renamed from draft-wkumari-opsawg-sdi-04 -> draft-ietf-opsawg-
       sdi-00
 
+
+
+Kumari & Doyle           Expires October 4, 2020               [Page 13]
+
+Internet-Draft            Secure Device Install               April 2020
+
+
    From -00 to -01
 
    o  Nothing changed in the template!
-
-
-
-Kumari & Doyle          Expires September 7, 2020              [Page 13]
-
-Internet-Draft            Secure Device Install               March 2020
-
 
    From -01 to -03:
 
@@ -775,18 +779,19 @@ Appendix B.  Demo / proof of concept
    automated would be used.  In this example, the unique identifier is
    the serial number of the router, SN19842256.
 
+
+
+
+
+Kumari & Doyle           Expires October 4, 2020               [Page 14]
+
+Internet-Draft            Secure Device Install               April 2020
+
+
 B.1.  Step 1: Generating the certificate.
 
    This step is performed by the router.  It generates a key, then a
    csr, and then a self signed certificate.
-
-
-
-
-Kumari & Doyle          Expires September 7, 2020              [Page 14]
-
-Internet-Draft            Secure Device Install               March 2020
-
 
 B.1.1.  Step 1.1: Generate the private key.
 
@@ -831,18 +836,17 @@ B.2.  Step 2: Generating the encrypted config.
    router configs!), fetch the router's certificate and encrypt the
    config file to that key.  This is done by the operator.
 
+
+
+
+Kumari & Doyle           Expires October 4, 2020               [Page 15]
+
+Internet-Draft            Secure Device Install               April 2020
+
+
 B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
-
-
-
-
-
-Kumari & Doyle          Expires September 7, 2020              [Page 15]
-
-Internet-Draft            Secure Device Install               March 2020
-
 
 B.2.2.  Step 2.2: Encrypt the config file.
 
@@ -876,7 +880,7 @@ B.3.  Step 3: Decrypting and using the config.
 
 B.3.1.  Step 3.1: Fetch encrypted config file from config server.
 
-   $ tftp 192.0.2.1 -c get SN19842256.enc
+   $ tftp 2001:0db8::23 -c get SN19842256.enc
 
 B.3.2.  Step 3.2: Decrypt and use the config.
 
@@ -891,13 +895,9 @@ B.3.2.  Step 3.2: Decrypt and use the config.
 
 
 
-
-
-
-
-Kumari & Doyle          Expires September 7, 2020              [Page 16]
+Kumari & Doyle           Expires October 4, 2020               [Page 16]
 
-Internet-Draft            Secure Device Install               March 2020
+Internet-Draft            Secure Device Install               April 2020
 
 
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
@@ -951,5 +951,5 @@ Authors' Addresses
 
 
 
-Kumari & Doyle          Expires September 7, 2020              [Page 17]
+Kumari & Doyle           Expires October 4, 2020               [Page 17]
 ```
