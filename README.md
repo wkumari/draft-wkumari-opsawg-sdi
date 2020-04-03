@@ -7,12 +7,12 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: October 4, 2020                                Juniper Networks
-                                                          April 02, 2020
+Expires: October 5, 2020                                Juniper Networks
+                                                          April 03, 2020
 
 
                          Secure Device Install
-                        draft-ietf-opsawg-sdi-05
+                        draft-ietf-opsawg-sdi-06
 
 Abstract
 
@@ -55,12 +55,12 @@ Status of This Memo
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 1]
+Kumari & Doyle           Expires October 5, 2020                [Page 1]
 
 Internet-Draft            Secure Device Install               April 2020
 
 
-   This Internet-Draft will expire on October 4, 2020.
+   This Internet-Draft will expire on October 5, 2020.
 
 Copyright Notice
 
@@ -100,30 +100,30 @@ Table of Contents
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
      9.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  13
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  14
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  14
+   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  15
      B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  15
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  15
-       B.1.2.  Step 1.2: Generate the certificate signing request. .  15
+       B.1.2.  Step 1.2: Generate the certificate signing request. .  16
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .  15
-     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  15
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  16
+     B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  16
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 2]
+Kumari & Doyle           Expires October 5, 2020                [Page 2]
 
 Internet-Draft            Secure Device Install               April 2020
 
 
        B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  16
        B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  16
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  16
-     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  16
+       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  17
+     B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  17
        B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  16
-       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  16
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  17
+               server. . . . . . . . . . . . . . . . . . . . . . . .  17
+       B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  17
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  18
 
 1.  Introduction
 
@@ -142,13 +142,14 @@ Internet-Draft            Secure Device Install               April 2020
 
    Network device configurations contain a significant amount of
    security related and / or proprietary information (for example,
-   RADIUS or TACACS+ secrets).  Exposing these to a third party to load
-   onto a new device (or using an auto-install techniques which fetch an
-   unencrypted config file via something like TFTP) is simply not
-   acceptable to many operators, and so they have to send employees to
-   remote locations to perform the initial configuration work.  As well
-   as having a significant monetary cost, it also takes significantly
-   longer to install devices and is generally inefficient.
+   RADIUS [RFC2865] or TACACS+ [I-D.ietf-opsawg-tacacs] secrets).
+   Exposing these to a third party to load onto a new device (or using
+   an auto-install techniques which fetch an unencrypted config file via
+   something like TFTP [RFC1350]) is simply not acceptable to many
+   operators, and so they have to send employees to remote locations to
+   perform the initial configuration work.  As well as having a
+   significant monetary cost, it also takes significantly longer to
+   install devices and is generally inefficient.
 
    There are some workarounds to this, such as asking the vendor to pre-
    configure the devices before shipping it; asking the smart-hands to
@@ -163,19 +164,20 @@ Internet-Draft            Secure Device Install               April 2020
    optimized for simplicity, both for the implementor and the operator;
    it is explicitly not intended to be an "all singing, all dancing"
    fully featured system for managing installed / deployed devices, nor
-   is it intended to solve all use-cases - rather it is a simple
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 3]
+Kumari & Doyle           Expires October 5, 2020                [Page 3]
 
 Internet-Draft            Secure Device Install               April 2020
 
 
+   is it intended to solve all use-cases - rather it is a simple
    targeted solution to solve a common operational issue.  Solutions
-   such as Secure Zero Touch Provisioning (SZTP)" [RFC8572] are much
-   more fully featured, but also more complex to implement and / or are
-   not widely deployed yet.
+   such as Secure Zero Touch Provisioning (SZTP)" [RFC8572],
+   [I-D.ietf-anima-bootstrapping-keyinfra] and similar are much more
+   fully featured, but also more complex to implement and / or are not
+   widely deployed yet.
 
    This solution is specifically designed to be a simple method on top
    of exiting device functionality.  If devices do not support this new
@@ -218,16 +220,16 @@ Internet-Draft            Secure Device Install               April 2020
    all, and so it is expected that vendors will differ in exactly how
    they implement this.
 
-   This document uses the serial number of the device as a unique
-   identifier for simplicity; some vendors may not want to implement the
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 4]
+Kumari & Doyle           Expires October 5, 2020                [Page 4]
 
 Internet-Draft            Secure Device Install               April 2020
 
 
+   This document uses the serial number of the device as a unique
+   identifier for simplicity; some vendors may not want to implement the
    system using the serial number as the identifier for business reasons
    (a competitor or similar could enumerate the serial numbers and
    determine how many devices have been manufactured).  Implementors are
@@ -273,16 +275,17 @@ Internet-Draft            Secure Device Install               April 2020
    Considerations).  An attacker would be able to connect to the network
    and get an IP address.  They would also be able to retrieve
    (encrypted) config files by guessing serial numbers (or perhaps the
-   server would allow directory listing), but without the private keys
-   an attacker will not be able to decrypt the files.
 
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 5]
+Kumari & Doyle           Expires October 5, 2020                [Page 5]
 
 Internet-Draft            Secure Device Install               April 2020
 
+
+   server would allow directory listing), but without the private keys
+   an attacker will not be able to decrypt the files.
 
 3.  Vendor Role / Requirements
 
@@ -292,10 +295,12 @@ Internet-Draft            Secure Device Install               April 2020
 3.1.  Device key generation
 
    Each devices requires a public-private key keypair, and for the
-   public part to be published and retrievable by the operator.  This
-   section illustrates one method, but, as with much of this document
-   the exact mechanism may will vary by vendor.  [I-D.gutmann-scep] is
-   one method which vendors may want to strongly consider.
+   public part to be published and retrievable by the operator.  The
+   cryptograthic algorithm and keylenghts to be used are out of the
+   scope of this document.  This section illustrates one method, but, as
+   with much of this document the exact mechanism may will vary by
+   vendor.  [I-D.gutmann-scep] is one method which vendors may want to
+   strongly consider.
 
    During the manufacturing stage, when the device is initially powered
    on, it will generate a public-private keypair.  It will send its
@@ -330,12 +335,7 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-
-
-
-
-
-Kumari & Doyle           Expires October 4, 2020                [Page 6]
+Kumari & Doyle           Expires October 5, 2020                [Page 6]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -382,16 +382,16 @@ Internet-Draft            Secure Device Install               April 2020
    download the certificate (by providing the unique device identifier
    of the device).  The operator SHOULD fetch the certificate using a
    secure transport (e.g., HTTPS).  The operator will then encrypt the
-   initial configuration (for example, using SMIME) using the key in the
-   certificate, and place it on their TFTP server.  See Appendix B for
-   examples.
+   initial configuration (for example, using SMIME [RFC5751]) using the
+   key in the certificate, and place it on their TFTP server.  See
+   Appendix B for examples.
 
 
 
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 7]
+Kumari & Doyle           Expires October 5, 2020                [Page 7]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -447,7 +447,7 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 8]
+Kumari & Doyle           Expires October 5, 2020                [Page 8]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -463,8 +463,6 @@ Internet-Draft            Secure Device Install               April 2020
    (and only it) has the private key and so has the ability to decrypt
    the config file.
 
-   Note that, as with much of the rest of this document, the method used
-   to
 
 
 
@@ -503,7 +501,9 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-Kumari & Doyle           Expires October 4, 2020                [Page 9]
+
+
+Kumari & Doyle           Expires October 5, 2020                [Page 9]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -559,7 +559,7 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-Kumari & Doyle           Expires October 4, 2020               [Page 10]
+Kumari & Doyle           Expires October 5, 2020               [Page 10]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -572,8 +572,8 @@ Internet-Draft            Secure Device Install               April 2020
    (TPM) on something which is identified as the "router" - for example,
    the chassis / backplane.  This is so that a keypair is bound to what
    humans think of as the "device", and not, for example (redundant)
-   routing engines.  Devices which implement IEEE 802.1AR could choose
-   to use the IDevID for this purpose.
+   routing engines.  Devices which implement IEEE 802.1AR [IEEE802-1AR]
+   could choose to use the IDevID for this purpose.
 
 5.2.  Key replacement
 
@@ -615,7 +615,7 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-Kumari & Doyle           Expires October 4, 2020               [Page 11]
+Kumari & Doyle           Expires October 5, 2020               [Page 11]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -671,7 +671,7 @@ Internet-Draft            Secure Device Install               April 2020
 
 
 
-Kumari & Doyle           Expires October 4, 2020               [Page 12]
+Kumari & Doyle           Expires October 5, 2020               [Page 12]
 
 Internet-Draft            Secure Device Install               April 2020
 
@@ -682,14 +682,55 @@ Internet-Draft            Secure Device Install               April 2020
               Gutmann, P., "Simple Certificate Enrolment Protocol",
               draft-gutmann-scep-16 (work in progress), March 2020.
 
+   [I-D.ietf-anima-bootstrapping-keyinfra]
+              Pritikin, M., Richardson, M., Eckert, T., Behringer, M.,
+              and K. Watsen, "Bootstrapping Remote Secure Key
+              Infrastructures (BRSKI)", draft-ietf-anima-bootstrapping-
+              keyinfra-40 (work in progress), April 2020.
+
+   [I-D.ietf-opsawg-tacacs]
+              Dahm, T., Ota, A., dcmgash@cisco.com, d., Carrel, D., and
+              L. Grant, "The TACACS+ Protocol", draft-ietf-opsawg-
+              tacacs-18 (work in progress), March 2020.
+
+   [IEEE802-1AR]
+              IEEE, "IEEE Standard for Local and Metropolitan Area
+              Networks - Secure Device Identity", June 2018,
+              <https://standards.ieee.org/standard/802_1AR-2018.html>.
+
+   [RFC1350]  Sollins, K., "The TFTP Protocol (Revision 2)", STD 33,
+              RFC 1350, DOI 10.17487/RFC1350, July 1992,
+              <https://www.rfc-editor.org/info/rfc1350>.
+
    [RFC2131]  Droms, R., "Dynamic Host Configuration Protocol",
               RFC 2131, DOI 10.17487/RFC2131, March 1997,
               <https://www.rfc-editor.org/info/rfc2131>.
+
+   [RFC2865]  Rigney, C., Willens, S., Rubens, A., and W. Simpson,
+              "Remote Authentication Dial In User Service (RADIUS)",
+              RFC 2865, DOI 10.17487/RFC2865, June 2000,
+              <https://www.rfc-editor.org/info/rfc2865>.
 
    [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
               Unique IDentifier (UUID) URN Namespace", RFC 4122,
               DOI 10.17487/RFC4122, July 2005,
               <https://www.rfc-editor.org/info/rfc4122>.
+
+   [RFC5751]  Ramsdell, B. and S. Turner, "Secure/Multipurpose Internet
+              Mail Extensions (S/MIME) Version 3.2 Message
+              Specification", RFC 5751, DOI 10.17487/RFC5751, January
+              2010, <https://www.rfc-editor.org/info/rfc5751>.
+
+
+
+
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 13]
+
+Internet-Draft            Secure Device Install               April 2020
+
 
    [RFC8572]  Watsen, K., Farrer, I., and M. Abrahamsson, "Secure Zero
               Touch Provisioning (SZTP)", RFC 8572,
@@ -725,13 +766,6 @@ Appendix A.  Changes / Author Notes.
    o  Renamed from draft-wkumari-opsawg-sdi-04 -> draft-ietf-opsawg-
       sdi-00
 
-
-
-Kumari & Doyle           Expires October 4, 2020               [Page 13]
-
-Internet-Draft            Secure Device Install               April 2020
-
-
    From -00 to -01
 
    o  Nothing changed in the template!
@@ -746,6 +780,13 @@ Internet-Draft            Secure Device Install               April 2020
 
    Addressed a number of comments received before / at IETF104 (Prague).
    These include:
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 14]
+
+Internet-Draft            Secure Device Install               April 2020
+
 
    o  Pointer to https://datatracker.ietf.org/doc/draft-ietf-netconf-
       zerotouch -- included reference to (now) RFC8572 (KW)
@@ -779,15 +820,6 @@ Appendix B.  Demo / proof of concept
    automated would be used.  In this example, the unique identifier is
    the serial number of the router, SN19842256.
 
-
-
-
-
-Kumari & Doyle           Expires October 4, 2020               [Page 14]
-
-Internet-Draft            Secure Device Install               April 2020
-
-
 B.1.  Step 1: Generating the certificate.
 
    This step is performed by the router.  It generates a key, then a
@@ -802,6 +834,15 @@ B.1.1.  Step 1.1: Generate the private key.
    ..........................+++
    ...................+++
    e is 65537 (0x10001)
+
+
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 15]
+
+Internet-Draft            Secure Device Install               April 2020
+
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
 
@@ -836,14 +877,6 @@ B.2.  Step 2: Generating the encrypted config.
    router configs!), fetch the router's certificate and encrypt the
    config file to that key.  This is done by the operator.
 
-
-
-
-Kumari & Doyle           Expires October 4, 2020               [Page 15]
-
-Internet-Draft            Secure Device Install               April 2020
-
-
 B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
@@ -852,6 +885,20 @@ B.2.2.  Step 2.2: Encrypt the config file.
 
    I'm using S/MIME because it is simple to demonstrate.  This is almost
    definitely not the best way to do this.
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 16]
+
+Internet-Draft            Secure Device Install               April 2020
+
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
@@ -890,16 +937,6 @@ B.3.2.  Step 3.2: Decrypt and use the config.
    If an attacker does not have the correct key, they will not be able
    to decrypt the config:
 
-
-
-
-
-
-Kumari & Doyle           Expires October 4, 2020               [Page 16]
-
-Internet-Draft            Secure Device Install               April 2020
-
-
    $ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
      -out config.cfg -inkey wrongkey.pem
    Error decrypting PKCS#7 structure
@@ -907,6 +944,17 @@ Internet-Draft            Secure Device Install               April 2020
     routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
    $ echo $?
    4
+
+
+
+
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 17]
+
+Internet-Draft            Secure Device Install               April 2020
+
 
 Authors' Addresses
 
@@ -951,5 +999,13 @@ Authors' Addresses
 
 
 
-Kumari & Doyle           Expires October 4, 2020               [Page 17]
+
+
+
+
+
+
+
+
+Kumari & Doyle           Expires October 5, 2020               [Page 18]
 ```

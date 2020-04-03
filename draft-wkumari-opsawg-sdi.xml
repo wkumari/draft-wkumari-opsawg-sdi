@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-05" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-06" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="02" month="April" year="2020"/>
+    <date day="03" month="April" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device often requires that an employee
@@ -96,14 +96,17 @@
       initial configurations, etc. There are also a number of (often vendor
       proprietary) protocols to perform initial device installs and
       configurations - for example, many network devices will attempt to use
-      DHCP <xref target="RFC2131"></xref>to get an IP address and configuration server, and then fetch and
-      install a configuration when they are first powered on.</t>
+      DHCP <xref target="RFC2131"></xref>to get an IP address and
+      configuration server, and then fetch and install a configuration
+      when they are first powered on.</t>
 
       <t>Network device configurations contain a significant amount of
       security related and / or proprietary information (for example, RADIUS
-      or TACACS+ secrets). Exposing these to a third party to load onto a new
+      <xref target="RFC2865"></xref> or TACACS+ <xref target="I-D.ietf-opsawg-tacacs"/>
+      secrets). Exposing these to a third party to load onto a new
       device (or using an auto-install techniques which fetch an unencrypted
-      config file via something like TFTP) is simply not acceptable to many
+      config file via something like TFTP <xref target="RFC1350"/>) is simply
+      not acceptable to many
       operators, and so they have to send employees to remote locations to
       perform the initial configuration work. As well as having a significant
       monetary cost, it also takes significantly longer to install devices and
@@ -123,7 +126,8 @@
       featured system for managing installed / deployed devices, nor is it
       intended to solve all use-cases - rather it is a simple targeted
       solution to solve a common operational issue. Solutions such as <xref
-      target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref> are much
+      target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref>,
+      <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
       more fully featured, but also more complex to implement and / or are not
       widely deployed yet.</t>
 
@@ -222,9 +226,10 @@
 
       <section title="Device key generation">
         <t>Each devices requires a public-private key keypair, and for the
-        public part to be published and retrievable by the operator. This
-        section illustrates one method, but, as with much of this document
-        the exact mechanism may will vary by vendor.
+        public part to be published and retrievable by the operator. The
+        cryptograthic algorithm and keylenghts to be used are out of the scope
+        of this document. This section illustrates one method, but, as with
+        much of this document the exact mechanism may will vary by vendor.
         <xref target="I-D.gutmann-scep"/> is one method which vendors may
         want to strongly consider.</t>
 
@@ -302,8 +307,9 @@
         download the certificate (by providing the unique device identifier of
         the device). The operator SHOULD fetch the certificate using a secure
         transport (e.g., HTTPS). The operator will then encrypt the initial
-        configuration (for example, using SMIME) using the key in the certificate,
-        and place it on their TFTP server. See Appendix B for examples.</t>
+        configuration (for example, using SMIME <xref target="RFC5751"/>)
+        using the key in the certificate, and place it on their TFTP server.
+        See Appendix B for examples.</t>
 
         <figure>
           <artwork><![CDATA[                      +------------+
@@ -366,9 +372,6 @@
         (and only it) has the private key and so has the ability to decrypt
         the config file.</t>
 
-        <t>Note that, as with much of the rest of this document, the method used to
-        </t>
-
         <figure>
           <artwork><![CDATA[          +--------+                +--------------+
           | Device |                |Config server |
@@ -429,7 +432,8 @@
         - for example, the chassis / backplane. This is so that a keypair
         is bound to what humans think of as the &ldquo;device&rdquo;, and
         not, for example (redundant) routing engines. Devices which
-        implement IEEE 802.1AR could choose to use the IDevID for this
+        implement IEEE 802.1AR <xref target="IEEE802-1AR"/>
+        could choose to use the IDevID for this
         purpose.</t>
       </section>
 
@@ -516,7 +520,31 @@
 
       <?rfc include='reference.RFC.2131'?>
 
+      <?rfc include='reference.RFC.2865'?>
+
+      <?rfc include='reference.RFC.1350'?>
+
+      <?rfc include='reference.RFC.5751'?>
+
+
+      <?rfc include="reference.I-D.ietf-opsawg-tacacs.xml"?>
+
+      <?rfc include="reference.I-D.ietf-anima-bootstrapping-keyinfra.xml"?>
+
       <?rfc include="reference.I-D.gutmann-scep.xml"?>
+
+    <reference anchor="IEEE802-1AR"
+                target="https://standards.ieee.org/standard/802_1AR-2018.html">
+                <front>
+                        <title>IEEE Standard for Local and Metropolitan Area Networks - Secure Device Identity</title>
+                        <author>
+                                <organization>IEEE</organization>
+                        </author>
+                        <date month="June" year="2018"/>
+                </front>
+                <format type="TXT" target="https://standards.ieee.org/standard/802_1AR-2018.html"/>
+        </reference>
+
     </references>
 
     <section title="Changes / Author Notes.">
