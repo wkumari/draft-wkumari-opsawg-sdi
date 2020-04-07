@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-06" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-07" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,17 +59,18 @@
       </address>
     </author>
 
-    <date day="03" month="April" year="2020"/>
+    <date day="07" month="April" year="2020"/>
 
     <abstract>
-      <t>Deploying a new network device often requires that an employee
-      physically travel to a datacenter to perform the initial install and
+      <t>Deploying a new network device in a location
+      where the operator has no staff of its own often requires that an employee
+      physically travel to the location to perform the initial install and
       configuration, even in shared datacenters with "smart-hands" type
-      support. In many cases, this could be avoided if there were a standard,
-      secure way to initially provision the devices.</t>
+      support. In many cases, this could be avoided if there were a
+      secure way to initially provision the device.</t>
 
-      <t>This document extends existing auto-install / Zero-Touch Provisioning
-      mechanisms to make the process more secure.</t>
+    <t>This document extends existing auto-install / Zero-Touch Provisioning
+    mechanisms to make the process more secure.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to frequently asked questions, general musings,
@@ -88,44 +89,47 @@
   <middle>
     <section title="Introduction">
       <t>In a growing, global network, significant amounts of time and money
-      are spent simply deploying new devices and "forklift" upgrading existing
-      devices. In many cases, these devices are in shared datacenters (for
-      example, Internet Exchange Points (IXP) or "carrier neutral
-      datacenters"), which have staff on hand that can be contracted to
-      perform tasks including physical installs, device reboots, loading
-      initial configurations, etc. There are also a number of (often vendor
-      proprietary) protocols to perform initial device installs and
-      configurations - for example, many network devices will attempt to use
-      DHCP <xref target="RFC2131"></xref>to get an IP address and
+      are spent deploying new devices and "forklift" upgrading
+      existing devices. In many cases, these devices are in shared
+      datacenters (for example, Internet Exchange Points (IXP) or "carrier
+      neutral datacenters"), which have staff on hand that can be
+      contracted to perform tasks including physical installs, device
+      reboots, loading initial configurations, etc. There are also a
+      number of (often vendor proprietary) protocols to perform initial
+      device installs and configurations - for example, many network
+      devices will attempt to use DHCP <xref target="RFC2131"></xref>to get an IP address and
       configuration server, and then fetch and install a configuration
       when they are first powered on.</t>
 
-      <t>Network device configurations contain a significant amount of
-      security related and / or proprietary information (for example, RADIUS
+      <t>The configurations of network devices contain a significant amount of
+      security related and / or proprietary information  (for example, RADIUS
       <xref target="RFC2865"></xref> or TACACS+ <xref target="I-D.ietf-opsawg-tacacs"/>
-      secrets). Exposing these to a third party to load onto a new
-      device (or using an auto-install techniques which fetch an unencrypted
-      config file via something like TFTP <xref target="RFC1350"/>) is simply
-      not acceptable to many
-      operators, and so they have to send employees to remote locations to
-      perform the initial configuration work. As well as having a significant
-      monetary cost, it also takes significantly longer to install devices and
-      is generally inefficient.</t>
+      secrets). Exposing these to a third party to load onto a new device (or using
+      an auto-install techniques which fetch an unencrypted config file via
+      TFTP <xref target="RFC1350"/>) or something similar, is an unacceptable
+      security risk for many operators, and so they send employees to remote locations to
+      perform the initial configuration work; this costs, time and money.</t>
 
-      <t>There are some workarounds to this, such as asking the vendor to
-      pre-configure the devices before shipping it; asking the smart-hands to
-      install a terminal server; providing a minimal, unsecured configuration
-      and using that to bootstrap to a complete configuration, etc; but these
-      are often clumsy and have security issues - for example, in the terminal
-      server case, the console port connection could be easily snooped.</t>
+      <t>There are some workarounds to this, such as asking the vendor to pre-
+      configure the devices before shipping it; asking the smart-hands to
+      install a terminal server; providing a minimal, unsecured
+      configuration and using that to bootstrap to a complete
+      configuration, etc; but these are often clumsy and have security
+      issues - for example, in the terminal server case, the console port
+      connection could be easily snooped.</t>
 
       <t>This document layers security onto existing auto-install solutions to
       provide a secure method to initially configure new devices. It is
-      optimized for simplicity, both for the implementor and the operator; it
-      is explicitly not intended to be an "all singing, all dancing" fully
-      featured system for managing installed / deployed devices, nor is it
-      intended to solve all use-cases - rather it is a simple targeted
-      solution to solve a common operational issue. Solutions such as <xref
+      optimized for simplicity, both for the implementor and the operator;
+      it is explicitly not intended to be an "all singing, all dancing"
+      fully featured system for managing installed / deployed devices, nor
+      is it intended to solve all use-cases - rather it is a simple
+      targeted solution to solve a common operational issue where the
+      network device has been delivered, fibre laid (as appropriate)
+      but there is no trusted member of the operator's staff to perform
+      the initial configuration.</t>
+
+      <t>Solutions such as <xref
       target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref>,
       <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
       more fully featured, but also more complex to implement and / or are not
@@ -133,18 +137,19 @@
 
       <t>This solution is specifically designed to be a simple method on top
       of exiting device functionality. If devices do not support this new
-      method, they can continue to use the existing functionality. In addition,
-      operators can choose to use this to protect their configuration information,
-      or can continue to use the existing functionality.</t>
+      method, they can continue to use the existing functionality. In
+      addition, operators can choose to use this to protect their
+      configuration information, or can continue to use the existing
+      functionality.</t>
 
-      <t>The issue of securely installing devices is in no way a new issue, nor
-      is it limited to network devices; it occurs when deploying servers, PCs,
-      IoT devices, and in many other situations. While the solution described
-      in this document is obvious (encrypt the config, then decrypt it
-      with a device key), this document only discusses the use for network
-      devices, such as routers and switches.</t>
+      <t>The issue of securely installing devices is in no way a new issue,
+      nor is it limited to network devices; it occurs when deploying
+      servers, PCs, IoT devices, and in many other situations. While the
+      solution described in this document is obvious (encrypt the config,
+      then decrypt it with a device key), this document only discusses the
+      use for network devices, such as routers and switches.</t>
 
-      <section title="Requirements notation">
+    <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
         "OPTIONAL" in this document are to be interpreted as described in BCP
@@ -500,9 +505,10 @@
 
     <section title="Acknowledgments">
       <t>The authors wish to thank everyone who contributed, including Benoit
-      Claise, Francis Dupont, Tom Petch, Sam Ribeiro, Michael Richardson,
+      Claise, Francis Dupont, Sam Ribeiro, Michael Richardson,
       Sean Turner and Kent Watsen. Joe Clarke also provided significant
-      comments and review.</t>
+      comments and review, and Tom Petch provided significant editorial
+      contributions to better describe the use cases, and clarify the scope.</t>
     </section>
   </middle>
 
