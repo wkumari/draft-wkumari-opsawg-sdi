@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-07" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-08" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="07" month="April" year="2020"/>
+    <date day="21" month="April" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device in a location
@@ -102,7 +102,7 @@
       when they are first powered on.</t>
 
       <t>The configurations of network devices contain a significant amount of
-      security related and / or proprietary information  (for example, RADIUS
+      security related and/or proprietary information  (for example, RADIUS
       <xref target="RFC2865"></xref> or TACACS+ <xref target="I-D.ietf-opsawg-tacacs"/>
       secrets). Exposing these to a third party to load onto a new device (or using
       an auto-install techniques which fetch an unencrypted config file via
@@ -132,7 +132,7 @@
       <t>Solutions such as <xref
       target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref>,
       <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
-      more fully featured, but also more complex to implement and / or are not
+      more fully featured, but also more complex to implement and/or are not
       widely deployed yet.</t>
 
       <t>This solution is specifically designed to be a simple method on top
@@ -174,7 +174,7 @@
       configuration paradigms, one method will not suit all, and so it is
       expected that vendors will differ in exactly how they implement this.</t>
 
-      <t>This document uses the serial number of the device as a unique
+      <t>This document uses the serial number of the device as a unique device
       identifier for simplicity; some vendors may not want to implement the
       system using the serial number as the identifier for business reasons (a
       competitor or similar could enumerate the serial numbers and determine
@@ -195,7 +195,7 @@
       device, and tells Sirius what the new device's serial number will be
       (SN:17894321). When Acme first installs the firmware on the device and
       boots it, the device generates a public-private keypair, and Acme
-      publishes it on their keyserver (in a public key certificate, for
+      publishes the public key on their keyserver (in a public key certificate, for
       ease of use).</t>
 
       <t>While the device is being shipped, Sirius generates the initial
@@ -232,20 +232,20 @@
       <section title="Device key generation">
         <t>Each devices requires a public-private key keypair, and for the
         public part to be published and retrievable by the operator. The
-        cryptograthic algorithm and keylenghts to be used are out of the scope
+        cryptograthic algorithm and key lenghts to be used are out of the scope
         of this document. This section illustrates one method, but, as with
-        much of this document the exact mechanism may will vary by vendor.
-        <xref target="I-D.gutmann-scep"/> is one method which vendors may
-        want to strongly consider.</t>
+        much of this document the exact mechanism may vary by vendor.
+        EST <xref target="RFC7030"/>and <xref target="I-D.gutmann-scep"/> are
+        methods which vendors may want to consider.</t>
 
         <t>During the manufacturing stage, when the device is initially powered
-        on, it will generate a public-private keypair. It will send its unique
+        on, it will generate a public-private keypair. It will send its unique device
         identifier and the public key to the vendor's Certificate Publication
         Server to be published. The vendor's Certificate Publication
         Server should only accept certificates from the manufacturing facility,
         and which match vendor defined policies (for example, extended key usage,
         extensions, etc.) Note that some devices may be constrained, and so may send
-        the raw public key and unique identifier to the certificate
+        the raw public key and unique device identifier to the certificate
         publication server, while more capable devices may generate and send
         self-signed certificates.</t>
       </section>
@@ -253,16 +253,15 @@
       <section title="Certificate Publication Server">
         <t>The certificate publication server contains a database of
         certificates. If newly manufactured devices upload certificates the
-        certificate publication server can simply publish these, if the
-        devices provide raw public keys and unique identifiers the certificate
-        publication server will need to wrap these in a certificate. Note that
-        the certificate publication server MUST only accept certificates or keys
-        from the vendor's manufacturing facilities.</t>
+        certificate publication server can simply publish these; if the
+        devices provide the raw public keys and unique device identifier,
+        the certificate publication server will need to wrap these in a
+        certificate.</t>
 
         <t>The customers (e.g., Sirius Cybernetics Corp) query this server with
         the serial number (or other provided unique identifier) of a device,
         and retrieve the associated certificate. It is expected that operators
-        will receive the unique identifier (serial number) of devices when
+        will receive the unique device identifier (serial number) of devices when
         they purchase them, and will download and store / cache the
         certificate. This means that there is not a hard requirement on the
         uptime / reachability of the certificate publication server.</t>
@@ -353,7 +352,7 @@
         boots), if the device does not have a valid configuration, it will use
         existing auto-install functionality. As an example, it performs DHCP
         Discovery until it gets a DHCP offer including DHCP option 66
-        (Server-Name) or 150 (TFTP server address), contact the server
+        (Server-Name) or 150 (TFTP server address), contacts the server
         listed in these DHCP options and downloads its config file. Note that this
         is existing functionality (for example, Cisco devices fetch the config
         file named by the Bootfile-Name DHCP option (67)).</t>
@@ -367,9 +366,10 @@
         (e.g., config.enc), or using specific DHCP options.</t>
 
         <t>If the file is encrypted, the device will attempt to
-        decrypt and parse the file. It able, it will install the configuration, and
-        start using it. If this fails, the device with either abort the auto-install
-        process, or will repeat this process until it succeeds.</t>
+        decrypt and parse the file. If able, it will install the configuration, and
+        start using it. If it cannot decrypt the file, or if parsing the configurations fails,
+        the device will either abort the auto-install process, or will repeat this
+        process until it succeeds.</t>
 
         <t>Note that the device only needs to be able to download the
         config file; after the initial power-on in the factory it never needs
@@ -419,7 +419,7 @@
 |       |N                  |    |                  |
 |       |                   |    |                  |
 |  +----v---+               |    |                  |
-|  |Give up |               |    |                  |
+|  |Give up,|               |    |                  |
 |  |go home |               |    |                  |
 |  +--------+               |    |                  |
 |                           |    |                  |
@@ -484,7 +484,7 @@
 
       <t>An attacker (e.g., a malicious datacenter employee) who has physical
       access to the device before it is connected to the network the attacker
-      may be able to extract the device private key (especially if it isn't
+      may be able to extract the device private key (especially if it is not
       stored in a TPM), pretend to be the device when connecting to the
       network, and download and extract the (encrypted) config file.</t>
 
@@ -532,6 +532,7 @@
 
       <?rfc include='reference.RFC.5751'?>
 
+      <?rfc include='reference.RFC.7030'?>
 
       <?rfc include="reference.I-D.ietf-opsawg-tacacs.xml"?>
 
@@ -622,7 +623,7 @@
       in production.</t>
 
       <t>It uses OpenSSL from the command line, in production something more
-      automated would be used. In this example, the unique identifier is the
+      automated would be used. In this example, the unique device identifier is the
       serial number of the router, SN19842256.</t>
 
       <section title="Step 1: Generating the certificate. ">
