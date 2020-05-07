@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-08" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-09" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="21" month="April" year="2020"/>
+    <date day="7" month="May" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device in a location
@@ -189,25 +189,25 @@
       HTTP, FTP, etc. ]</t>
 
     <section title="Example Scenario">
-      <t>Sirius Cybernetics Corp needs another peering router, and so they
-      order another router from Acme Network Widgets, to be drop-shipped to
-      the Point of Presence (POP) / datacenter. Acme begins assembling the new
-      device, and tells Sirius what the new device's serial number will be
-      (SN:17894321). When Acme first installs the firmware on the device and
+      <t>Operator_A needs another peering router, and so they
+      order another router from Vendor_B, to be drop-shipped to
+      the Point of Presence (POP) / datacenter. Vendor_B begins assembling the new
+      device, and tells Operator_A what the new device's serial number will be
+      (SN:17894321). When Vendor_B first installs the firmware on the device and
       boots it, the device generates a public-private keypair, and Acme
       publishes the public key on their keyserver (in a public key certificate, for
       ease of use).</t>
 
-      <t>While the device is being shipped, Sirius generates the initial
-      device configuration, fetches the certificate from Acme keyservers by
-      providing the serial number of the new device. Sirius then encrypts the
+      <t>While the device is being shipped, Operator_A generates the initial
+      device configuration, fetches the certificate from Vendor_B keyservers by
+      providing the serial number of the new device. Operator_A then encrypts the
       device configuration and puts this encrypted config on a (local) TFTP
       server.</t>
 
-      <t>When the device arrives at the POP, it gets installed in Sirius'
+      <t>When the device arrives at the POP, it gets installed in Operator_A'
       rack, and cabled as instructed. The new device powers up and discovers
       that it has not yet been configured. It enters its autoboot state, and
-      begins the DHCP process. Sirius' DHCP server provides it with an IP
+      begins the DHCP process. Operator_A' DHCP server provides it with an IP
       address and the address of the configuration server. The router uses
       TFTP to fetch its config file (note that all this is existing
       functionality). The device attempts to load the config file - if the
@@ -258,7 +258,7 @@
         the certificate publication server will need to wrap these in a
         certificate.</t>
 
-        <t>The customers (e.g., Sirius Cybernetics Corp) query this server with
+        <t>The customers (e.g., Operator_A) query this server with
         the serial number (or other provided unique identifier) of a device,
         and retrieve the associated certificate. It is expected that operators
         will receive the unique device identifier (serial number) of devices when
@@ -369,7 +369,11 @@
         decrypt and parse the file. If able, it will install the configuration, and
         start using it. If it cannot decrypt the file, or if parsing the configurations fails,
         the device will either abort the auto-install process, or will repeat this
-        process until it succeeds.</t>
+        process until it succeeds. When retrying, care should be taken to not
+        overwhelm the server hosting the encrypted configuration files. It is suggested
+        that the device retry every 5 minutes for the first hour, and then every hour after
+        that. As it is expected that devices may be installed well before the
+        configuration file is ready, a maximum number of retrys is not specified.</t>
 
         <t>Note that the device only needs to be able to download the
         config file; after the initial power-on in the factory it never needs
@@ -505,7 +509,7 @@
 
     <section title="Acknowledgments">
       <t>The authors wish to thank everyone who contributed, including Benoit
-      Claise, Francis Dupont, Sam Ribeiro, Michael Richardson,
+      Claise, Francis Dupont, Mirja Kuehlewind, Sam Ribeiro, Michael Richardson,
       Sean Turner and Kent Watsen. Joe Clarke also provided significant
       comments and review, and Tom Petch provided significant editorial
       contributions to better describe the use cases, and clarify the scope.</t>
@@ -556,6 +560,16 @@
 
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
+
+      <t>From -08 to -08</t>
+      <t><list style="symbols">
+          <t>Addressed Mirja's IETF LC comments.</t>
+      </list></t>
+
+      <t>From -04 to -08</t>
+      <t><list style="symbols">
+          <t>Please see GitHub commit log (I forgot to put them in here :-P )</t>
+      </list></t>
 
       <t>From -03 to -04</t>
       <t><list style="symbols">
