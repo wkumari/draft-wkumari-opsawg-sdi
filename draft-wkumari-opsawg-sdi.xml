@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-09" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-10" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="7" month="May" year="2020"/>
+    <date day="11" month="May" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device in a location
@@ -194,7 +194,7 @@
       the Point of Presence (POP) / datacenter. Vendor_B begins assembling the new
       device, and tells Operator_A what the new device's serial number will be
       (SN:17894321). When Vendor_B first installs the firmware on the device and
-      boots it, the device generates a public-private keypair, and Acme
+      boots it, the device generates a public-private keypair, and Vendor_B
       publishes the public key on their keyserver (in a public key certificate, for
       ease of use).</t>
 
@@ -232,7 +232,7 @@
       <section title="Device key generation">
         <t>Each devices requires a public-private key keypair, and for the
         public part to be published and retrievable by the operator. The
-        cryptograthic algorithm and key lenghts to be used are out of the scope
+        cryptograthic algorithm and key lengths to be used are out of the scope
         of this document. This section illustrates one method, but, as with
         much of this document the exact mechanism may vary by vendor.
         EST <xref target="RFC7030"/>and <xref target="I-D.gutmann-scep"/> are
@@ -561,7 +561,12 @@
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
 
-      <t>From -08 to -08</t>
+        <t>From -09 to -10</t>
+      <t><list style="symbols">
+          <t>Typos - "lenghts" => "lengths", missed a reference to Acme.</t>
+      </list></t>
+
+      <t>From -08 to -09</t>
       <t><list style="symbols">
           <t>Addressed Mirja's IETF LC comments.</t>
       </list></t>
