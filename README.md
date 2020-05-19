@@ -19,7 +19,7 @@ Abstract
    Deploying a new network device in a location where the operator has
    no staff of its own often requires that an employee physically travel
    to the location to perform the initial install and configuration,
-   even in shared datacenters with "smart-hands" type support.  In many
+   even in shared datacenters with "remote-hands" type support.  In many
    cases, this could be avoided if there were a secure way to initially
    provision the device.
 
@@ -35,7 +35,7 @@ Abstract
    accept pull requests. ]
 
    [ Ed note: This document introduces concepts and serves as the basic
-   for discussion - because of this, it is conversational, and would
+   for discussion.  Because of this, it is conversational, and would
    need to be firmed up before being published ]
 
 Status of This Memo
@@ -82,10 +82,10 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.1.  Example Scenario  . . . . . . . . . . . . . . . . . . . .   5
-   3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   6
+   3.  Vendor Role . . . . . . . . . . . . . . . . . . . . . . . . .   6
      3.1.  Device key generation . . . . . . . . . . . . . . . . . .   6
      3.2.  Certificate Publication Server  . . . . . . . . . . . . .   6
-   4.  Operator Role / Responsibilities  . . . . . . . . . . . . . .   7
+   4.  Operator Role . . . . . . . . . . . . . . . . . . . . . . . .   7
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   7
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   7
      4.3.  Example Initial Customer Boot . . . . . . . . . . . . . .   8
@@ -98,7 +98,7 @@ Table of Contents
    8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  12
    9.  Informative References  . . . . . . . . . . . . . . . . . . .  13
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  14
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  16
+   Appendix B.  Proof of Concept . . . . . . . . . . . . . . . . . .  16
      B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  16
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  16
        B.1.2.  Step 1.2: Generate the certificate signing request. .  16
@@ -106,8 +106,8 @@ Table of Contents
                itself. . . . . . . . . . . . . . . . . . . . . . . .  17
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  17
        B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  17
-       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  17
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  17
+       B.2.2.  Step 2.2: Encrypt the configuration file. . . . . . .  17
+       B.2.3.  Step 2.3: Copy configuration to the configuration
 
 
 
@@ -116,9 +116,10 @@ Kumari & Doyle          Expires November 12, 2020               [Page 2]
 Internet-Draft            Secure Device Install                 May 2020
 
 
+               server. . . . . . . . . . . . . . . . . . . . . . . .  17
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  17
-       B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  18
+       B.3.1.  Step 3.1: Fetch encrypted configuration file from
+               configuration server. . . . . . . . . . . . . . . . .  18
        B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  18
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  18
 
@@ -132,38 +133,37 @@ Internet-Draft            Secure Device Install                 May 2020
    perform tasks including physical installs, device reboots, loading
    initial configurations, etc.  There are also a number of (often
    vendor proprietary) protocols to perform initial device installs and
-   configurations - for example, many network devices will attempt to
+   configurations.  For example, many network devices will attempt to
    use DHCP [RFC2131]to get an IP address and configuration server, and
    then fetch and install a configuration when they are first powered
    on.
 
    The configurations of network devices contain a significant amount of
-   security related and/or proprietary information (for example, RADIUS
+   security related and proprietary information (for example, RADIUS
    [RFC2865] or TACACS+ [I-D.ietf-opsawg-tacacs] secrets).  Exposing
    these to a third party to load onto a new device (or using an auto-
-   install techniques which fetch an unencrypted config file via TFTP
-   [RFC1350]) or something similar, is an unacceptable security risk for
-   many operators, and so they send employees to remote locations to
+   install technique which fetch an unencrypted configuration file via
+   TFTP [RFC1350]) or something similar is an unacceptable security risk
+   for many operators, and so they send employees to remote locations to
    perform the initial configuration work; this costs, time and money.
 
    There are some workarounds to this, such as asking the vendor to pre-
-   configure the devices before shipping it; asking the smart-hands to
+   configure the device before shipping it; asking the remote support to
    install a terminal server; providing a minimal, unsecured
    configuration and using that to bootstrap to a complete
-   configuration, etc; but these are often clumsy and have security
-   issues - for example, in the terminal server case, the console port
-   connection could be easily snooped.
+   configuration, etc.  However, these are often clumsy and have
+   security issues.  As an example, in the terminal server case, the
+   console port connection could be easily snooped.
 
    This document layers security onto existing auto-install solutions
    (one example of which is [Cisco_AutoInstall]) to provide a secure
    method to initially configure new devices.  It is optimized for
    simplicity, both for the implementor and the operator; it is
    explicitly not intended to be a fully featured system for managing
-   installed / deployed devices, nor is it intended to solve all use-
-   cases - rather it is a simple targeted solution to solve a common
-   operational issue where the network device has been delivered, fibre
-   laid (as appropriate) but there is no trusted member of the
-   operator's staff to perform the initial configuration.  This solution
+   installed devices, nor is it intended to solve all use-cases: rather
+   it is a simple targeted solution to solve a common operational issue
+   where the network device has been delivered, fibre laid (as
+   appropriate) but there is no trusted member of the operator's staff
 
 
 
@@ -172,15 +172,22 @@ Kumari & Doyle          Expires November 12, 2020               [Page 3]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   is only intended to increase confidentiality of the information in
-   the configuration file, not to protect the device itself.
+   to perform the initial configuration.  This solution is only intended
+   to increase confidentiality of the information in the configuration
+   file, not to protect the device itself.
 
    Solutions such as Secure Zero Touch Provisioning (SZTP)" [RFC8572],
    [I-D.ietf-anima-bootstrapping-keyinfra] and similar are much more
-   fully featured, but also more complex to implement and/or are not
-   widely deployed yet.  In addition, work in the IETF "Software Updates
-   for Internet of Things (suit)" WG is expected to provide mechanisims
-   for firmware / software updates.
+   fully featured, but also more complex to implement and are not widely
+   deployed yet.  In addition, work in the IETF "Software Updates for
+   Internet of Things (suit)" WG is expected to provide mechanisims for
+   firmware updates, and are out of scope for this document.
+
+   This document describes a concept, and some example ways of
+   implementing this concept.  As devices have different capabilities,
+   and use different configuration paradigms, one method will not suit
+   all, and so it is expected that vendors will differ in exactly how
+   they implement this.
 
    This solution is specifically designed to be a simple method on top
    of exiting device functionality.  If devices do not support this new
@@ -200,26 +207,19 @@ Internet-Draft            Secure Device Install                 May 2020
 
    Most network devices already include some sort of initial
    bootstrapping logic (sometimes called 'autoboot', or 'autoinstall').
-   This generally works by having a newly installed / unconfigured
-   device obtain an IP address and address of a config server (often
-   called 'next-server', 'siaddr' or 'tftp-server-name') using DHCP (see
-   [RFC2131]).  The device then contacts this configuration server to
-   download its initial configuration, which is often identified using
-   the devices serial number, MAC address or similar.  This document
-   extends this (vendor specific) paradigm by allowing the configuration
-   file to be encrypted.
-
-   This document describes a concept, and some example ways of
-   implementing this concept.  As devices have different capabilities,
-   and use different configuration paradigms, one method will not suit
-   all, and so it is expected that vendors will differ in exactly how
-   they implement this.
+   This generally works by having a newly installed, unconfigured device
+   obtain an IP address for itself and discover the address of a
+   configuration server (often called 'next-server', 'siaddr' or 'tftp-
+   server-name') using DHCP (see [RFC2131]).  The device then contacts
+   this configuration server to download its initial configuration,
+   which is often identified using the devices serial number, MAC
+   address or similar.  This document extends this (vendor specific)
+   paradigm by allowing the configuration file to be encrypted.
 
    This document uses the serial number of the device as a unique device
    identifier for simplicity; some vendors may not want to implement the
    system using the serial number as the identifier for business reasons
    (a competitor or similar could enumerate the serial numbers and
-   determine how many devices have been manufactured).  Implementors are
 
 
 
@@ -228,52 +228,52 @@ Kumari & Doyle          Expires November 12, 2020               [Page 4]
 Internet-Draft            Secure Device Install                 May 2020
 
 
+   determine how many devices have been manufactured).  Implementors are
    free to choose some other way of generating identifiers (e.g., UUID
    [RFC4122]), but this will likely make it somewhat harder for
    operators to use (the serial number is usually easy to find on a
    device, a more complex system is likely harder to track).
 
    [ Ed note: This example also uses TFTP because that is what many
-   vendors use in their auto-install / ZTP feature.  It could easily
-   instead be HTTP, FTP, etc. ]
+   vendors use in their auto-install feature.  It could easily instead
+   be HTTP, FTP, etc. ]
 
 2.1.  Example Scenario
 
    Operator_A needs another peering router, and so they order another
-   router from Vendor_B, to be drop-shipped to the Point of Presence
-   (POP) / datacenter.  Vendor_B begins assembling the new device, and
-   tells Operator_A what the new device's serial number will be
-   (SN:17894321).  When Vendor_B first installs the firmware on the
-   device and boots it, the device generates a public-private keypair,
-   and Vendor_B publishes the public key on their keyserver (in a public
-   key certificate, for ease of use).
+   router from Vendor_B, to be drop-shipped to the facility.  Vendor_B
+   begins assembling the new device, and tells Operator_A what the new
+   device's serial number will be (SN:17894321).  When Vendor_B first
+   installs the firmware on the device and boots it, the device
+   generates a public-private keypair, and Vendor_B publishes the public
+   key on their keyserver (in a public key certificate, for ease of
+   use).
 
    While the device is being shipped, Operator_A generates the initial
-   device configuration, fetches the certificate from Vendor_B
+   device configuration and fetches the certificate from Vendor_B
    keyservers by providing the serial number of the new device.
    Operator_A then encrypts the device configuration and puts this
-   encrypted config on a (local) TFTP server.
+   encrypted configuration on a (local) TFTP server.
 
-   When the device arrives at the POP, it gets installed in Operator_A'
+   When the device arrives at the POP, it gets installed in Operator_A's
    rack, and cabled as instructed.  The new device powers up and
    discovers that it has not yet been configured.  It enters its
-   autoboot state, and begins the DHCP process.  Operator_A' DHCP server
-   provides it with an IP address and the address of the configuration
-   server.  The router uses TFTP to fetch its config file (note that all
-   this is existing functionality).  The device attempts to load the
-   config file - if the config file is unparsable, (new functionality)
-   the device tries to use its private key to decrypt the file, and,
-   assuming it validates, installs the new configuration.
+   autoboot state, and begins the DHCP process.  Operator_A's DHCP
+   server provides it with an IP address and the address of the
+   configuration server.  The router uses TFTP to fetch its
+   configuration file.  Note that all of this is existing functionality.
+   The device attempts to load the configuration file.  As an added
+   step, if the configuration file cannot be parsed, the device tries to
+   use its private key to decrypt the file and, assuming it validates,
+   proceeds to install the new, decrypted, configuration.
 
    Only the "correct" device will have the required private key and be
-   able to decrypt and use the config file (See Security
-   Considerations).  An attacker would be able to connect to the network
-   and get an IP address.  They would also be able to retrieve
-   (encrypted) config files by guessing serial numbers (or perhaps the
-   server would allow directory listing), but without the private keys
-   an attacker will not be able to decrypt the files.
-
-
+   able to decrypt and use the configuration file (See Security
+   Considerations (Section 7)).  An attacker would be able to connect to
+   the network and get an IP address.  They would also be able to
+   retrieve (encrypted) configuration files by guessing serial numbers
+   (or perhaps the server would allow directory listing), but without
+   the private keys an attacker will not be able to decrypt the files.
 
 
 
@@ -284,10 +284,10 @@ Kumari & Doyle          Expires November 12, 2020               [Page 5]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-3.  Vendor Role / Requirements
+3.  Vendor Role
 
-   This section describes the vendors roles and responsibilities and
-   provides an overview of what the device needs to do.
+   This section describes the vendor's roles and provides an overview of
+   what the device needs to do.
 
 3.1.  Device key generation
 
@@ -296,8 +296,8 @@ Internet-Draft            Secure Device Install                 May 2020
    cryptographic algorithm and key lengths to be used are out of the
    scope of this document.  This section illustrates one method, but, as
    with much of this document the exact mechanism may vary by vendor.
-   EST [RFC7030]and [I-D.gutmann-scep] are methods which vendors may
-   want to consider.
+   Enrollment over Secure Transport ([RFC7030]) and [I-D.gutmann-scep]
+   are methods which vendors may want to consider.
 
    During the manufacturing stage, when the device is initially powered
    on, it will generate a public-private keypair.  It will send its
@@ -330,7 +330,7 @@ Internet-Draft            Secure Device Install                 May 2020
    number (or other provided unique identifier) of a device, and
    retrieve the associated certificate.  It is expected that operators
    will receive the unique device identifier (serial number) of devices
-   when they purchase them, and will download and store / cache the
+   when they purchase them, and will download and store the certificate.
 
 
 
@@ -340,8 +340,8 @@ Kumari & Doyle          Expires November 12, 2020               [Page 6]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   certificate.  This means that there is not a hard requirement on the
-   uptime / reachability of the certificate publication server.
+   This means that there is not a hard requirement on the reachability
+   of the certificate publication server.
 
                          +------------+
         +------+         |Certificate |
@@ -371,12 +371,12 @@ Internet-Draft            Secure Device Install                 May 2020
 
    Initial certificate generation and publication.
 
-4.  Operator Role / Responsibilities
+4.  Operator Role
 
 4.1.  Administrative
 
    When purchasing a new device, the accounting department will need to
-   get the unique device identifier (likely serial number) of the new
+   get the unique device identifier (e.g., serial number) of the new
    device and communicate it to the operations group.
 
 4.2.  Technical
@@ -434,16 +434,16 @@ Internet-Draft            Secure Device Install                 May 2020
    use existing auto-install functionality.  As an example, it performs
    DHCP Discovery until it gets a DHCP offer including DHCP option 66
    (Server-Name) or 150 (TFTP server address), contacts the server
-   listed in these DHCP options and downloads its config file.  Note
-   that this is existing functionality (for example, Cisco devices fetch
-   the config file named by the Bootfile-Name DHCP option (67)).
+   listed in these DHCP options and downloads its configuration file.
+   Note that this is existing functionality (for example, Cisco devices
+   fetch the config file named by the Bootfile-Name DHCP option (67)).
 
-   After retrieving the config file, the device needs to determine if it
-   is encrypted or not.  If it is not encrypted, the existing behavior
-   is used.  If the configuration is encrypted, the process continues as
-   described in this document.  The method used to determine if the
-   config is encrypted or not is implementation dependent; there are a
-   number of (obvious) options, including having a magic string in the
+   After retrieving the configuration file, the device needs to
+   determine if it is encrypted or not.  If it is not encrypted, the
+   existing behavior is used.  If the configuration is encrypted, the
+   process continues as described in this document.  The method used to
+   determine if the configuration is encrypted or not is implementation
+   dependent; there are a number of (obvious) options, including having
 
 
 
@@ -452,8 +452,8 @@ Kumari & Doyle          Expires November 12, 2020               [Page 8]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   file header, using a file name extension (e.g., config.enc), or using
-   specific DHCP options.
+   a magic string in the file header, using a file name extension (e.g.,
+   config.enc), or using specific DHCP options.
 
    If the file is encrypted, the device will attempt to decrypt and
    parse the file.  If able, it will install the configuration, and
@@ -467,11 +467,11 @@ Internet-Draft            Secure Device Install                 May 2020
    the configuration file is ready, a maximum number of retries is not
    specified.
 
-   Note that the device only needs to be able to download the config
-   file; after the initial power-on in the factory it never needs to
-   access the Internet or vendor or certificate publication server - it
-   (and only it) has the private key and so has the ability to decrypt
-   the config file.
+   Note that the device only needs to be able to download the
+   configuration file; after the initial power-on in the factory it
+   never needs to access the Internet or vendor or certificate
+   publication server.  The device (and only the device) has the private
+   key and so has the ability to decrypt the configuration file.
 
 
 
@@ -549,13 +549,13 @@ Internet-Draft            Secure Device Install                 May 2020
    |       |N                  |    |                  |
    |       |                   |    |                  |
    |  +----v---+               |    |                  |
-   |  |Give up,|               |    |                  |
-   |  |go home |               |    |                  |
+   |  |Retry or|               |    |                  |
+   |  | abort  |               |    |                  |
    |  +--------+               |    |                  |
    |                           |    |                  |
    +---------------------------+    +------------------+
 
-   Device boot, fetch and install config file
+   Device boot, fetch and install configuration file
 
 
 
@@ -579,7 +579,7 @@ Internet-Draft            Secure Device Install                 May 2020
 
    It is anticipated that some operator may want to replace the (vendor
    provided) keys after installing the device.  There are two options
-   when implementing this - a vendor could allow the operator's key to
+   when implementing this: a vendor could allow the operator's key to
    completely replace the initial device generated key (which means
    that, if the device is ever sold, the new owner couldn't use this
    technique to install the device), or the device could prefer the
@@ -595,11 +595,11 @@ Internet-Draft            Secure Device Install                 May 2020
    installed and ask the device to load and use this new configuration.
    It is expected (but not defined in this document, as it is vendor
    specific) that vendors will allow the operator to copy a new,
-   encrypted config (or part of a config) onto a device and then request
-   that the device decrypt and install it (e.g.: 'load replace
-   <filename> encrypted)).  The operator could also choose to reset the
-   device to factory defaults, and allow the device to act as though it
-   were the initial boot (see Section 4.3).
+   encrypted configuration (or part of a configuration) onto a device
+   and then request that the device decrypt and install it (e.g.: 'load
+   replace <filename> encrypted).  The operator could also choose to
+   reset the device to factory defaults, and allow the device to act as
+   though it were the initial boot (see Section 4.3).
 
 6.  IANA Considerations
 
@@ -609,9 +609,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
    This reference architecture is intended to incrementally improve upon
    commonly accepted "auto-install" practices used today that may
-   transmit configurations unencrypted (e.g., unencrypted config files
-   which can be downloaded connecting to unprotected ports in
-   datacenters, mailing initial config files on flash drives, or
+   transmit configurations unencrypted (e.g., unencrypted configuration
+   files which can be downloaded connecting to unprotected ports in
+   datacenters, mailing initial configuration files on flash drives, or
 
 
 
@@ -620,9 +620,9 @@ Kumari & Doyle          Expires November 12, 2020              [Page 11]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   emailing config files and asking a third-party to copy and paste it
-   over a serial terminal) or allow unrestricted access to these
-   configurations.
+   emailing configuration files and asking a third-party to copy and
+   paste it over a serial terminal) or allow unrestricted access to
+   these configurations.
 
    This document describes an object level security design to provide
    confidentiality assurances for the configuration while it is in
@@ -638,14 +638,14 @@ Internet-Draft            Secure Device Install                 May 2020
    is connected to the network the attacker may be able to extract the
    device private key (especially if it is not stored in a TPM), pretend
    to be the device when connecting to the network, and download and
-   extract the (encrypted) config file.
+   extract the (encrypted) configuration file.
 
    An attacker with access to the configuration server (or the ability
    to route traffic to configuration server under their control) and the
    device's public key could return a configuration of the attacker's
    choosing to the unprovisioned device.
 
-   This mechanism does not protect against a malicious vendor - while
+   This mechanism does not protect against a malicious vendor.  While
    the keypair should be generated on the device, and the private key
    should be securely stored, the mechanism cannot detect or protect
    against a vendor who claims to do this, but instead generates the
@@ -655,7 +655,7 @@ Internet-Draft            Secure Device Install                 May 2020
    Over" situation.
 
    Even when using a secure bootstrapping mechanism, security conscious
-   operators may wish to bootstrapping devices with a minimal / less
+   operators may wish to bootstrap devices with a minimal or less
    sensitive config, and then replace this with a more complete one
    after install.
 
@@ -850,20 +850,21 @@ Internet-Draft            Secure Device Install                 May 2020
 
    o  Added a bunch of ASCII diagrams
 
-Appendix B.  Demo / proof of concept
+Appendix B.  Proof of Concept
 
-   This section contains a rough demo / proof of concept of the system.
-   It is only intended for illustration, and is not intended to be used
-   in production.
+   This section contains a proof of concept of the system.  It is only
+   intended for illustration, and is not intended to be used in
+   production.
 
-   It uses OpenSSL from the command line, in production something more
+   It uses OpenSSL from the command line.  In production something more
    automated would be used.  In this example, the unique device
    identifier is the serial number of the router, SN19842256.
 
 B.1.  Step 1: Generating the certificate.
 
    This step is performed by the router.  It generates a key, then a
-   csr, and then a self signed certificate.
+   Certificate Signing Request (CSR), and then a self signed
+   certificate.
 
 B.1.1.  Step 1.1: Generate the private key.
 
@@ -894,7 +895,6 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
 
 
 
-
 Kumari & Doyle          Expires November 12, 2020              [Page 16]
 
 Internet-Draft            Secure Device Install                 May 2020
@@ -912,18 +912,19 @@ B.2.  Step 2: Generating the encrypted config.
 
    The operator now wants to deploy the new router.
 
-   They generate the initial config (using whatever magic tool generates
-   router configs!), fetch the router's certificate and encrypt the
-   config file to that key.  This is done by the operator.
+   They generate the initial configuration (using whatever magic tool
+   generates router configs!), fetch the router's certificate and
+   encrypt the configuration file to that key.  This is done by the
+   operator.
 
 B.2.1.  Step 2.1: Fetch the certificate.
 
    $ wget http://keyserv.example.net/certificates/SN19842256.crt
 
-B.2.2.  Step 2.2: Encrypt the config file.
+B.2.2.  Step 2.2: Encrypt the configuration file.
 
-   I'm using S/MIME because it is simple to demonstrate.  This is almost
-   definitely not the best way to do this.
+   S/MIME is used here because it is simple to demonstrate.  This is
+   almost definitely not the best way to do this.
 
    $ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
      -out SN19842256.enc -outform PEM SN19842256.crt
@@ -935,7 +936,7 @@ B.2.2.  Step 2.2: Encrypt the config file.
    LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
    -----END PKCS7-----
 
-B.2.3.  Step 2.3: Copy config to the config server.
+B.2.3.  Step 2.3: Copy configuration to the configuration server.
 
    $ scp SN19842256.enc config.example.com:/tftpboot
 
@@ -945,9 +946,8 @@ B.3.  Step 3: Decrypting and using the config.
    that does not have a valid configuration file, and will start the
    "autoboot" process.  This is a well documented process, but the high
    level overview is that it will use DHCP to obtain an IP address and
-   config server.  It will then use TFTP to download a configuration
-   file, based upon its serial number (this document modifies the
-
+   configuration server.  It will then use TFTP to download a
+   configuration file, based upon its serial number (this document
 
 
 
@@ -956,10 +956,12 @@ Kumari & Doyle          Expires November 12, 2020              [Page 17]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   solution to fetch an encrypted config file (ending in .enc)).  It
-   will then decrypt the config file, and install it.
+   modifies the solution to fetch an encrypted configuration file
+   (ending in .enc)).  It will then decrypt the configuration file, and
+   install it.
 
-B.3.1.  Step 3.1: Fetch encrypted config file from config server.
+B.3.1.  Step 3.1: Fetch encrypted configuration file from configuration
+        server.
 
    $ tftp 2001:0db8::23 -c get SN19842256.enc
 
@@ -997,8 +999,6 @@ Authors' Addresses
    US
 
    Email: cdoyle@juniper.net
-
-
 
 
 
