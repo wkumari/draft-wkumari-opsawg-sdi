@@ -23,8 +23,8 @@ Abstract
    cases, this could be avoided if there were a secure way to initially
    provision the device.
 
-   This document extends existing auto-install / Zero-Touch Provisioning
-   mechanisms to make the process more secure.
+   This document extends existing verndor proprietary auto-install to
+   make the process more secure.
 
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
@@ -80,7 +80,6 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
    2.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.1.  Example Scenario  . . . . . . . . . . . . . . . . . . . .   5
    3.  Vendor Role / Requirements  . . . . . . . . . . . . . . . . .   6
@@ -97,17 +96,18 @@ Table of Contents
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
    8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  12
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .  13
+   9.  Informative References  . . . . . . . . . . . . . . . . . . .  13
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  14
-   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  15
+   Appendix B.  Demo / proof of concept  . . . . . . . . . . . . . .  16
      B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  16
        B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  16
        B.1.2.  Step 1.2: Generate the certificate signing request. .  16
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .  16
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  17
      B.2.  Step 2: Generating the encrypted config.  . . . . . . . .  17
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  17
+       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  17
+       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  17
 
 
 
@@ -116,12 +116,9 @@ Kumari & Doyle          Expires November 12, 2020               [Page 2]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  17
-       B.2.2.  Step 2.2: Encrypt the config file.  . . . . . . . . .  17
-       B.2.3.  Step 2.3: Copy config to the config server. . . . . .  17
      B.3.  Step 3: Decrypting and using the config.  . . . . . . . .  17
        B.3.1.  Step 3.1: Fetch encrypted config file from config
-               server. . . . . . . . . . . . . . . . . . . . . . . .  17
+               server. . . . . . . . . . . . . . . . . . . . . . . .  18
        B.3.2.  Step 3.2: Decrypt and use the config. . . . . . . . .  18
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  18
 
@@ -157,13 +154,16 @@ Internet-Draft            Secure Device Install                 May 2020
    issues - for example, in the terminal server case, the console port
    connection could be easily snooped.
 
-   This document layers security onto existing auto-install solutions to
-   provide a secure method to initially configure new devices.  It is
-   optimized for simplicity, both for the implementor and the operator;
-   it is explicitly not intended to be an "all singing, all dancing"
-   fully featured system for managing installed / deployed devices, nor
-   is it intended to solve all use-cases - rather it is a simple
-   targeted solution to solve a common operational issue where the
+   This document layers security onto existing auto-install solutions
+   (one example of which is [Cisco_AutoInstall]) to provide a secure
+   method to initially configure new devices.  It is optimized for
+   simplicity, both for the implementor and the operator; it is
+   explicitly not intended to be a fully featured system for managing
+   installed / deployed devices, nor is it intended to solve all use-
+   cases - rather it is a simple targeted solution to solve a common
+   operational issue where the network device has been delivered, fibre
+   laid (as appropriate) but there is no trusted member of the
+   operator's staff to perform the initial configuration.  This solution
 
 
 
@@ -172,14 +172,15 @@ Kumari & Doyle          Expires November 12, 2020               [Page 3]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   network device has been delivered, fibre laid (as appropriate) but
-   there is no trusted member of the operator's staff to perform the
-   initial configuration.
+   is only intended to increase confidentiality of the information in
+   the configuration file, not to protect the device itself.
 
    Solutions such as Secure Zero Touch Provisioning (SZTP)" [RFC8572],
    [I-D.ietf-anima-bootstrapping-keyinfra] and similar are much more
    fully featured, but also more complex to implement and/or are not
-   widely deployed yet.
+   widely deployed yet.  In addition, work in the IETF "Software Updates
+   for Internet of Things (suit)" WG is expected to provide mechanisims
+   for firmware / software updates.
 
    This solution is specifically designed to be a simple method on top
    of exiting device functionality.  If devices do not support this new
@@ -194,14 +195,6 @@ Internet-Draft            Secure Device Install                 May 2020
    solution described in this document is obvious (encrypt the config,
    then decrypt it with a device key), this document only discusses the
    use for network devices, such as routers and switches.
-
-1.1.  Requirements notation
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in BCP
-   14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
 
 2.  Overview
 
@@ -219,15 +212,6 @@ Internet-Draft            Secure Device Install                 May 2020
    This document describes a concept, and some example ways of
    implementing this concept.  As devices have different capabilities,
    and use different configuration paradigms, one method will not suit
-
-
-
-
-Kumari & Doyle          Expires November 12, 2020               [Page 4]
-
-Internet-Draft            Secure Device Install                 May 2020
-
-
    all, and so it is expected that vendors will differ in exactly how
    they implement this.
 
@@ -236,6 +220,14 @@ Internet-Draft            Secure Device Install                 May 2020
    system using the serial number as the identifier for business reasons
    (a competitor or similar could enumerate the serial numbers and
    determine how many devices have been manufactured).  Implementors are
+
+
+
+Kumari & Doyle          Expires November 12, 2020               [Page 4]
+
+Internet-Draft            Secure Device Install                 May 2020
+
+
    free to choose some other way of generating identifiers (e.g., UUID
    [RFC4122]), but this will likely make it somewhat harder for
    operators to use (the serial number is usually easy to find on a
@@ -276,6 +268,14 @@ Internet-Draft            Secure Device Install                 May 2020
    Only the "correct" device will have the required private key and be
    able to decrypt and use the config file (See Security
    Considerations).  An attacker would be able to connect to the network
+   and get an IP address.  They would also be able to retrieve
+   (encrypted) config files by guessing serial numbers (or perhaps the
+   server would allow directory listing), but without the private keys
+   an attacker will not be able to decrypt the files.
+
+
+
+
 
 
 
@@ -284,11 +284,6 @@ Kumari & Doyle          Expires November 12, 2020               [Page 5]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   and get an IP address.  They would also be able to retrieve
-   (encrypted) config files by guessing serial numbers (or perhaps the
-   server would allow directory listing), but without the private keys
-   an attacker will not be able to decrypt the files.
-
 3.  Vendor Role / Requirements
 
    This section describes the vendors roles and responsibilities and
@@ -296,9 +291,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 3.1.  Device key generation
 
-   Each devices requires a public-private key keypair, and for the
-   public part to be published and retrievable by the operator.  The
-   cryptograthic algorithm and key lengths to be used are out of the
+   Each device requires a public-private key keypair, and for the public
+   part to be published and retrievable by the operator.  The
+   cryptographic algorithm and key lengths to be used are out of the
    scope of this document.  This section illustrates one method, but, as
    with much of this document the exact mechanism may vary by vendor.
    EST [RFC7030]and [I-D.gutmann-scep] are methods which vendors may
@@ -315,6 +310,13 @@ Internet-Draft            Secure Device Install                 May 2020
    unique device identifier to the certificate publication server, while
    more capable devices may generate and send self-signed certificates.
 
+   This reference architecture needs a serialization format for the key
+   material.  Due to the prevalence of tooling support for it on network
+   devices, X.509 certificates are a convenient format to exchange
+   public keys.  However, most of the meta-data that would use for
+   revocation and aging will not be used and should be ignored by both
+   the client and server.
+
 3.2.  Certificate Publication Server
 
    The certificate publication server contains a database of
@@ -329,8 +331,6 @@ Internet-Draft            Secure Device Install                 May 2020
    retrieve the associated certificate.  It is expected that operators
    will receive the unique device identifier (serial number) of devices
    when they purchase them, and will download and store / cache the
-   certificate.  This means that there is not a hard requirement on the
-   uptime / reachability of the certificate publication server.
 
 
 
@@ -339,6 +339,9 @@ Kumari & Doyle          Expires November 12, 2020               [Page 6]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+   certificate.  This means that there is not a hard requirement on the
+   uptime / reachability of the certificate publication server.
 
                          +------------+
         +------+         |Certificate |
@@ -380,13 +383,10 @@ Internet-Draft            Secure Device Install                 May 2020
 
    The operator will contact the vendor's publication server, and
    download the certificate (by providing the unique device identifier
-   of the device).  The operator SHOULD fetch the certificate using a
-   secure transport (e.g., HTTPS).  The operator will then encrypt the
-   initial configuration (for example, using SMIME [RFC5751]) using the
-   key in the certificate, and place it on their TFTP server.  See
-   Appendix B for examples.
-
-
+   of the device).  The operator fetches the certificate using a secure
+   transport (e.g., HTTPS).  The operator will then encrypt the initial
+   configuration (for example, using SMIME [RFC5751]) using the key in
+   the certificate, and place it on their configuration server.
 
 
 
@@ -395,6 +395,8 @@ Kumari & Doyle          Expires November 12, 2020               [Page 7]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+   See Appendix B for examples.
 
                          +------------+
       +--------+         |Certificate |
@@ -440,10 +442,8 @@ Internet-Draft            Secure Device Install                 May 2020
    is encrypted or not.  If it is not encrypted, the existing behavior
    is used.  If the configuration is encrypted, the process continues as
    described in this document.  The method used to determine if the
-   config is encrypted or not is implementation dependant; there are a
+   config is encrypted or not is implementation dependent; there are a
    number of (obvious) options, including having a magic string in the
-   file header, using a file name extension (e.g., config.enc), or using
-   specific DHCP options.
 
 
 
@@ -451,6 +451,9 @@ Kumari & Doyle          Expires November 12, 2020               [Page 8]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+   file header, using a file name extension (e.g., config.enc), or using
+   specific DHCP options.
 
    If the file is encrypted, the device will attempt to decrypt and
    parse the file.  If able, it will install the configuration, and
@@ -461,7 +464,7 @@ Internet-Draft            Secure Device Install                 May 2020
    the encrypted configuration files.  It is suggested that the device
    retry every 5 minutes for the first hour, and then every hour after
    that.  As it is expected that devices may be installed well before
-   the configuration file is ready, a maximum number of retrys is not
+   the configuration file is ready, a maximum number of retries is not
    specified.
 
    Note that the device only needs to be able to download the config
@@ -469,9 +472,6 @@ Internet-Draft            Secure Device Install                 May 2020
    access the Internet or vendor or certificate publication server - it
    (and only it) has the private key and so has the ability to decrypt
    the config file.
-
-
-
 
 
 
@@ -607,11 +607,11 @@ Internet-Draft            Secure Device Install                 May 2020
 
 7.  Security Considerations
 
-   This mechanism is intended to replace either expensive (traveling
-   employees) or insecure mechanisms of installing newly deployed
-   devices such as: unencrypted config files which can be downloaded by
-   connecting to unprotected ports in datacenters, mailing initial
-   config files on flash drives, or emailing config files and asking a
+   This reference architecture is intended to incrementally improve upon
+   commonly accepted "auto-install" practices used today that may
+   transmit configurations unencrypted (e.g., unencrypted config files
+   which can be downloaded connecting to unprotected ports in
+   datacenters, mailing initial config files on flash drives, or
 
 
 
@@ -620,15 +620,30 @@ Kumari & Doyle          Expires November 12, 2020              [Page 11]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-   third-party to copy and paste it over a serial terminal.  It does not
-   protect against devices with malicious firmware, nor theft and reuse
-   of devices.
+   emailing config files and asking a third-party to copy and paste it
+   over a serial terminal) or allow unrestricted access to these
+   configurations.
 
-   An attacker (e.g., a malicious datacenter employee) who has physical
-   access to the device before it is connected to the network the
-   attacker may be able to extract the device private key (especially if
-   it is not stored in a TPM), pretend to be the device when connecting
-   to the network, and download and extract the (encrypted) config file.
+   This document describes an object level security design to provide
+   confidentiality assurances for the configuration while it is in
+   transit between the configuration server and the unprovisioned device
+   even if the underly transport does not provide this security service.
+
+   The architecture provides no assurances about the source of the
+   encrypted configuration or protect against theft and reuse of
+   devices.
+
+   An attacker (e.g., a malicious datacenter employee, person in the
+   supply chain, etc.) who has physical access to the device before it
+   is connected to the network the attacker may be able to extract the
+   device private key (especially if it is not stored in a TPM), pretend
+   to be the device when connecting to the network, and download and
+   extract the (encrypted) config file.
+
+   An attacker with access to the configuration server (or the ability
+   to route traffic to configuration server under their control) and the
+   device's public key could return a configuration of the attacker's
+   choosing to the unprovisioned device.
 
    This mechanism does not protect against a malicious vendor - while
    the keypair should be generated on the device, and the private key
@@ -653,21 +668,6 @@ Internet-Draft            Secure Device Install                 May 2020
    editorial contributions to better describe the use cases, and clarify
    the scope.
 
-9.  References
-
-9.1.  Normative References
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
-
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
-
-
 
 
 
@@ -676,7 +676,17 @@ Kumari & Doyle          Expires November 12, 2020              [Page 12]
 Internet-Draft            Secure Device Install                 May 2020
 
 
-9.2.  Informative References
+   Roman Danyliw also provided helpful text around the certificate
+   usage.
+
+9.  Informative References
+
+   [Cisco_AutoInstall]
+              Cisco Systems, Inc., "Using AutoInstall to Remotely
+              Configure Cisco Networking Devices", Jan 2018,
+              <https://www.cisco.com/c/en/us/td/docs/ios-
+              xml/ios/fundamentals/configuration/15mt/fundamentals-15-
+              mt-book/cf-autoinstall.html>.
 
    [I-D.gutmann-scep]
               Gutmann, P., "Simple Certificate Enrolment Protocol",
@@ -711,16 +721,6 @@ Internet-Draft            Secure Device Install                 May 2020
               RFC 2865, DOI 10.17487/RFC2865, June 2000,
               <https://www.rfc-editor.org/info/rfc2865>.
 
-   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
-              Unique IDentifier (UUID) URN Namespace", RFC 4122,
-              DOI 10.17487/RFC4122, July 2005,
-              <https://www.rfc-editor.org/info/rfc4122>.
-
-   [RFC5751]  Ramsdell, B. and S. Turner, "Secure/Multipurpose Internet
-              Mail Extensions (S/MIME) Version 3.2 Message
-              Specification", RFC 5751, DOI 10.17487/RFC5751, January
-              2010, <https://www.rfc-editor.org/info/rfc5751>.
-
 
 
 
@@ -731,6 +731,16 @@ Kumari & Doyle          Expires November 12, 2020              [Page 13]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
+              Unique IDentifier (UUID) URN Namespace", RFC 4122,
+              DOI 10.17487/RFC4122, July 2005,
+              <https://www.rfc-editor.org/info/rfc4122>.
+
+   [RFC5751]  Ramsdell, B. and S. Turner, "Secure/Multipurpose Internet
+              Mail Extensions (S/MIME) Version 3.2 Message
+              Specification", RFC 5751, DOI 10.17487/RFC5751, January
+              2010, <https://www.rfc-editor.org/info/rfc5751>.
 
    [RFC7030]  Pritikin, M., Ed., Yee, P., Ed., and D. Harkins, Ed.,
               "Enrollment over Secure Transport", RFC 7030,
@@ -768,6 +778,16 @@ Appendix A.  Changes / Author Notes.
 
    From individual WG-01 to -03:
 
+
+
+
+
+
+Kumari & Doyle          Expires November 12, 2020              [Page 14]
+
+Internet-Draft            Secure Device Install                 May 2020
+
+
    o  Addressed Joe Clarke's comments -
       https://mailarchive.ietf.org/arch/msg/opsawg/JTzsdVXw-
       XtWXZIIFhH7aW_-0YY
@@ -779,14 +799,6 @@ Appendix A.  Changes / Author Notes.
    o  Reordered text for above.
 
    From individual -04 to WG-01:
-
-
-
-
-Kumari & Doyle          Expires November 12, 2020              [Page 14]
-
-Internet-Draft            Secure Device Install                 May 2020
-
 
    o  Renamed from draft-wkumari-opsawg-sdi-04 -> draft-ietf-opsawg-
       sdi-00
@@ -822,6 +834,16 @@ Internet-Draft            Secure Device Install                 May 2020
    o  Make it clear it should first try use the config, and if it
       doesn't work, then try decrypt and use it.
 
+
+
+
+
+
+Kumari & Doyle          Expires November 12, 2020              [Page 15]
+
+Internet-Draft            Secure Device Install                 May 2020
+
+
    o  The CA part was confusing people - the certificate is simply a
       wrapper for the key, and the Subject just an index, and so removed
       that.
@@ -833,16 +855,6 @@ Appendix B.  Demo / proof of concept
    This section contains a rough demo / proof of concept of the system.
    It is only intended for illustration, and is not intended to be used
    in production.
-
-
-
-
-
-
-Kumari & Doyle          Expires November 12, 2020              [Page 15]
-
-Internet-Draft            Secure Device Install                 May 2020
-
 
    It uses OpenSSL from the command line, in production something more
    automated would be used.  In this example, the unique device
@@ -880,18 +892,6 @@ B.1.2.  Step 1.2: Generate the certificate signing request.
    An optional company name []:.
 
 
-B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
-
-   $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
-   SN19842256.crt
-
-   The router then sends the key to the vendor's keyserver for
-   publication (not shown).
-
-
-
-
-
 
 
 
@@ -899,6 +899,14 @@ Kumari & Doyle          Expires November 12, 2020              [Page 16]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
+
+   $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
+   SN19842256.crt
+
+   The router then sends the key to the vendor's keyserver for
+   publication (not shown).
 
 B.2.  Step 2: Generating the encrypted config.
 
@@ -939,14 +947,6 @@ B.3.  Step 3: Decrypting and using the config.
    level overview is that it will use DHCP to obtain an IP address and
    config server.  It will then use TFTP to download a configuration
    file, based upon its serial number (this document modifies the
-   solution to fetch an encrypted config file (ending in .enc)).  It
-   will then decrypt the config file, and install it.
-
-B.3.1.  Step 3.1: Fetch encrypted config file from config server.
-
-   $ tftp 2001:0db8::23 -c get SN19842256.enc
-
-
 
 
 
@@ -955,6 +955,13 @@ Kumari & Doyle          Expires November 12, 2020              [Page 17]
 
 Internet-Draft            Secure Device Install                 May 2020
 
+
+   solution to fetch an encrypted config file (ending in .enc)).  It
+   will then decrypt the config file, and install it.
+
+B.3.1.  Step 3.1: Fetch encrypted config file from config server.
+
+   $ tftp 2001:0db8::23 -c get SN19842256.enc
 
 B.3.2.  Step 3.2: Decrypt and use the config.
 
@@ -990,13 +997,6 @@ Authors' Addresses
    US
 
    Email: cdoyle@juniper.net
-
-
-
-
-
-
-
 
 
 

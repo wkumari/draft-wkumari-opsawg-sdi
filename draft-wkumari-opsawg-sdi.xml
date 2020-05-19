@@ -69,8 +69,8 @@
       support. In many cases, this could be avoided if there were a
       secure way to initially provision the device.</t>
 
-    <t>This document extends existing auto-install / Zero-Touch Provisioning
-    mechanisms to make the process more secure.</t>
+    <t>This document extends existing verndor proprietary auto-install
+    to make the process more secure.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to frequently asked questions, general musings,
@@ -118,22 +118,27 @@
       issues - for example, in the terminal server case, the console port
       connection could be easily snooped.</t>
 
-      <t>This document layers security onto existing auto-install solutions to
-      provide a secure method to initially configure new devices. It is
+      <t>This document layers security onto existing auto-install solutions
+      (one example of which is <xref target="Cisco_AutoInstall"/>)
+      to provide a secure method to initially configure new devices. It is
       optimized for simplicity, both for the implementor and the operator;
-      it is explicitly not intended to be an "all singing, all dancing"
+      it is explicitly not intended to be a
       fully featured system for managing installed / deployed devices, nor
       is it intended to solve all use-cases - rather it is a simple
       targeted solution to solve a common operational issue where the
       network device has been delivered, fibre laid (as appropriate)
       but there is no trusted member of the operator's staff to perform
-      the initial configuration.</t>
+      the initial configuration. This solution is only intended to increase
+      confidentiality of the information in the configuration file, not to
+      protect the device itself.</t>
 
       <t>Solutions such as <xref
       target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref>,
       <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
       more fully featured, but also more complex to implement and/or are not
-      widely deployed yet.</t>
+      widely deployed yet. In addition, work in the IETF "Software Updates for
+      Internet of Things (suit)" WG is expected to provide mechanisims for
+      firmware / software updates.</t>
 
       <t>This solution is specifically designed to be a simple method on top
       of exiting device functionality. If devices do not support this new
@@ -149,13 +154,6 @@
       then decrypt it with a device key), this document only discusses the
       use for network devices, such as routers and switches.</t>
 
-    <section title="Requirements notation">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-        "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-        "OPTIONAL" in this document are to be interpreted as described in BCP
-        14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only
-        when, they appear in all capitals, as shown here.</t>
-      </section>
     </section>
 
     <section title="Overview">
@@ -230,9 +228,9 @@
       provides an overview of what the device needs to do.</t>
 
       <section title="Device key generation">
-        <t>Each devices requires a public-private key keypair, and for the
+        <t>Each device requires a public-private key keypair, and for the
         public part to be published and retrievable by the operator. The
-        cryptograthic algorithm and key lengths to be used are out of the scope
+        cryptographic algorithm and key lengths to be used are out of the scope
         of this document. This section illustrates one method, but, as with
         much of this document the exact mechanism may vary by vendor.
         EST <xref target="RFC7030"/>and <xref target="I-D.gutmann-scep"/> are
@@ -248,6 +246,13 @@
         the raw public key and unique device identifier to the certificate
         publication server, while more capable devices may generate and send
         self-signed certificates.</t>
+
+        <t>This reference architecture needs a serialization format for the
+        key material.  Due to the prevalence of tooling support for it on
+        network devices, X.509 certificates are a convenient format to
+        exchange public keys. However, most of the meta-data that would
+        use for revocation and aging will not be used and should be
+        ignored by both the client and server.</t>
       </section>
 
       <section title="Certificate Publication Server">
@@ -309,11 +314,12 @@
       <section title="Technical">
         <t>The operator will contact the vendor's publication server, and
         download the certificate (by providing the unique device identifier of
-        the device). The operator SHOULD fetch the certificate using a secure
+        the device). The operator fetches the certificate using a secure
         transport (e.g., HTTPS). The operator will then encrypt the initial
         configuration (for example, using SMIME <xref target="RFC5751"/>)
-        using the key in the certificate, and place it on their TFTP server.
-        See Appendix B for examples.</t>
+        using the key in the certificate, and place it on their
+        configuration server.</t>
+        <t>See Appendix B for examples.</t>
 
         <figure>
           <artwork><![CDATA[                      +------------+
@@ -361,7 +367,7 @@
         encrypted or not. If it is not encrypted, the existing behavior is used.
         If the configuration is encrypted, the process continues as described in this
         document. The method used to determine if the config is encrypted or not is
-        implementation dependant; there are a number of (obvious) options, including
+        implementation dependent; there are a number of (obvious) options, including
         having a magic string in the file header, using a file name extension
         (e.g., config.enc), or using specific DHCP options.</t>
 
@@ -373,7 +379,7 @@
         overwhelm the server hosting the encrypted configuration files. It is suggested
         that the device retry every 5 minutes for the first hour, and then every hour after
         that. As it is expected that devices may be installed well before the
-        configuration file is ready, a maximum number of retrys is not specified.</t>
+        configuration file is ready, a maximum number of retries is not specified.</t>
 
         <t>Note that the device only needs to be able to download the
         config file; after the initial power-on in the factory it never needs
@@ -478,19 +484,35 @@
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>This mechanism is intended to replace either expensive (traveling
-      employees) or insecure mechanisms of installing newly deployed devices
-      such as: unencrypted config files which can be downloaded by connecting
-      to unprotected ports in datacenters, mailing initial config files on
-      flash drives, or emailing config files and asking a third-party to copy
-      and paste it over a serial terminal. It does not protect against devices
-      with malicious firmware, nor theft and reuse of devices.</t>
+      <t>This reference architecture is intended to incrementally improve
+      upon commonly accepted "auto-install" practices used today that may
+      transmit configurations unencrypted (e.g., unencrypted config files
+      which can be downloaded connecting to unprotected ports in datacenters,
+      mailing initial config files on flash drives, or emailing config files
+      and asking a third-party to copy and paste it over a serial terminal)
+      or allow unrestricted access to these configurations.</t>
 
-      <t>An attacker (e.g., a malicious datacenter employee) who has physical
+      <t>This document describes an object level security design to provide
+      confidentiality assurances for the configuration while it is in
+      transit between the configuration server and the unprovisioned
+      device even if the underly transport does not provide this
+      security service.</t>
+
+      <t>The architecture provides no assurances about the source of
+      the encrypted configuration or protect against theft and
+      reuse of devices.</t>
+
+      <t>An attacker (e.g., a malicious datacenter employee, person in the
+      supply chain, etc.) who has physical
       access to the device before it is connected to the network the attacker
       may be able to extract the device private key (especially if it is not
       stored in a TPM), pretend to be the device when connecting to the
       network, and download and extract the (encrypted) config file.</t>
+
+      <t>An attacker with access to the configuration server (or the
+      ability to route traffic to configuration server under their control)
+      and the device's public key could return a configuration of the
+      attacker's choosing to the unprovisioned device.</t>
 
       <t>This mechanism does not protect against a malicious vendor - while
       the keypair should be generated on the device, and the private key
@@ -513,16 +535,12 @@
       Sean Turner and Kent Watsen. Joe Clarke also provided significant
       comments and review, and Tom Petch provided significant editorial
       contributions to better describe the use cases, and clarify the scope.</t>
+
+      <t>Roman Danyliw also provided helpful text around the certificate usage.</t>
     </section>
   </middle>
 
   <back>
-    <references title="Normative References">
-      <?rfc include='reference.RFC.2119'?>
-
-      <?rfc include='reference.RFC.8174'?>
-    </references>
-
     <references title="Informative References">
       <?rfc include='reference.RFC.8572'?>
 
@@ -556,6 +574,17 @@
                 <format type="TXT" target="https://standards.ieee.org/standard/802_1AR-2018.html"/>
         </reference>
 
+    <reference anchor="Cisco_AutoInstall"
+                target="https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/configuration/15mt/fundamentals-15-mt-book/cf-autoinstall.html">
+                <front>
+                        <title>Using AutoInstall to Remotely Configure Cisco Networking Devices</title>
+                        <author>
+                                <organization>Cisco Systems, Inc.</organization>
+                        </author>
+                        <date month="Jan" year="2018"/>
+                </front>
+                <format type="TXT" target="https://standards.ieee.org/standard/802_1AR-2018.html"/>
+        </reference>
     </references>
 
     <section title="Changes / Author Notes.">
