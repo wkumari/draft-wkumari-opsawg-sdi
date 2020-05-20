@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-10" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-11" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,17 +59,17 @@
       </address>
     </author>
 
-    <date day="11" month="May" year="2020"/>
+    <date day="20" month="May" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device in a location
       where the operator has no staff of its own often requires that an employee
       physically travel to the location to perform the initial install and
-      configuration, even in shared datacenters with "remote-hands" type
+      configuration, even in shared facilities with "remote-hands" type
       support. In many cases, this could be avoided if there were a
       secure way to initially provision the device.</t>
 
-    <t>This document extends existing verndor proprietary auto-install
+    <t>This document extends existing vendor proprietary auto-install
     to make the process more secure.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
@@ -91,24 +91,24 @@
       <t>In a growing, global network, significant amounts of time and money
       are spent deploying new devices and "forklift" upgrading
       existing devices. In many cases, these devices are in shared
-      datacenters (for example, Internet Exchange Points (IXP) or "carrier
-      neutral datacenters"), which have staff on hand that can be
+      facilities (for example, Internet Exchange Points (IXP) or
+      "carrier-neutral datacenters"), which have staff on hand that can be
       contracted to perform tasks including physical installs, device
       reboots, loading initial configurations, etc. There are also a
-      number of (often vendor proprietary) protocols to perform initial
+      number of (often proprietary) protocols to perform initial
       device installs and configurations. For example, many network
-      devices will attempt to use DHCP <xref target="RFC2131"></xref>to get an IP address and
-      configuration server, and then fetch and install a configuration
-      when they are first powered on.</t>
+      devices will attempt to use DHCP <xref target="RFC2131"></xref> to get
+      an IP address and configuration server, and then fetch and install
+      a configuration when they are first powered on.</t>
 
       <t>The configurations of network devices contain a significant amount of
-      security related and proprietary information  (for example, RADIUS
+      security-related and proprietary information (for example, RADIUS
       <xref target="RFC2865"></xref> or TACACS+ <xref target="I-D.ietf-opsawg-tacacs"/>
       secrets). Exposing these to a third party to load onto a new device (or using
-      an auto-install technique which fetch an unencrypted configuration file via
+      an auto-install technique which fetches an unencrypted configuration file via
       TFTP <xref target="RFC1350"/>) or something similar is an unacceptable
       security risk for many operators, and so they send employees to remote locations to
-      perform the initial configuration work; this costs, time and money.</t>
+      perform the initial configuration work; this costs time and money.</t>
 
       <t>There are some workarounds to this, such as asking the vendor to pre-
       configure the device before shipping it; asking the remote support to
@@ -121,10 +121,10 @@
       <t>This document layers security onto existing auto-install solutions
       (one example of which is <xref target="Cisco_AutoInstall"/>)
       to provide a secure method to initially configure new devices. It is
-      optimized for simplicity, both for the implementor and the operator;
+      optimized for simplicity, for both the implementor and the operator;
       it is explicitly not intended to be a
       fully featured system for managing installed devices, nor
-      is it intended to solve all use-cases: rather it is a simple
+      is it intended to solve all use cases: rather it is a simple
       targeted solution to solve a common operational issue where the
       network device has been delivered, fibre laid (as appropriate)
       but there is no trusted member of the operator's staff to perform
@@ -133,11 +133,11 @@
       protect the device itself.</t>
 
       <t>Solutions such as <xref
-      target="RFC8572">Secure Zero Touch Provisioning (SZTP)"</xref>,
+      target="RFC8572">"Secure Zero Touch Provisioning (SZTP)"</xref>,
       <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
       more fully featured, but also more complex to implement and are not
       widely deployed yet. In addition, work in the IETF "Software Updates for
-      Internet of Things (suit)" WG is expected to provide mechanisims for
+      Internet of Things (suit)" WG is expected to provide mechanisms for
       firmware updates, and are out of scope for this document.</t>
 
       <t>This document describes a concept, and some example ways of implementing
@@ -169,8 +169,8 @@
       (often called 'next-server', 'siaddr' or
       'tftp-server-name') using DHCP (see <xref target="RFC2131"></xref>). The device
       then contacts this configuration server to download its initial configuration,
-      which is often identified using the devices serial number, MAC address or
-      similar. This document extends this (vendor specific) paradigm by allowing
+      which is often identified using the device's serial number, MAC address or
+      similar. This document extends this (vendor-specific) paradigm by allowing
       the configuration file to be encrypted.</t>
 
       <t>This document uses the serial number of the device as a unique device
@@ -193,7 +193,7 @@
       the facility. Vendor_B begins assembling the new
       device, and tells Operator_A what the new device's serial number will be
       (SN:17894321). When Vendor_B first installs the firmware on the device and
-      boots it, the device generates a public-private keypair, and Vendor_B
+      boots it, the device generates a public-private key pair, and Vendor_B
       publishes the public key on their keyserver (in a public key certificate, for
       ease of use).</t>
 
@@ -230,7 +230,7 @@
       provides an overview of what the device needs to do.</t>
 
       <section title="Device key generation">
-        <t>Each device requires a public-private key keypair, and for the
+        <t>Each device requires a public-private key pair, and for the
         public part to be published and retrievable by the operator. The
         cryptographic algorithm and key lengths to be used are out of the scope
         of this document. This section illustrates one method, but, as with
@@ -239,12 +239,12 @@
         methods which vendors may want to consider.</t>
 
         <t>During the manufacturing stage, when the device is initially powered
-        on, it will generate a public-private keypair. It will send its unique device
+        on, it will generate a public-private key pair. It will send its unique device
         identifier and the public key to the vendor's Certificate Publication
         Server to be published. The vendor's Certificate Publication
         Server should only accept certificates from the manufacturing facility,
         and which match vendor defined policies (for example, extended key usage,
-        extensions, etc.) Note that some devices may be constrained, and so may send
+        and extensions) Note that some devices may be constrained, and so may send
         the raw public key and unique device identifier to the certificate
         publication server, while more capable devices may generate and send
         self-signed certificates.</t>
@@ -375,8 +375,8 @@
 
         <t>If the file is encrypted, the device will attempt to
         decrypt and parse the file. If able, it will install the configuration, and
-        start using it. If it cannot decrypt the file, or if parsing the configurations fails,
-        the device will either abort the auto-install process, or will repeat this
+        start using it. If it cannot decrypt the file, or if parsing the configuration fails,
+        the device will either abort the auto-install process, or repeat this
         process until it succeeds. When retrying, care should be taken to not
         overwhelm the server hosting the encrypted configuration files. It is suggested
         that the device retry every 5 minutes for the first hour, and then every hour after
@@ -444,9 +444,9 @@
 
     <section title="Additional Considerations">
       <section title="Key storage">
-        <t>Ideally, the keypair would be stored in a Trusted Platform Module
+        <t>Ideally, the key pair would be stored in a Trusted Platform Module
         (TPM) on something which is identified as the &ldquo;router&rdquo;
-        - for example, the chassis / backplane. This is so that a keypair
+        - for example, the chassis / backplane. This is so that a key pair
         is bound to what humans think of as the &ldquo;device&rdquo;, and
         not, for example (redundant) routing engines. Devices which
         implement IEEE 802.1AR <xref target="IEEE802-1AR"/>
@@ -458,16 +458,16 @@
         <t>It is anticipated that some operator may want to replace the
         (vendor provided) keys after installing the device. There are two
         options when implementing this: a vendor could allow the operator's
-        key to completely replace the initial device generated key (which
+        key to completely replace the initial device-generated key (which
         means that, if the device is ever sold, the new owner couldn't use
         this technique to install the device), or the device could prefer the
-        operators installed key. This is an implementation decision left to
+        operator's installed key. This is an implementation decision left to
         the vendor.</t>
       </section>
 
       <section title="Device reinstall">
         <t>Increasingly, operations is moving towards an automated model of
-        device management, whereby portions (or the entire) configuration is
+        device management, whereby portions of (or the entire) configuration is
         programmatically generated. This means that operators may want to
         generate an entire configuration after the device has been initially
         installed and ask the device to load and use this new configuration.
@@ -491,7 +491,7 @@
       transmit configurations unencrypted (e.g., unencrypted configuration files
       which can be downloaded connecting to unprotected ports in datacenters,
       mailing initial configuration files on flash drives, or emailing configuration files
-      and asking a third-party to copy and paste it over a serial terminal)
+      and asking a third-party to copy and paste them over a serial terminal)
       or allow unrestricted access to these configurations.</t>
 
       <t>This document describes an object level security design to provide
@@ -506,7 +506,7 @@
 
       <t>An attacker (e.g., a malicious datacenter employee, person in the
       supply chain, etc.) who has physical
-      access to the device before it is connected to the network the attacker
+      access to the device before it is connected to the network
       may be able to extract the device private key (especially if it is not
       stored in a TPM), pretend to be the device when connecting to the
       network, and download and extract the (encrypted) configuration file.</t>
@@ -517,17 +517,17 @@
       attacker's choosing to the unprovisioned device.</t>
 
       <t>This mechanism does not protect against a malicious vendor. While
-      the keypair should be generated on the device, and the private key
+      the key pair should be generated on the device, and the private key
       should be securely stored, the mechanism cannot detect or protect
       against a vendor who claims to do this, but instead generates the
-      keypair off device and keeps a copy of the private key. It is largely
+      key pair off device and keeps a copy of the private key. It is largely
       understood in the operator community that a malicious vendor or attacker
       with physical access to the device is largely a "Game Over"
       situation.</t>
 
-      <t>Even when using a secure bootstrapping mechanism, security conscious
-      operators may wish to bootstrap devices with a minimal or less
-      sensitive config, and then replace this with a more complete one after
+      <t>Even when using a secure bootstrap mechanism, security-conscious
+      operators may wish to bootstrap devices with a minimal or less-sensitive
+      configuration, and then replace this with a more complete one after
       install.</t>
     </section>
 
@@ -722,7 +722,7 @@ An optional company name []:.
         </section>
       </section>
 
-      <section title="Step 2: Generating the encrypted config. ">
+      <section title="Step 2: Generating the encrypted configuration. ">
         <t>The operator now wants to deploy the new router.</t>
 
         <t>They generate the initial configuration (using whatever magic tool
@@ -759,7 +759,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
         </section>
       </section>
 
-      <section title="Step 3: Decrypting and using the config. ">
+      <section title="Step 3: Decrypting and using the configuration. ">
         <t>When the router connects to the operator's network it will detect
         that does not have a valid configuration file, and will start the
         &ldquo;autoboot&rdquo; process. This is a well documented process, but
@@ -778,7 +778,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
           </figure>
         </section>
 
-        <section title="Step 3.2: Decrypt and use the config. ">
+        <section title="Step 3.2: Decrypt and use the configuration. ">
           <figure>
             <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
   -out config.cfg -inkey key.pem
@@ -786,7 +786,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
           </figure>
 
           <t>If an attacker does not have the correct key, they will not be
-          able to decrypt the config:</t>
+          able to decrypt the configuration file:</t>
 
           <figure>
             <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
