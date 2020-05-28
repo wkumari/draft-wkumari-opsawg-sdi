@@ -66,11 +66,13 @@
       where the operator has no staff of its own often requires that an employee
       physically travel to the location to perform the initial install and
       configuration, even in shared facilities with "remote-hands" type
-      support. In many cases, this could be avoided if there were a
-      secure way to initially provision the device.</t>
+      support. In many cases, this could be avoided if there were an
+      easy way to transfer the initial configuration to a new device,
+      while still maintaining confidentiality of the configuration.</t>
 
     <t>This document extends existing vendor proprietary auto-install
-    to make the process more secure.</t>
+     to provide confidentiality to initial configuration during
+     bootstrapping of the device.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to frequently asked questions, general musings,
@@ -118,9 +120,22 @@
       issues. As an example, in the terminal server case, the console port
       connection could be easily snooped.</t>
 
+      <t>An ideal solution in this space would protect both the confidentiality
+       of device configuration in transit and the authenticity (and authorization
+       status) of configuration to be used by the device. The mechanism described
+       in this document only addresses the former, and makes no effort to do
+       the latter, with the device accepting any configuration file that comes its
+       way and is encrypted to the device's key (or not encrypted, as the case may be).
+       Other solutions (such as <xref
+      target="RFC8572">"Secure Zero Touch Provisioning (SZTP)"</xref>,
+      <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and other
+      voucher-based methods) are more fully featured, but also require
+      more complicated machinery. This document describes something much
+      simpler, at the cost of only providing limited protection.</t>
+
       <t>This document layers security onto existing auto-install solutions
       (one example of which is <xref target="Cisco_AutoInstall"/>)
-      to provide a secure method to initially configure new devices. It is
+      to provide a more secure method to initially configure new devices. It is
       optimized for simplicity, for both the implementor and the operator;
       it is explicitly not intended to be a
       fully featured system for managing installed devices, nor
@@ -129,16 +144,9 @@
       network device has been delivered, fibre laid (as appropriate)
       but there is no trusted member of the operator's staff to perform
       the initial configuration. This solution is only intended to increase
-      confidentiality of the information in the configuration file, not to
-      protect the device itself.</t>
-
-      <t>Solutions such as <xref
-      target="RFC8572">"Secure Zero Touch Provisioning (SZTP)"</xref>,
-      <xref target="I-D.ietf-anima-bootstrapping-keyinfra"/> and similar are much
-      more fully featured, but also more complex to implement and are not
-      widely deployed yet. In addition, work in the IETF "Software Updates for
-      Internet of Things (suit)" WG is expected to provide mechanisms for
-      firmware updates, and are out of scope for this document.</t>
+      confidentiality of the information in the configuration file, and
+      does not protect the device itself from loading a malicious
+      configuration.</t>
 
       <t>This document describes a concept, and some example ways of implementing
       this concept. As devices have different capabilities, and use different
@@ -506,7 +514,8 @@
 
       <t>An attacker (e.g., a malicious datacenter employee, person in the
       supply chain, etc.) who has physical
-      access to the device before it is connected to the network
+      access to the device before it is connected to the network, or who
+      manages to exploit it once installed,
       may be able to extract the device private key (especially if it is not
       stored in a TPM), pretend to be the device when connecting to the
       network, and download and extract the (encrypted) configuration file.</t>
