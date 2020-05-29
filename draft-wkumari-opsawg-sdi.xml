@@ -99,7 +99,8 @@
       reboots, loading initial configurations, etc. There are also a
       number of (often proprietary) protocols to perform initial
       device installs and configurations. For example, many network
-      devices will attempt to use DHCP <xref target="RFC2131"></xref> to get
+      devices will attempt to use DHCP <xref target="RFC2131"></xref> or
+      DHCPv6 <xref target="RFC8415"></xref> to get
       an IP address and configuration server, and then fetch and install
       a configuration when they are first powered on.</t>
 
@@ -135,14 +136,15 @@
 
       <t>This document layers security onto existing auto-install solutions
       (one example of which is <xref target="Cisco_AutoInstall"/>)
-      to provide a more secure method to initially configure new devices. It is
+      to provide a method to initially configure new devices while maintaining
+      confidentiality of the initial configuration. It is
       optimized for simplicity, for both the implementor and the operator;
       it is explicitly not intended to be a
       fully featured system for managing installed devices, nor
       is it intended to solve all use cases: rather it is a simple
       targeted solution to solve a common operational issue where the
       network device has been delivered, fibre laid (as appropriate)
-      but there is no trusted member of the operator's staff to perform
+      and there is no trusted member of the operator's staff to perform
       the initial configuration. This solution is only intended to increase
       confidentiality of the information in the configuration file, and
       does not protect the device itself from loading a malicious
@@ -175,7 +177,8 @@
       by having a newly installed, unconfigured device obtain an IP address for itself
       and discover the address of a configuration server
       (often called 'next-server', 'siaddr' or
-      'tftp-server-name') using DHCP (see <xref target="RFC2131"></xref>). The device
+      'tftp-server-name') using DHCP or DHXPv6 (see <xref target="RFC2131"></xref>,
+      <xref target="RFC8415"></xref>). The device
       then contacts this configuration server to download its initial configuration,
       which is often identified using the device's serial number, MAC address or
       similar. This document extends this (vendor-specific) paradigm by allowing
@@ -188,8 +191,7 @@
       how many devices have been manufactured). Implementors are free to
       choose some other way of generating identifiers (e.g., UUID <xref
       target="RFC4122"/>), but this will likely make it somewhat harder for
-      operators to use (the serial number is usually easy to find on a device,
-      a more complex system is likely harder to track).</t>
+      operators to use (the serial number is usually easy to find on a device).</t>
 
       <t>[ Ed note: This example also uses TFTP because that is what many vendors
       use in their auto-install feature. It could easily instead be
@@ -243,19 +245,21 @@
         cryptographic algorithm and key lengths to be used are out of the scope
         of this document. This section illustrates one method, but, as with
         much of this document the exact mechanism may vary by vendor.
-        Enrollment over Secure Transport (<xref target="RFC7030"/>) and <xref target="I-D.gutmann-scep"/> are
+        Enrollment over Secure Transport (<xref target="RFC7030"/>)
+        or possibly <xref target="I-D.gutmann-scep"/> are
         methods which vendors may want to consider.</t>
 
         <t>During the manufacturing stage, when the device is initially powered
         on, it will generate a public-private key pair. It will send its unique device
-        identifier and the public key to the vendor's Certificate Publication
-        Server to be published. The vendor's Certificate Publication
-        Server should only accept certificates from the manufacturing facility,
+        identifier and the public key to the vendor's directory server
+        to be published. The vendor's directory server
+        should only accept certificates from the manufacturing facility,
         and which match vendor defined policies (for example, extended key usage,
         and extensions) Note that some devices may be constrained, and so may send
         the raw public key and unique device identifier to the certificate
         publication server, while more capable devices may generate and send
-        self-signed certificates.</t>
+        self-signed certificates. This communication with the directory server
+        should be integrity protected.</t>
 
         <t>This reference architecture needs a serialization format for the
         key material.  Due to the prevalence of tooling support for it on
@@ -265,12 +269,12 @@
         ignored by both the client and server.</t>
       </section>
 
-      <section title="Certificate Publication Server">
-        <t>The certificate publication server contains a database of
+      <section title="Directory Server">
+        <t>The directory server contains a database of
         certificates. If newly manufactured devices upload certificates the
-        certificate publication server can simply publish these; if the
+        directory server can simply publish these; if the
         devices provide the raw public keys and unique device identifier,
-        the certificate publication server will need to wrap these in a
+        the directory server will need to wrap these in a
         certificate.</t>
 
         <t>The customers (e.g., Operator_A) query this server with
@@ -279,12 +283,12 @@
         will receive the unique device identifier (serial number) of devices when
         they purchase them, and will download and store the
         certificate. This means that there is not a hard requirement on the
-        reachability of the certificate publication server.</t>
+        reachability of the directory server.</t>
 
         <figure>
           <artwork><![CDATA[                      +------------+
-     +------+         |Certificate |
-     |Device|         |Publication |
+     +------+         |            |
+     |Device|         | Directory  |
      +------+         |   Server   |
                       +------------+
 +----------------+   +--------------+
@@ -333,9 +337,9 @@
 
         <figure>
           <artwork><![CDATA[                      +------------+
-   +--------+         |Certificate |
-   |Operator|         |Publication |
-   +--------+         |   Server   |
+   +--------+         |           |
+   |Operator|         | Directory |
+   +--------+         |   Server  |
                       +------------+
 +----------------+  +----------------+
 | +-----------+  |  |  +-----------+ |
@@ -393,7 +397,7 @@
 
         <t>Note that the device only needs to be able to download the
         configuration file; after the initial power-on in the factory it never needs
-        to access the Internet or vendor or certificate publication server. The device
+        to access the Internet or vendor or directory server. The device
         (and only the device) has the private key and so has the ability to decrypt
         the configuration file.</t>
 
@@ -559,6 +563,8 @@
 
       <?rfc include='reference.RFC.2131'?>
 
+      <?rfc include='reference.RFC.8415'?>
+
       <?rfc include='reference.RFC.2865'?>
 
       <?rfc include='reference.RFC.1350'?>
@@ -705,18 +711,8 @@ e is 65537 (0x10001)
         <section title="Step 1.2: Generate the certificate signing request.">
           <figure>
             <artwork><![CDATA[$ openssl req -new -key key.pem -out SN19842256.csr
-Country Name (2 letter code) [AU]:.
-State or Province Name (full name) [Some-State]:.
-Locality Name (eg, city) []:.
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:.
-Organizational Unit Name (eg, section) []:.
 Common Name (e.g. server FQDN or YOUR name) []:SN19842256
-Email Address []:.
 
-Please enter the following 'extra' attributes
-to be sent with your certificate request
-A challenge password []:
-An optional company name []:.
 
 ]]></artwork>
           </figure>
@@ -748,7 +744,7 @@ An optional company name []:.
 
           <figure>
             <artwork><![CDATA[$ openssl smime -encrypt -aes-256-cbc -in SN19842256.cfg\
-  -out SN19842256.enc -outform PEM SN19842256.crt
+   -out SN19842256.enc -outform PEM SN19842256.crt
 $ more SN19842256.enc
 -----BEGIN PKCS7-----
 MIICigYJKoZIhvcNAQcDoIICezCCAncCAQAxggE+MIIBOgIBADAiMBUxEzARBgNV
@@ -790,7 +786,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
         <section title="Step 3.2: Decrypt and use the configuration. ">
           <figure>
             <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
-  -out config.cfg -inkey key.pem
+   -out config.cfg -inkey key.pem
 ]]></artwork>
           </figure>
 
@@ -799,7 +795,7 @@ LZoq08jqlWhZZWhTKs4XPGHUdmnZRYIP8KXyEtHt
 
           <figure>
             <artwork><![CDATA[$ openssl smime -decrypt -in SN19842256.enc -inform pkcs7\
-  -out config.cfg -inkey wrongkey.pem
+   -out config.cfg -inkey wrongkey.pem
 Error decrypting PKCS#7 structure
 140352450692760:error:06065064:digital envelope
  routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:592:
