@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-ietf-opsawg-sdi-11" ipr="trust200902">
+<rfc category="info" docName="draft-ietf-opsawg-sdi-12" ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -59,7 +59,7 @@
       </address>
     </author>
 
-    <date day="20" month="May" year="2020"/>
+    <date day="08" month="June" year="2020"/>
 
     <abstract>
       <t>Deploying a new network device in a location
@@ -259,14 +259,17 @@
         the raw public key and unique device identifier to the certificate
         publication server, while more capable devices may generate and send
         self-signed certificates. This communication with the directory server
-        should be integrity protected.</t>
+        should be integrity protected, and in a controlled environment.</t>
 
         <t>This reference architecture needs a serialization format for the
         key material.  Due to the prevalence of tooling support for it on
         network devices, X.509 certificates are a convenient format to
         exchange public keys. However, most of the meta-data that would
         use for revocation and aging will not be used and should be
-        ignored by both the client and server.</t>
+        ignored by both the client and server. In such  cases the
+        signature on the certificate conveys no value and the consumer
+        of the certificate is expected to pin the end-entity key
+        fingerprint (versus using a PKI and signature chain).</t>
       </section>
 
       <section title="Directory Server">
@@ -329,7 +332,10 @@
         <t>The operator will contact the vendor's publication server, and
         download the certificate (by providing the unique device identifier of
         the device). The operator fetches the certificate using a secure
-        transport (e.g., HTTPS). The operator will then encrypt the initial
+        transport that authenticates the source of the certificate,
+        such as HTTPS (confidentiality protection can provide some privacy
+        and metadata-leakage benefit, but is not key to the primary
+        mechanism of this document). The operator will then encrypt the initial
         configuration (for example, using SMIME <xref target="RFC5751"/>)
         using the key in the certificate, and place it on their
         configuration server.</t>
@@ -551,7 +557,8 @@
       comments and review, and Tom Petch provided significant editorial
       contributions to better describe the use cases, and clarify the scope.</t>
 
-      <t>Roman Danyliw also provided helpful text around the certificate usage.</t>
+      <t>Roman Danyliw and Benjamin Kaduk also provided helpful text,
+      especially around the certificate usage and security considerations.</t>
     </section>
   </middle>
 
@@ -697,13 +704,9 @@
 
         <section title="Step 1.1: Generate the private key. ">
           <figure>
-            <artwork><![CDATA[$ openssl genrsa -out key.pem 2048
-Generating RSA private key, 2048 bit long modulus
-.................................................
-.................................................
-..........................+++
-...................+++
-e is 65537 (0x10001)
+            <artwork><![CDATA[
+    $ openssl ecparam -out privatekey.key -name prime256v1 -genkey
+    $
 ]]></artwork>
           </figure>
         </section>

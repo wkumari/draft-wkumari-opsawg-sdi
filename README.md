@@ -7,12 +7,12 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: November 21, 2020                              Juniper Networks
-                                                            May 20, 2020
+Expires: December 10, 2020                              Juniper Networks
+                                                           June 08, 2020
 
 
                          Secure Device Install
-                        draft-ietf-opsawg-sdi-11
+                        draft-ietf-opsawg-sdi-12
 
 Abstract
 
@@ -55,15 +55,15 @@ Status of This Memo
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 1]
+Kumari & Doyle          Expires December 10, 2020               [Page 1]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on November 21, 2020.
+   This Internet-Draft will expire on December 10, 2020.
 
 Copyright Notice
 
@@ -92,39 +92,39 @@ Table of Contents
      4.1.  Administrative  . . . . . . . . . . . . . . . . . . . . .   8
      4.2.  Technical . . . . . . . . . . . . . . . . . . . . . . . .   8
      4.3.  Example Initial Customer Boot . . . . . . . . . . . . . .   9
-   5.  Additional Considerations . . . . . . . . . . . . . . . . . .  11
-     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .  11
-     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .  11
-     5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .  11
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
-   8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  12
-   9.  Informative References  . . . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  14
-   Appendix B.  Proof of Concept . . . . . . . . . . . . . . . . . .  16
-     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  16
-       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  16
-       B.1.2.  Step 1.2: Generate the certificate signing request. .  16
+   5.  Additional Considerations . . . . . . . . . . . . . . . . . .  12
+     5.1.  Key storage . . . . . . . . . . . . . . . . . . . . . . .  12
+     5.2.  Key replacement . . . . . . . . . . . . . . . . . . . . .  12
+     5.3.  Device reinstall  . . . . . . . . . . . . . . . . . . . .  12
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  13
+   9.  Informative References  . . . . . . . . . . . . . . . . . . .  14
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  15
+   Appendix B.  Proof of Concept . . . . . . . . . . . . . . . . . .  17
+     B.1.  Step 1: Generating the certificate. . . . . . . . . . . .  17
+       B.1.1.  Step 1.1: Generate the private key. . . . . . . . . .  17
+       B.1.2.  Step 1.2: Generate the certificate signing request. .  17
        B.1.3.  Step 1.3: Generate the (self signed) certificate
-               itself. . . . . . . . . . . . . . . . . . . . . . . .  16
-     B.2.  Step 2: Generating the encrypted configuration. . . . . .  17
+               itself. . . . . . . . . . . . . . . . . . . . . . . .  17
+     B.2.  Step 2: Generating the encrypted configuration. . . . . .  18
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 2]
+Kumari & Doyle          Expires December 10, 2020               [Page 2]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
-       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  17
-       B.2.2.  Step 2.2: Encrypt the configuration file. . . . . . .  17
+       B.2.1.  Step 2.1: Fetch the certificate.  . . . . . . . . . .  18
+       B.2.2.  Step 2.2: Encrypt the configuration file. . . . . . .  18
        B.2.3.  Step 2.3: Copy configuration to the configuration
-               server. . . . . . . . . . . . . . . . . . . . . . . .  17
-     B.3.  Step 3: Decrypting and using the configuration. . . . . .  17
+               server. . . . . . . . . . . . . . . . . . . . . . . .  18
+     B.3.  Step 3: Decrypting and using the configuration. . . . . .  18
        B.3.1.  Step 3.1: Fetch encrypted configuration file from
-               configuration server. . . . . . . . . . . . . . . . .  18
-       B.3.2.  Step 3.2: Decrypt and use the configuration.  . . . .  18
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  18
+               configuration server. . . . . . . . . . . . . . . . .  19
+       B.3.2.  Step 3.2: Decrypt and use the configuration.  . . . .  19
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  19
 
 1.  Introduction
 
@@ -167,9 +167,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 3]
+Kumari & Doyle          Expires December 10, 2020               [Page 3]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    encrypted to the device's key (or not encrypted, as the case may be).
@@ -223,9 +223,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 4]
+Kumari & Doyle          Expires December 10, 2020               [Page 4]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    configuration server (often called 'next-server', 'siaddr' or 'tftp-
@@ -279,9 +279,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 5]
+Kumari & Doyle          Expires December 10, 2020               [Page 5]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    use its private key to decrypt the file and, assuming it validates,
@@ -320,24 +320,24 @@ Internet-Draft            Secure Device Install                 May 2020
    send the raw public key and unique device identifier to the
    certificate publication server, while more capable devices may
    generate and send self-signed certificates.  This communication with
-   the directory server should be integrity protected.
+   the directory server should be integrity protected, and in a
+   controlled environment.
 
    This reference architecture needs a serialization format for the key
    material.  Due to the prevalence of tooling support for it on network
    devices, X.509 certificates are a convenient format to exchange
    public keys.  However, most of the meta-data that would use for
    revocation and aging will not be used and should be ignored by both
-   the client and server.
+   the client and server.  In such cases the signature on the
+   certificate conveys no value and the consumer of the certificate is
+   expected to pin the end-entity key fingerprint (versus using a PKI
+   and signature chain).
 
 
 
-
-
-
-
-Kumari & Doyle          Expires November 21, 2020               [Page 6]
+Kumari & Doyle          Expires December 10, 2020               [Page 6]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
 3.2.  Directory Server
@@ -391,9 +391,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 7]
+Kumari & Doyle          Expires December 10, 2020               [Page 7]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
 4.  Operator Role
@@ -409,11 +409,48 @@ Internet-Draft            Secure Device Install                 May 2020
    The operator will contact the vendor's publication server, and
    download the certificate (by providing the unique device identifier
    of the device).  The operator fetches the certificate using a secure
-   transport (e.g., HTTPS).  The operator will then encrypt the initial
+   transport that authenticates the source of the certificate, such as
+   HTTPS (confidentiality protection can provide some privacy and
+   metadata-leakage benefit, but is not key to the primary mechanism of
+   this document).  The operator will then encrypt the initial
    configuration (for example, using SMIME [RFC5751]) using the key in
    the certificate, and place it on their configuration server.
 
    See Appendix B for examples.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 10, 2020               [Page 8]
+
+Internet-Draft            Secure Device Install                June 2020
+
 
                          +------------+
       +--------+         |           |
@@ -444,14 +481,6 @@ Internet-Draft            Secure Device Install                 May 2020
    Fetching the certificate, encrypting the configuration, publishing
    the encrypted configuration.
 
-
-
-
-Kumari & Doyle          Expires November 21, 2020               [Page 8]
-
-Internet-Draft            Secure Device Install                 May 2020
-
-
 4.3.  Example Initial Customer Boot
 
    When the device is first booted by the customer (and on subsequent
@@ -471,6 +500,13 @@ Internet-Draft            Secure Device Install                 May 2020
    dependent; there are a number of (obvious) options, including having
    a magic string in the file header, using a file name extension (e.g.,
    config.enc), or using specific DHCP options.
+
+
+
+Kumari & Doyle          Expires December 10, 2020               [Page 9]
+
+Internet-Draft            Secure Device Install                June 2020
+
 
    If the file is encrypted, the device will attempt to decrypt and
    parse the file.  If able, it will install the configuration, and
@@ -503,9 +539,29 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020               [Page 9]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 10, 2020              [Page 10]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
              +--------+                +--------------+
@@ -559,9 +615,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 10]
+Kumari & Doyle          Expires December 10, 2020              [Page 11]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
 5.  Additional Considerations
@@ -615,9 +671,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 11]
+Kumari & Doyle          Expires December 10, 2020              [Page 12]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    emailing configuration files and asking a third-party to copy and
@@ -671,13 +727,13 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 12]
+Kumari & Doyle          Expires December 10, 2020              [Page 13]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
-   Roman Danyliw also provided helpful text around the certificate
-   usage.
+   Roman Danyliw and Benjamin Kaduk also provided helpful text,
+   especially around the certificate usage and security considerations.
 
 9.  Informative References
 
@@ -727,9 +783,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 13]
+Kumari & Doyle          Expires December 10, 2020              [Page 14]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
@@ -783,9 +839,9 @@ Appendix A.  Changes / Author Notes.
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 14]
+Kumari & Doyle          Expires December 10, 2020              [Page 15]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    o  Addressed tom's comments.
@@ -839,9 +895,9 @@ Internet-Draft            Secure Device Install                 May 2020
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 15]
+Kumari & Doyle          Expires December 10, 2020              [Page 16]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
    o  Make it clear it should first try use the config, and if it
@@ -871,13 +927,8 @@ B.1.  Step 1: Generating the certificate.
 
 B.1.1.  Step 1.1: Generate the private key.
 
-   $ openssl genrsa -out key.pem 2048
-   Generating RSA private key, 2048 bit long modulus
-   .................................................
-   .................................................
-   ..........................+++
-   ...................+++
-   e is 65537 (0x10001)
+       $ openssl ecparam -out privatekey.key -name prime256v1 -genkey
+       $
 
 B.1.2.  Step 1.2: Generate the certificate signing request.
 
@@ -891,17 +942,19 @@ B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
    $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
    SN19842256.crt
 
-
-
-
-
-Kumari & Doyle          Expires November 21, 2020              [Page 16]
-
-Internet-Draft            Secure Device Install                 May 2020
-
-
    The router then sends the key to the vendor's keyserver for
    publication (not shown).
+
+
+
+
+
+
+
+Kumari & Doyle          Expires December 10, 2020              [Page 17]
+
+Internet-Draft            Secure Device Install                June 2020
+
 
 B.2.  Step 2: Generating the encrypted configuration.
 
@@ -951,9 +1004,12 @@ B.3.  Step 3: Decrypting and using the configuration.
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 17]
+
+
+
+Kumari & Doyle          Expires December 10, 2020              [Page 18]
 
-Internet-Draft            Secure Device Install                 May 2020
+Internet-Draft            Secure Device Install                June 2020
 
 
 B.3.1.  Step 3.1: Fetch encrypted configuration file from configuration
@@ -1007,5 +1063,5 @@ Authors' Addresses
 
 
 
-Kumari & Doyle          Expires November 21, 2020              [Page 18]
+Kumari & Doyle          Expires December 10, 2020              [Page 19]
 ```
