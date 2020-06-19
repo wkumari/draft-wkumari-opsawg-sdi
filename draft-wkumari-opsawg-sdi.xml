@@ -177,7 +177,7 @@
       by having a newly installed, unconfigured device obtain an IP address for itself
       and discover the address of a configuration server
       (often called 'next-server', 'siaddr' or
-      'tftp-server-name') using DHCP or DHXPv6 (see <xref target="RFC2131"></xref>,
+      'tftp-server-name') using DHCP or DHCPv6 (see <xref target="RFC2131"></xref>,
       <xref target="RFC8415"></xref>). The device
       then contacts this configuration server to download its initial configuration,
       which is often identified using the device's serial number, MAC address or

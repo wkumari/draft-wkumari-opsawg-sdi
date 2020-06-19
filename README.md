@@ -229,7 +229,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
    configuration server (often called 'next-server', 'siaddr' or 'tftp-
-   server-name') using DHCP or DHXPv6 (see [RFC2131], [RFC8415]).  The
+   server-name') using DHCP or DHCPv6 (see [RFC2131], [RFC8415]).  The
    device then contacts this configuration server to download its
    initial configuration, which is often identified using the device's
    serial number, MAC address or similar.  This document extends this
