@@ -25,8 +25,8 @@ Abstract
    confidentiality of the configuration.
 
    This document extends existing vendor proprietary auto-install to
-   provide confidentiality to initial configuration during bootstrapping
-   of the device.
+   provide limited confidentiality to initial configuration during
+   bootstrapping of the device.
 
    [ Ed note: Text inside square brackets ([]) is additional background
    information, answers to frequently asked questions, general musings,
@@ -181,17 +181,17 @@ Internet-Draft            Secure Device Install                June 2020
 
    This document layers security onto existing auto-install solutions
    (one example of which is [Cisco_AutoInstall]) to provide a method to
-   initially configure new devices while maintaining confidentiality of
-   the initial configuration.  It is optimized for simplicity, for both
-   the implementor and the operator; it is explicitly not intended to be
-   a fully featured system for managing installed devices, nor is it
-   intended to solve all use cases: rather it is a simple targeted
-   solution to solve a common operational issue where the network device
-   has been delivered, fibre laid (as appropriate) and there is no
-   trusted member of the operator's staff to perform the initial
-   configuration.  This solution is only intended to increase
-   confidentiality of the information in the configuration file, and
-   does not protect the device itself from loading a malicious
+   initially configure new devices while maintaining (limited)
+   confidentiality of the initial configuration.  It is optimized for
+   simplicity, for both the implementor and the operator; it is
+   explicitly not intended to be a fully featured system for managing
+   installed devices, nor is it intended to solve all use cases: rather
+   it is a simple targeted solution to solve a common operational issue
+   where the network device has been delivered, fibre laid (as
+   appropriate) and there is no trusted member of the operator's staff
+   to perform the initial configuration.  This solution is only intended
+   to increase confidentiality of the information in the configuration
+   file, and does not protect the device itself from loading a malicious
    configuration.
 
    This document describes a concept, and some example ways of
@@ -313,10 +313,10 @@ Internet-Draft            Secure Device Install                June 2020
    During the manufacturing stage, when the device is initially powered
    on, it will generate a public-private key pair.  It will send its
    unique device identifier and the public key to the vendor's directory
-   server to be published.  The vendor's directory server should only
-   accept certificates from the manufacturing facility, and which match
-   vendor defined policies (for example, extended key usage, and
-   extensions) Note that some devices may be constrained, and so may
+   server ([RFC5280]) to be published.  The vendor's directory server
+   should only accept certificates from the manufacturing facility, and
+   which match vendor defined policies (for example, extended key usage,
+   and extensions) Note that some devices may be constrained, and so may
    send the raw public key and unique device identifier to the
    certificate publication server, while more capable devices may
    generate and send self-signed certificates.  This communication with
@@ -793,6 +793,12 @@ Internet-Draft            Secure Device Install                June 2020
               DOI 10.17487/RFC4122, July 2005,
               <https://www.rfc-editor.org/info/rfc4122>.
 
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/info/rfc5280>.
+
    [RFC5751]  Ramsdell, B. and S. Turner, "Secure/Multipurpose Internet
               Mail Extensions (S/MIME) Version 3.2 Message
               Specification", RFC 5751, DOI 10.17487/RFC5751, January
@@ -830,12 +836,6 @@ Appendix A.  Changes / Author Notes.
 
    o  Please see GitHub commit log (I forgot to put them in here :-P )
 
-   From -03 to -04
-
-   o  Addressed Joe's WGLC comments.  This involved changing the "just
-      try decrypt and pray" to vendor specific, like a file extension,
-      magic header sting, etc.
-
 
 
 
@@ -843,6 +843,12 @@ Kumari & Doyle          Expires December 10, 2020              [Page 15]
 
 Internet-Draft            Secure Device Install                June 2020
 
+
+   From -03 to -04
+
+   o  Addressed Joe's WGLC comments.  This involved changing the "just
+      try decrypt and pray" to vendor specific, like a file extension,
+      magic header sting, etc.
 
    o  Addressed tom's comments.
 
@@ -886,12 +892,6 @@ Internet-Draft            Secure Device Install                June 2020
 
    o  Added text to explain that any unique device identifier can be
       used, not just serial number - serial number is simple and easy,
-      but anything which is unique (and can be communicated to the
-      customer) will work (BF).
-
-   o  Lots of clarifications from Joe Clarke.
-
-
 
 
 
@@ -899,6 +899,11 @@ Kumari & Doyle          Expires December 10, 2020              [Page 16]
 
 Internet-Draft            Secure Device Install                June 2020
 
+
+      but anything which is unique (and can be communicated to the
+      customer) will work (BF).
+
+   o  Lots of clarifications from Joe Clarke.
 
    o  Make it clear it should first try use the config, and if it
       doesn't work, then try decrypt and use it.
@@ -942,11 +947,6 @@ B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
    $ openssl req -x509 -days 36500 -key key.pem -in SN19842256.csr -out
    SN19842256.crt
 
-   The router then sends the key to the vendor's keyserver for
-   publication (not shown).
-
-
-
 
 
 
@@ -955,6 +955,9 @@ Kumari & Doyle          Expires December 10, 2020              [Page 17]
 
 Internet-Draft            Secure Device Install                June 2020
 
+
+   The router then sends the key to the vendor's keyserver for
+   publication (not shown).
 
 B.2.  Step 2: Generating the encrypted configuration.
 
@@ -999,9 +1002,6 @@ B.3.  Step 3: Decrypting and using the configuration.
    modifies the solution to fetch an encrypted configuration file
    (ending in .enc)).  It will then decrypt the configuration file, and
    install it.
-
-
-
 
 
 

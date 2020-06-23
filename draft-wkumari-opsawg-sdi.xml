@@ -71,7 +71,7 @@
       while still maintaining confidentiality of the configuration.</t>
 
     <t>This document extends existing vendor proprietary auto-install
-     to provide confidentiality to initial configuration during
+     to provide limited confidentiality to initial configuration during
      bootstrapping of the device.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
@@ -137,7 +137,7 @@
       <t>This document layers security onto existing auto-install solutions
       (one example of which is <xref target="Cisco_AutoInstall"/>)
       to provide a method to initially configure new devices while maintaining
-      confidentiality of the initial configuration. It is
+      (limited) confidentiality of the initial configuration. It is
       optimized for simplicity, for both the implementor and the operator;
       it is explicitly not intended to be a
       fully featured system for managing installed devices, nor
@@ -252,7 +252,7 @@
         <t>During the manufacturing stage, when the device is initially powered
         on, it will generate a public-private key pair. It will send its unique device
         identifier and the public key to the vendor's directory server
-        to be published. The vendor's directory server
+        (<xref target="RFC5280"/>) to be published. The vendor's directory server
         should only accept certificates from the manufacturing facility,
         and which match vendor defined policies (for example, extended key usage,
         and extensions) Note that some devices may be constrained, and so may send
@@ -579,6 +579,8 @@
       <?rfc include='reference.RFC.5751'?>
 
       <?rfc include='reference.RFC.7030'?>
+
+      <?rfc include='reference.RFC.5280'?>
 
       <?rfc include="reference.I-D.ietf-opsawg-tacacs.xml"?>
 
