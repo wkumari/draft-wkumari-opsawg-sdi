@@ -495,11 +495,11 @@ Internet-Draft            Secure Device Install                June 2020
    After retrieving the configuration file, the device needs to
    determine if it is encrypted or not.  If it is not encrypted, the
    existing behavior is used.  If the configuration is encrypted, the
-   process continues as described in this document.  The method used to
-   determine if the configuration is encrypted or not is implementation
-   dependent; there are a number of (obvious) options, including having
-   a magic string in the file header, using a file name extension (e.g.,
-   config.enc), or using specific DHCP options.
+   process continues as described in this document.  If the device has
+   been configured to only support encrypted configuration and
+   determines that the configuration file is not encrypted, it should
+   abort.  The method used to determine if the configuration is
+   encrypted or not is implementation dependent; there are a number of
 
 
 
@@ -507,6 +507,10 @@ Kumari & Doyle          Expires December 10, 2020               [Page 9]
 
 Internet-Draft            Secure Device Install                June 2020
 
+
+   (obvious) options, including having a magic string in the file
+   header, using a file name extension (e.g., config.enc), or using
+   specific DHCP options.
 
    If the file is encrypted, the device will attempt to decrypt and
    parse the file.  If able, it will install the configuration, and
@@ -525,10 +529,6 @@ Internet-Draft            Secure Device Install                June 2020
    never needs to access the Internet or vendor or directory server.
    The device (and only the device) has the private key and so has the
    ability to decrypt the configuration file.
-
-
-
-
 
 
 
@@ -680,8 +680,9 @@ Internet-Draft            Secure Device Install                June 2020
    paste them over a serial terminal) or allow unrestricted access to
    these configurations.
 
-   This document describes an object level security design to provide
-   confidentiality assurances for the configuration while it is in
+   > This document describes an object level security design to provide
+   confidentiality assurances for the configuration stored at rest on
+   the configuration server; and for configuration while it is in
    transit between the configuration server and the unprovisioned device
    even if the underly transport does not provide this security service.
 
@@ -722,8 +723,7 @@ Internet-Draft            Secure Device Install                June 2020
    Claise, Francis Dupont, Mirja Kuehlewind, Sam Ribeiro, Michael
    Richardson, Sean Turner and Kent Watsen.  Joe Clarke also provided
    significant comments and review, and Tom Petch provided significant
-   editorial contributions to better describe the use cases, and clarify
-   the scope.
+
 
 
 
@@ -731,6 +731,9 @@ Kumari & Doyle          Expires December 10, 2020              [Page 13]
 
 Internet-Draft            Secure Device Install                June 2020
 
+
+   editorial contributions to better describe the use cases, and clarify
+   the scope.
 
    Roman Danyliw and Benjamin Kaduk also provided helpful text,
    especially around the certificate usage and security considerations.
@@ -776,9 +779,6 @@ Internet-Draft            Secure Device Install                June 2020
               "Remote Authentication Dial In User Service (RADIUS)",
               RFC 2865, DOI 10.17487/RFC2865, June 2000,
               <https://www.rfc-editor.org/info/rfc2865>.
-
-
-
 
 
 

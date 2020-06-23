@@ -386,7 +386,9 @@
         <t>After retrieving the configuration file, the device needs to determine if it is
         encrypted or not. If it is not encrypted, the existing behavior is used.
         If the configuration is encrypted, the process continues as described in this
-        document. The method used to determine if the configuration is encrypted or not is
+        document. If the device has been configured to only support encrypted configuration
+        and determines that the configuration file is not encrypted, it should abort.
+        The method used to determine if the configuration is encrypted or not is
         implementation dependent; there are a number of (obvious) options, including
         having a magic string in the file header, using a file name extension
         (e.g., config.enc), or using specific DHCP options.</t>
@@ -512,11 +514,11 @@
       and asking a third-party to copy and paste them over a serial terminal)
       or allow unrestricted access to these configurations.</t>
 
-      <t>This document describes an object level security design to provide
-      confidentiality assurances for the configuration while it is in
-      transit between the configuration server and the unprovisioned
-      device even if the underly transport does not provide this
-      security service.</t>
+      <t>> This document describes an object level security design to provide
+      confidentiality assurances for the configuration stored at rest on the
+      configuration server; and for configuration while it is in transit between
+      the configuration server and the unprovisioned device even if the underly
+      transport does not provide this security service.</t>
 
       <t>The architecture provides no assurances about the source of
       the encrypted configuration or protect against theft and
