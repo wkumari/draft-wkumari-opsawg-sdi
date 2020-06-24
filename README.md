@@ -7,12 +7,12 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                  C. Doyle
-Expires: December 10, 2020                              Juniper Networks
-                                                           June 08, 2020
+Expires: December 26, 2020                              Juniper Networks
+                                                           June 24, 2020
 
 
                          Secure Device Install
-                        draft-ietf-opsawg-sdi-12
+                        draft-ietf-opsawg-sdi-13
 
 Abstract
 
@@ -55,7 +55,7 @@ Status of This Memo
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 1]
+Kumari & Doyle          Expires December 26, 2020               [Page 1]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -63,7 +63,7 @@ Internet-Draft            Secure Device Install                June 2020
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 10, 2020.
+   This Internet-Draft will expire on December 26, 2020.
 
 Copyright Notice
 
@@ -111,7 +111,7 @@ Table of Contents
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 2]
+Kumari & Doyle          Expires December 26, 2020               [Page 2]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -167,7 +167,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 3]
+Kumari & Doyle          Expires December 26, 2020               [Page 3]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -223,7 +223,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 4]
+Kumari & Doyle          Expires December 26, 2020               [Page 4]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -279,7 +279,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 5]
+Kumari & Doyle          Expires December 26, 2020               [Page 5]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -335,7 +335,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 6]
+Kumari & Doyle          Expires December 26, 2020               [Page 6]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -391,7 +391,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 7]
+Kumari & Doyle          Expires December 26, 2020               [Page 7]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -447,7 +447,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 8]
+Kumari & Doyle          Expires December 26, 2020               [Page 8]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -503,7 +503,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020               [Page 9]
+Kumari & Doyle          Expires December 26, 2020               [Page 9]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -559,7 +559,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 10]
+Kumari & Doyle          Expires December 26, 2020              [Page 10]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -615,7 +615,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 11]
+Kumari & Doyle          Expires December 26, 2020              [Page 11]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -671,7 +671,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 12]
+Kumari & Doyle          Expires December 26, 2020              [Page 12]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -727,7 +727,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 13]
+Kumari & Doyle          Expires December 26, 2020              [Page 13]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -783,7 +783,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 14]
+Kumari & Doyle          Expires December 26, 2020              [Page 14]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -839,7 +839,7 @@ Appendix A.  Changes / Author Notes.
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 15]
+Kumari & Doyle          Expires December 26, 2020              [Page 15]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -895,7 +895,7 @@ Internet-Draft            Secure Device Install                June 2020
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 16]
+Kumari & Doyle          Expires December 26, 2020              [Page 16]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -951,7 +951,7 @@ B.1.3.  Step 1.3: Generate the (self signed) certificate itself.
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 17]
+Kumari & Doyle          Expires December 26, 2020              [Page 17]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -1007,7 +1007,7 @@ B.3.  Step 3: Decrypting and using the configuration.
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 18]
+Kumari & Doyle          Expires December 26, 2020              [Page 18]
 
 Internet-Draft            Secure Device Install                June 2020
 
@@ -1063,5 +1063,5 @@ Authors' Addresses
 
 
 
-Kumari & Doyle          Expires December 10, 2020              [Page 19]
+Kumari & Doyle          Expires December 26, 2020              [Page 19]
 ```
